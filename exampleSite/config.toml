@@ -1,0 +1,216 @@
+# =============================================================================
+# JI 主题配置示例
+# 复制此文件到您的 Hugo 站点根目录并重命名为 config.toml
+# =============================================================================
+
+# 基本站点信息
+baseURL = "https://example.com"
+languageCode = "zh-cn"
+title = "JI 主题演示"
+theme = "JI"
+
+# =============================================================================
+# 站点参数配置
+# =============================================================================
+[params]
+  # 基本信息
+  title = "我的博客"
+  description = "一款为性能、可访问性和精美设计打造的现代响应式 Hugo 主题"
+  author = "您的名字"
+  footerDescription = "永远相信美好的事情即将发生。"
+  dateFormat = "2006年1月2日"
+  
+  # 主题功能开关
+  darkMode = true              # 启用深色模式
+  search = true                # 启用搜索功能
+  pagination = true            # 启用分页功能
+  syntaxHighlighting = true    # 启用语法高亮
+  showLineNumbers = true       # 显示行号
+
+# =============================================================================
+# 分页配置
+# =============================================================================
+[pagination]
+  pagerSize = 8                # 每页显示文章数量
+  path = "page"                # 分页URL路径
+
+# =============================================================================
+# 页面配置
+# =============================================================================
+[params.recentPosts]
+  count = 9                    # 首页显示文章数量
+  title = "最近文章"           # 首页文章列表标题
+  showAllLink = { url = "/posts", text = "查看所有文章" }
+
+[params.posts]
+  title = "文章"               # 文章页面标题
+
+[params.categories]
+  title = "分类"               # 分类页面标题
+
+[params.tags]
+  title = "标签"               # 标签页面标题
+
+# =============================================================================
+# 目录配置
+# =============================================================================
+[params.toc]
+  enabled = true               # 启用目录
+  startLevel = 2               # 目录起始级别（h2开始）
+  endLevel = 4                 # 目录结束级别（h4结束）
+  ordered = false              # 是否显示编号
+
+# =============================================================================
+# 代码高亮配置
+# =============================================================================
+[params.code]
+  enable = true                # 启用自定义代码功能
+  showLineNumbers = true       # 显示行号
+  showCopyButton = true        # 显示复制按钮
+  showLanguageLabel = true     # 显示语言标签
+  theme = "github"             # 代码主题
+  maxHeight = "400px"          # 代码块最大高度
+  wrapLongLines = true         # 长行换行
+
+# =============================================================================
+# 导航菜单配置
+# =============================================================================
+[[menu.main]]
+  name = "首页"
+  url = "/"
+  weight = 1
+
+[[menu.main]]
+  name = "文章"
+  url = "/posts"
+  weight = 2
+
+[[menu.main]]
+  name = "分类"
+  url = "/categories"
+  weight = 3
+
+[[menu.main]]
+  name = "标签"
+  url = "/tags"
+  weight = 4
+
+# =============================================================================
+# 社交链接配置
+# =============================================================================
+[[menu.social]]
+  name = "GitHub"
+  url = "https://github.com/jizuiba"
+  pre = "<svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22'></path></svg>"
+
+[[menu.social]]
+  name = "微博"
+  url = "https://weibo.com/yourusername"
+  pre = "<svg width='20' height='20' viewBox='0 0 24 24' fill='currentColor'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/></svg>"
+
+# =============================================================================
+# Markup 配置
+# =============================================================================
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true            # 允许不安全的HTML
+
+  # 目录配置
+  [markup.tableOfContents]
+    startLevel = 2             # 目录起始级别
+    endLevel = 4               # 目录结束级别
+    ordered = false            # 是否显示编号
+
+  # 语法高亮配置
+  [markup.highlight]
+    style = "github"           # 高亮主题
+    lineNos = false            # 显示行号（由主题控制）
+    lineNumbersInTable = false # 表格中的行号
+    noClasses = false          # 使用CSS类
+    codeFences = true          # 启用代码围栏
+    guessSyntax = true         # 自动检测语法
+    tabWidth = 2               # 制表符宽度
+    anchorLineNos = true       # 行号锚点
+    lineAnchors = ""           # 行锚点前缀
+    hl_Lines = ""              # 高亮特定行
+    hl_inline = false          # 内联代码高亮
+
+# =============================================================================
+# 输出格式配置
+# =============================================================================
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+  page = ["HTML"]
+  section = ["HTML", "RSS"]
+  taxonomy = ["HTML", "RSS"]
+
+# =============================================================================
+# 高级配置示例（可选）
+# =============================================================================
+
+# 颜色自定义
+[params.colors]
+  primary = "#2563eb"
+  primaryHover = "#1d4ed8"
+  secondary = "#64748b"
+  accent = "#f59e0b"
+  
+  # 浅色主题配色
+  bg = "#ffffff"
+  bgSecondary = "#f8fafc"
+  text = "#1e293b"
+  textSecondary = "#64748b"
+  textMuted = "#94a3b8"
+  border = "#e2e8f0"
+  borderHover = "#cbd5e1"
+  
+  # 深色主题配色
+  bgDark = "#0f172a"
+  bgSecondaryDark = "#1e293b"
+  textDark = "#f1f5f9"
+  textSecondaryDark = "#cbd5e1"
+  textMutedDark = "#64748b"
+  borderDark = "#334155"
+  borderHoverDark = "#475569"
+
+# 字体配置
+[params.fonts]
+  base = "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+  heading = "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+  mono = "'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace"
+
+# 分析工具配置
+[params.analytics]
+  google = "GA_MEASUREMENT_ID"  # 替换为您的 Google Analytics ID
+  # plausible = "yourdomain.com"  # 取消注释并替换为您的域名
+
+# 评论系统配置
+[params.comments]
+  disqus = "your-disqus-shortname"  # 替换为您的 Disqus 短名称
+  # utterances = { repo = "username/repo", issueTerm = "pathname" }  # 取消注释并配置
+
+# 自定义资源
+[params]
+  customCSS = ["/css/custom.css"]  # 自定义CSS文件
+  customJS = ["/js/custom.js"]     # 自定义JS文件
+
+# 服务工作者配置
+[params]
+  serviceWorker = true  # 启用 Service Worker
+
+# 构建配置
+[build]
+  writeStats = true
+
+# 多语言配置示例
+# [languages]
+#   [languages.zh]
+#     languageName = "中文"
+#     weight = 1
+#     contentDir = "content"
+#   
+#   [languages.en]
+#     languageName = "English"
+#     weight = 2
+#     contentDir = "content/en"

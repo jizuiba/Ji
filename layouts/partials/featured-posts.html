@@ -1,0 +1,72 @@
+{{ $featuredPosts := .Site.Params.featuredPosts }}
+{{ $posts := where .Site.RegularPages "Params.featured" true }}
+{{ if not $posts }}
+  {{ $posts = first 3 .Site.RegularPages }}
+{{ end }}
+
+{{ if $posts }}
+<section class="featured-posts">
+  <div class="container">
+    <header class="section-header">
+      <h2 class="section-title">{{ $featuredPosts.title | default "Featured Posts" }}</h2>
+      {{ if $featuredPosts.subtitle }}
+        <p class="section-subtitle">{{ $featuredPosts.subtitle }}</p>
+      {{ end }}
+    </header>
+    
+    <div class="featured-posts-grid">
+      {{ range first 3 $posts }}
+        <article class="featured-post-card">
+          {{ if .Params.featured_image }}
+            <div class="featured-post-image">
+              <a href="{{ .RelPermalink }}">
+                <img src="{{ .Params.featured_image | relURL }}" alt="{{ .Title }}" loading="lazy">
+              </a>
+            </div>
+          {{ end }}
+          
+          <div class="featured-post-content">
+            {{ if .Params.categories }}
+              <div class="featured-post-categories">
+                {{ range first 1 .Params.categories }}
+                  <a href="{{ "/categories/" | relLangURL }}{{ . | urlize }}" class="category-tag">{{ . }}</a>
+                {{ end }}
+              </div>
+            {{ end }}
+            
+            <h3 class="featured-post-title">
+              <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+            </h3>
+            
+            {{ if .Summary }}
+              <p class="featured-post-excerpt">{{ .Summary | truncate 120 }}</p>
+            {{ end }}
+            
+            <div class="featured-post-meta">
+              <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}" class="post-date">
+                {{ .Date.Format (.Site.Params.dateFormat | default "2006年1月2日") }}
+              </time>
+              
+              {{ if .Params.author }}
+                <span class="post-author">by {{ .Params.author }}</span>
+              {{ end }}
+            </div>
+          </div>
+        </article>
+      {{ end }}
+    </div>
+    
+    {{ if $featuredPosts.showAllLink }}
+      <div class="section-footer">
+        <a href="{{ $featuredPosts.showAllLink.url | relURL }}" class="section-link">
+          {{ $featuredPosts.showAllLink.text | default "View All Posts" }}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12,5 19,12 12,19"></polyline>
+          </svg>
+        </a>
+      </div>
+    {{ end }}
+  </div>
+</section>
+{{ end }}

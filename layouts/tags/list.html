@@ -1,0 +1,123 @@
+{{ define "main" }}
+{{ if and .Data.Singular (ne .RelPermalink "/tags/") }}
+  <!-- 单个标签页面 - 显示该标签下的文章列表 -->
+  <div class="posts-list">
+    <div class="container">
+      <header class="page-header">
+        <h1 class="page-title" id="tag-title">{{ .Title | default "标签文章" }}</h1>
+        {{ if .Content }}
+          <div class="page-content">
+            {{ .Content }}
+          </div>
+        {{ end }}
+      </header>
+      
+      {{ if .Pages }}
+        <div class="posts-grid-two">
+          {{ range .Paginator.Pages }}
+            <article class="home-post-card home-post-medium{{ if not .Params.featured_image }} no-image{{ end }}">
+              <a href="{{ .RelPermalink }}" class="home-post-link">
+                {{ if .Params.featured_image }}
+                  <div class="home-post-image">
+                    <img src="{{ .Params.featured_image | relURL }}" alt="{{ .Title }}" loading="lazy">
+                  </div>
+                {{ end }}
+                
+                <div class="home-post-content">
+                  {{ if .Params.categories }}
+                    <div class="home-post-categories">
+                      {{ range first 1 .Params.categories }}
+                        <span class="category-tag">{{ . }}</span>
+                      {{ end }}
+                    </div>
+                  {{ end }}
+                  
+                  <h3 class="home-post-title">
+                    {{ .Title }}
+                  </h3>
+                  
+                  {{ if .Params.subtitle }}
+                    <p class="home-post-subtitle">{{ .Params.subtitle }}</p>
+                  {{ end }}
+                  
+                  <div class="home-post-meta">
+                    <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}" class="post-date">
+                      {{ .Date.Format (.Site.Params.dateFormat | default "2006年1月2日") }}
+                    </time>
+                    {{ if .Params.author }}
+                      <span class="post-author">by {{ .Params.author }}</span>
+                    {{ end }}
+                  </div>
+                </div>
+              </a>
+            </article>
+          {{ end }}
+        </div>
+        
+        {{ if .Site.Params.pagination }}
+          {{ partial "pagination.html" . }}
+        {{ end }}
+      {{ else }}
+        <div class="no-posts">
+          <p>{{ i18n "no_posts_found" | default "该标签下暂无文章。" }}</p>
+        </div>
+      {{ end }}
+    </div>
+  </div>
+{{ else }}
+  <!-- 标签列表页面 - 显示所有标签 -->
+  <div class="tags-list">
+    <div class="container">
+      {{ if .Title }}
+        <header class="page-header">
+          <h1 class="page-title">{{ .Site.Params.tags.title | default .Title }}</h1>
+          {{ if .Content }}
+            <div class="page-content">
+              {{ .Content }}
+            </div>
+          {{ end }}
+        </header>
+      {{ end }}
+      
+      {{ if .Pages }}
+        <div class="tags-grid">
+          {{ range .Paginator.Pages }}
+            <article class="tag-card">
+              <a href="{{ .RelPermalink }}" class="tag-card-link">
+                <div class="tag-card-content">
+                  <h2 class="tag-card-title">
+                    {{ .Title }}
+                  </h2>
+                  
+                  <div class="tag-card-meta">
+                    <span class="tag-post-count">
+                      {{ len .Pages }} 篇文章
+                    </span>
+                  </div>
+                  
+                  <!-- SVG 背景图标 - 标签样式 -->
+                  <div class="tag-card-icon">
+                    <svg t="1757567740537" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7282" width="60" height="60">
+                      <path d="M920.528912 444.49616l-340.111125-340.114737a135.932464 135.932464 0 0 0-96.155899-39.758503L200.418112 64.662657h-0.018063C125.275769 64.662657 64.301413 125.40943 64.301413 200.548159v283.673992a136.091412 136.091412 0 0 0 39.881326 96.199248l340.230335 340.241173a136.022775 136.022775 0 0 0 192.369598 0l283.74624-283.76069c53.128139-53.131752 53.128139-139.277583 0-192.405722z m-45.209673 147.192436l-283.746241 283.760691a72.064544 72.064544 0 0 1-101.924964 0l-340.212273-340.241173A72.187367 72.187367 0 0 1 128.241582 484.218538V200.548159A72.021195 72.021195 0 0 1 200.396437 128.602826l283.843776-0.039737a71.887535 71.887535 0 0 1 50.935389 21.053294l340.114737 340.1039a72.104281 72.104281 0 0 1 0.0289 101.968313z" fill="#999999" p-id="7283"></path>
+                      <path d="M384.002258 255.999097c-70.69543 0-128.003161 57.307731-128.003161 128.003161S313.306828 511.998194 384.002258 511.998194s127.999548-57.307731 127.999548-127.999549S454.690463 255.999097 384.002258 255.999097z m45.296371 173.29592a64.059379 64.059379 0 1 1 18.759396-45.292759 63.640337 63.640337 0 0 1-18.763008 45.292759z" fill="#999999" p-id="7284"></path>
+                    </svg>
+                  </div>
+                </div>
+              </a>
+            </article>
+          {{ end }}
+        </div>
+      {{ else }}
+        <div class="no-tags">
+          <p>{{ i18n "no_tags_found" | default "No tags found." }}</p>
+        </div>
+      {{ end }}
+      
+      {{ if .Site.Params.pagination }}
+        {{ partial "pagination.html" . }}
+      {{ end }}
+    </div>
+  </div>
+{{ end }}
+
+{{ end }}

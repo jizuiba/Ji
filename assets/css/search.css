@@ -1,0 +1,142 @@
+/* ==========================================================================
+   搜索功能样式
+   ========================================================================== */
+
+/* 搜索容器 */
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* 搜索切换按钮 */
+.search-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background-color: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  z-index: 10;
+  position: relative;
+}
+
+
+.search-toggle:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+  color: var(--color-primary);
+}
+
+.search-toggle.active {
+  background-color: transparent;
+  color: var(--color-primary);
+}
+
+/* 深色主题下的搜索切换按钮样式 */
+.theme-dark .search-toggle {
+  background-color: transparent;
+  color: var(--color-text-secondary-dark);
+}
+
+.theme-dark .search-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-primary);
+}
+
+.theme-dark .search-toggle.active {
+  background-color: transparent;
+  color: var(--color-primary);
+}
+
+/* 搜索表单 - 胶囊形状 */
+.search-form {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 50px; /* 胶囊形状 */
+  padding: 8px 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  width: 0;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 5;
+}
+
+.search-form.active {
+  opacity: 1;
+  visibility: visible;
+  width: 280px;
+}
+
+/* 深色主题下的搜索表单 */
+.theme-dark .search-form {
+  background-color: var(--color-bg-dark);
+  border-color: var(--color-border-dark);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.search-input {
+  flex: 1;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: none;
+  background-color: transparent;
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  outline: none;
+  min-width: 0;
+  border-radius: 0; /* 移除输入框的圆角，让胶囊形状更自然 */
+}
+
+.search-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.theme-dark .search-input::placeholder {
+  color: var(--color-text-muted-dark);
+}
+
+
+
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .search-form.active {
+    width: 240px;
+  }
+  
+  .search-input {
+    font-size: var(--font-size-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  /* 移动端胶囊形状搜索框 - 向左生长动画 */
+  .search-form.active {
+    width: 200px; /* 移动端较小的宽度 */
+  }
+  
+  /* 移动端搜索按钮尺寸 */
+  .search-toggle {
+    width: 36px;
+    height: 36px;
+  }
+  
+  
+  /* 移动端搜索输入框字体大小 */
+  .search-input {
+    font-size: var(--font-size-sm);
+  }
+}

@@ -1,0 +1,17 @@
+{{- $pages := where .Site.RegularPages "Type" "in" (slice "posts" "page") -}}
+{{- $searchIndex := slice -}}
+{{- range $pages -}}
+  {{- $searchIndex = $searchIndex | append (dict
+    "title" .Title
+    "content" (.Content | plainify | truncate 200)
+    "url" .RelPermalink
+    "date" (.Date.Format "2006-01-02")
+    "tags" .Params.tags
+    "categories" .Params.categories
+    "summary" (.Summary | plainify | truncate 100)
+    "subtitle" .Params.subtitle
+    "featured_image" .Params.featured_image
+    "type" .Type
+  ) -}}
+{{- end -}}
+{{- $searchIndex | jsonify -}}

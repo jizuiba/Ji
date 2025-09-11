@@ -1,0 +1,42 @@
+# =============================================================================
+# JI 主题最小配置示例
+# 适合快速开始和简单站点
+# =============================================================================
+
+# 基本站点信息
+baseURL = "https://example.com"
+languageCode = "zh-cn"
+title = "我的博客"
+theme = "JI"
+
+# 基本参数
+[params]
+  title = "我的博客"
+  description = "我的个人博客"
+  author = "您的名字"
+  darkMode = true
+  search = true
+  syntaxHighlighting = true
+
+# 导航菜单
+[[menu.main]]
+  name = "首页"
+  url = "/"
+  weight = 1
+
+[[menu.main]]
+  name = "文章"
+  url = "/posts"
+  weight = 2
+
+# 语法高亮
+[markup.highlight]
+  style = "github"
+  lineNos = false
+  codeFences = true
+  guessSyntax = true
+
+# 输出格式
+[outputs]
+  home = ["HTML", "RSS"]
+  page = ["HTML"]

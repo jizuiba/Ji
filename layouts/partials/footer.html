@@ -1,0 +1,100 @@
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4 class="footer-title">{{ .Site.Title }}</h4>
+        {{ if .Site.Params.footerDescription }}
+          <p class="footer-description">{{ .Site.Params.footerDescription }}</p>
+        {{ end }}
+        
+        {{ if .Site.Menus.social }}
+          <ul class="footer-social">
+            {{ range .Site.Menus.social }}
+              <li class="footer-social-item">
+                <a href="{{ .URL }}" target="_blank" rel="noopener noreferrer" aria-label="{{ .Name }}">
+                  {{ if .Pre }}
+                    <span class="social-icon">{{ .Pre | safeHTML }}</span>
+                  {{ else }}
+                    <span class="social-icon">{{ .Name }}</span>
+                  {{ end }}
+                </a>
+              </li>
+            {{ end }}
+          </ul>
+        {{ end }}
+      </div>
+      
+      {{ if .Site.Menus.footer }}
+        <div class="footer-section">
+          <h4 class="footer-section-title">{{ i18n "quick_links" | default "Quick Links" }}</h4>
+          <ul class="footer-links">
+            {{ range .Site.Menus.footer }}
+              <li class="footer-link-item">
+                <a href="{{ .URL | relLangURL }}">{{ .Name }}</a>
+              </li>
+            {{ end }}
+          </ul>
+        </div>
+      {{ end }}
+      
+      {{ if .Site.Params.newsletter }}
+        <div class="footer-section">
+          <h4 class="footer-section-title">{{ i18n "newsletter" | default "Newsletter" }}</h4>
+          <p class="footer-newsletter-text">{{ .Site.Params.newsletter.description | default "Subscribe to our newsletter for updates." }}</p>
+          {{ if .Site.Params.newsletter.url }}
+            <a href="{{ .Site.Params.newsletter.url }}" class="newsletter-button" target="_blank" rel="noopener noreferrer">
+              {{ .Site.Params.newsletter.buttonText | default "Subscribe" }}
+            </a>
+          {{ end }}
+        </div>
+      {{ end }}
+    </div>
+    
+    <div class="footer-bottom">
+      <div class="footer-copyright">
+        <p>
+          &copy; {{ now.Format "2006" }} {{ .Site.Params.author | default .Site.Title }}.
+          {{ if .Site.Params.footerRights }}
+            {{ .Site.Params.footerRights }}
+          {{ else }}
+            {{ i18n "all_rights_reserved" | default "All rights reserved." }}
+          {{ end }}
+        </p>
+        <p class="footer-credits">
+          Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer">Hugo</a> & 
+          Designed by <a href="https://github.com/jizuiba/Ji" target="_blank" rel="noopener noreferrer">Ji</a>
+        </p>
+      </div>
+      
+      <div class="footer-actions">
+        {{ if .Site.Params.darkMode }}
+          <div class="theme-selector">
+            <button class="theme-option" data-theme="light" aria-label="Light theme">
+              <span>Light</span>
+            </button>
+            <button class="theme-option" data-theme="dark" aria-label="Dark theme">
+              <span>Dark</span>
+            </button>
+            <button class="theme-option active" data-theme="auto" aria-label="Auto theme">
+              <span>Auto</span>
+            </button>
+          </div>
+        {{ end }}
+        
+        <div class="footer-links-bottom">
+          {{ if .Site.Params.privacyPolicy }}
+            <a href="{{ .Site.Params.privacyPolicy | relURL }}">{{ i18n "privacy_policy" | default "Privacy Policy" }}</a>
+          {{ end }}
+          
+          {{ if .Site.Params.termsOfService }}
+            <a href="{{ .Site.Params.termsOfService | relURL }}">{{ i18n "terms_of_service" | default "Terms of Service" }}</a>
+          {{ end }}
+          
+          {{ if .Site.Params.contact }}
+            <a href="{{ .Site.Params.contact | relURL }}">{{ i18n "contact" | default "Contact" }}</a>
+          {{ end }}
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,126 @@
+<header class="site-header" role="banner">
+  <div class="container">
+    <div class="header-content">
+      <!-- 移动端菜单按钮 -->
+      <button class="mobile-menu-toggle" aria-expanded="false" aria-controls="mobile-menu" aria-label="Toggle menu">
+        <div class="menu-toggle-icon">
+          <svg class="menu-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+          <svg class="close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </div>
+      </button>
+
+      <!-- 网站标题 -->
+      <div class="site-branding">
+        {{ if .Site.Params.logo }}
+          <a href="{{ "/" | relLangURL }}" class="site-logo">
+            <img src="{{ .Site.Params.logo | relURL }}" alt="{{ .Site.Title }}" width="40" height="40">
+          </a>
+        {{ end }}
+        
+        <div class="site-title-wrapper">
+          <h1 class="site-title">
+            <a href="{{ "/" | relLangURL }}" rel="home">{{ .Site.Title }}</a>
+          </h1>
+          
+          {{ if .Site.Params.tagline }}
+            <p class="site-tagline">{{ .Site.Params.tagline }}</p>
+          {{ end }}
+        </div>
+      </div>
+
+      <!-- 动态标题 -->
+      <div class="dynamic-header" id="dynamic-header">
+        <h1 class="dynamic-title" id="dynamic-title"></h1>
+      </div>
+
+      <!-- 桌面端导航菜单 -->
+      <nav class="desktop-navigation" role="navigation" aria-label="Main navigation">
+        <ul class="primary-menu">
+          {{ range .Site.Menus.main }}
+            <li class="menu-item{{ if $.IsMenuCurrent "main" . }} current-menu-item{{ end }}">
+              <a href="{{ .URL | relLangURL }}"{{ if .Title }} title="{{ .Title }}"{{ end }}>
+                {{ .Name }}
+              </a>
+            </li>
+          {{ end }}
+        </ul>
+        
+        {{ if .Site.Menus.social }}
+          <ul class="social-menu">
+            {{ range .Site.Menus.social }}
+              <li class="social-item">
+                <a href="{{ .URL }}" target="_blank" rel="noopener noreferrer" aria-label="{{ .Name }}">
+                  {{ if .Pre }}
+                    <span class="social-icon">{{ .Pre | safeHTML }}</span>
+                  {{ else }}
+                    <span class="social-icon">{{ .Name }}</span>
+                  {{ end }}
+                </a>
+              </li>
+            {{ end }}
+          </ul>
+        {{ end }}
+      </nav>
+
+      <!-- 搜索按钮 -->
+      <div class="header-actions">
+        {{ if .Site.Params.search }}
+          <div class="search-container">
+            <button class="search-toggle" aria-label="搜索" aria-expanded="false">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+              </svg>
+            </button>
+            <form class="search-form" action="/search/" method="GET">
+              <input 
+                type="text" 
+                name="q" 
+                class="search-input" 
+                placeholder="搜索..." 
+                value="{{ .Params.searchQuery | default "" }}"
+                aria-label="搜索输入框"
+              >
+            </form>
+          </div>
+        {{ end }}
+      </div>
+    </div>
+
+    <!-- 移动端折叠菜单 -->
+    <nav class="mobile-navigation" id="mobile-menu" role="navigation" aria-label="Mobile navigation">
+      <ul class="mobile-primary-menu">
+        {{ range .Site.Menus.main }}
+          <li class="menu-item{{ if $.IsMenuCurrent "main" . }} current-menu-item{{ end }}">
+            <a href="{{ .URL | relLangURL }}"{{ if .Title }} title="{{ .Title }}"{{ end }}>
+              {{ .Name }}
+            </a>
+          </li>
+        {{ end }}
+      </ul>
+      
+      {{ if .Site.Menus.social }}
+        <ul class="mobile-social-menu">
+          {{ range .Site.Menus.social }}
+            <li class="social-item">
+              <a href="{{ .URL }}" target="_blank" rel="noopener noreferrer" aria-label="{{ .Name }}">
+                {{ if .Pre }}
+                  <span class="social-icon">{{ .Pre | safeHTML }}</span>
+                {{ else }}
+                  <span class="social-icon">{{ .Name }}</span>
+                {{ end }}
+              </a>
+            </li>
+          {{ end }}
+        </ul>
+      {{ end }}
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,129 @@
+{{ define "main" }}
+{{ if and .Data.Singular (ne .RelPermalink "/categories/") }}
+  <!-- 单个分类页面 - 显示该分类下的文章列表 -->
+  <div class="posts-list">
+    <div class="container">
+      <header class="page-header">
+        <h1 class="page-title" id="category-title">{{ .Title | default "分类文章" }}</h1>
+        {{ if .Content }}
+          <div class="page-content">
+            {{ .Content }}
+          </div>
+        {{ end }}
+      </header>
+      
+      {{ if .Pages }}
+        <div class="posts-grid-two">
+          {{ range .Paginator.Pages }}
+            <article class="home-post-card home-post-medium{{ if not .Params.featured_image }} no-image{{ end }}">
+              <a href="{{ .RelPermalink }}" class="home-post-link">
+                {{ if .Params.featured_image }}
+                  <div class="home-post-image">
+                    <img src="{{ .Params.featured_image | relURL }}" alt="{{ .Title }}" loading="lazy">
+                  </div>
+                {{ end }}
+                
+                <div class="home-post-content">
+                  {{ if .Params.categories }}
+                    <div class="home-post-categories">
+                      {{ range first 1 .Params.categories }}
+                        <span class="category-tag">{{ . }}</span>
+                      {{ end }}
+                    </div>
+                  {{ end }}
+                  
+                  <h3 class="home-post-title">
+                    {{ .Title }}
+                  </h3>
+                  
+                  {{ if .Params.subtitle }}
+                    <p class="home-post-subtitle">{{ .Params.subtitle }}</p>
+                  {{ end }}
+                  
+                  <div class="home-post-meta">
+                    <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}" class="post-date">
+                      {{ .Date.Format (.Site.Params.dateFormat | default "2006年1月2日") }}
+                    </time>
+                    {{ if .Params.author }}
+                      <span class="post-author">by {{ .Params.author }}</span>
+                    {{ end }}
+                  </div>
+                </div>
+              </a>
+            </article>
+          {{ end }}
+        </div>
+        
+        {{ if .Site.Params.pagination }}
+          {{ partial "pagination.html" . }}
+        {{ end }}
+      {{ else }}
+        <div class="no-posts">
+          <p>{{ i18n "no_posts_found" | default "该分类下暂无文章。" }}</p>
+        </div>
+      {{ end }}
+    </div>
+  </div>
+{{ else }}
+  <!-- 分类列表页面 - 显示所有分类 -->
+  <div class="categories-list">
+    <div class="container">
+      {{ if .Title }}
+        <header class="page-header">
+          <h1 class="page-title">{{ .Site.Params.categories.title | default .Title }}</h1>
+          {{ if .Content }}
+            <div class="page-content">
+              {{ .Content }}
+            </div>
+          {{ end }}
+        </header>
+      {{ end }}
+      
+      {{ if .Pages }}
+        <div class="categories-grid">
+          {{ range .Paginator.Pages }}
+            <article class="category-card">
+              <a href="{{ .RelPermalink }}" class="category-card-link">
+                <div class="category-card-content">
+                  <h2 class="category-card-title">
+                    {{ .Title }}
+                  </h2>
+                  
+                  <div class="category-card-meta">
+                    <span class="category-post-count">
+                      {{ len .Pages }} 篇文章
+                    </span>
+                  </div>
+                  
+                  <!-- SVG 背景图标 -->
+                  <div class="category-card-icon">
+                    <svg t="1757497702656" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5475" width="60" height="60">
+                      <path d="M762.164596 141.112901c-14.305821-9.648754-33.714869-5.897314-43.36874 8.393157-9.658987 14.295588-5.897314 33.709753 8.393157 43.36874 106.3604 71.862701 169.864736 191.282534 169.864736 319.445496 0 212.409714-172.807764 385.217479-385.222595 385.217479-212.409714 0-385.217479-172.807764-385.217479-385.217479 0-128.169101 63.49922-247.587911 169.859619-319.445496 14.295588-9.658987 18.057261-29.073152 8.398274-43.36874-9.648754-14.290471-29.068036-18.041912-43.363623-8.393157C137.924279 224.601384 64.144926 363.375008 64.144926 512.320295c0 246.856247 200.828958 447.685205 447.685205 447.685205s447.690322-200.828958 447.690322-447.685205C959.521476 363.375008 885.73803 224.606501 762.164596 141.112901z" fill="#999999" p-id="5476"></path>
+                      <path d="M400.357294 64.635089c-17.248849 0-31.234375 13.985526-31.234375 31.234375l0 30.476105c0 17.248849 13.985526 31.234375 31.234375 31.234375 17.248849 0 31.234375-13.985526 31.234375-31.234375L431.591669 95.868441C431.590646 78.619592 417.60512 64.635089 400.357294 64.635089z" fill="#999999" p-id="5477"></path>
+                      <path d="M623.310132 64.635089c-17.248849 0-31.234375 13.985526-31.234375 31.234375l0 30.476105c0 17.248849 13.985526 31.234375 31.234375 31.234375 17.248849 0 31.234375-13.985526 31.234375-31.234375L654.544507 95.868441C654.543484 78.619592 640.558981 64.635089 623.310132 64.635089z" fill="#999999" p-id="5478"></path>
+                      <path d="M425.353594 227.656977c11.209296 18.047028 41.97602 48.589648 86.157265 48.589648 43.958164 0 75.100442-30.3134 86.574774-48.223305 9.302877-14.528901 5.068436-33.846876-9.455349-43.149752-14.539134-9.307993-33.851992-5.063319-43.149752 9.455349-0.121773 0.198521-13.379729 19.449981-33.968649 19.449981-20.008706 0-32.443923-18.127869-33.277918-19.374256-9.17087-14.427594-28.28009-18.799158-42.829458-9.760295C420.747693 193.748702 416.249239 213.006302 425.353594 227.656977z" fill="#999999" p-id="5479"></path>
+                      <path d="M730.470757 605.14747 449.365474 605.14747c-17.248849 0-31.233352 13.985526-31.233352 31.234375 0 17.248849 13.985526 31.233352 31.233352 31.233352L730.470757 667.615197c17.248849 0 31.234375-13.985526 31.234375-31.233352C761.704109 619.132996 747.719606 605.14747 730.470757 605.14747z" fill="#999999" p-id="5480"></path>
+                      <path d="M314.018903 605.14747l-20.822235 0c-17.248849 0-31.234375 13.985526-31.234375 31.234375 0 17.248849 13.985526 31.233352 31.234375 31.233352l20.822235 0c17.248849 0 31.233352-13.985526 31.233352-31.233352C345.252255 619.132996 331.267752 605.14747 314.018903 605.14747z" fill="#999999" p-id="5481"></path>
+                      <path d="M730.470757 428.155407 449.365474 428.155407c-17.248849 0-31.233352 13.985526-31.233352 31.234375 0 17.248849 13.985526 31.234375 31.233352 31.234375L730.470757 490.624157c17.248849 0 31.234375-13.985526 31.234375-31.234375C761.704109 442.140932 747.719606 428.155407 730.470757 428.155407z" fill="#999999" p-id="5482"></path>
+                      <path d="M314.018903 428.155407l-20.822235 0c-17.248849 0-31.234375 13.985526-31.234375 31.234375 0 17.248849 13.985526 31.234375 31.234375 31.234375l20.822235 0c17.248849 0 31.233352-13.985526 31.233352-31.234375C345.252255 442.140932 331.267752 428.155407 314.018903 428.155407z" fill="#999999" p-id="5483"></path>
+                    </svg>
+                  </div>
+                </div>
+              </a>
+            </article>
+          {{ end }}
+        </div>
+      {{ else }}
+        <div class="no-categories">
+          <p>{{ i18n "no_categories_found" | default "No categories found." }}</p>
+        </div>
+      {{ end }}
+      
+      {{ if .Site.Params.pagination }}
+        {{ partial "pagination.html" . }}
+      {{ end }}
+    </div>
+  </div>
+{{ end }}
+
+{{ end }}

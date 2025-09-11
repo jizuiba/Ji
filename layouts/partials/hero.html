@@ -1,0 +1,40 @@
+{{ $hero := .Site.Params.hero }}
+<section class="hero"{{ if $hero.backgroundImage }} style="background-image: url('{{ $hero.backgroundImage | relURL }}')"{{ end }}>
+  <div class="hero-overlay"></div>
+  <div class="container">
+    <div class="hero-content">
+      {{ if $hero.title }}
+        <h1 class="hero-title">{{ $hero.title }}</h1>
+      {{ else }}
+        <h1 class="hero-title">{{ .Site.Title }}</h1>
+      {{ end }}
+      
+      {{ if $hero.subtitle }}
+        <p class="hero-subtitle">{{ $hero.subtitle }}</p>
+      {{ else if .Site.Params.tagline }}
+        <p class="hero-subtitle">{{ .Site.Params.tagline }}</p>
+      {{ end }}
+      
+      {{ if $hero.description }}
+        <p class="hero-description">{{ $hero.description }}</p>
+      {{ end }}
+      
+      {{ if $hero.buttons }}
+        <div class="hero-buttons">
+          {{ range $hero.buttons }}
+            <a href="{{ .url | relURL }}" class="hero-button hero-button-{{ .style | default "primary" }}"{{ if .external }} target="_blank" rel="noopener noreferrer"{{ end }}>
+              {{ .text }}
+              {{ if .external }}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15,3 21,3 21,9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+              {{ end }}
+            </a>
+          {{ end }}
+        </div>
+      {{ end }}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,74 @@
+{{ define "main" }}
+<div class="search-page">
+  <div class="container">
+    <div class="search-page-header">
+      <h1 class="search-page-title">
+        {{ if .Params.searchQuery }}
+          搜索结果 - "{{ .Params.searchQuery }}"
+        {{ else }}
+          搜索
+        {{ end }}
+      </h1>
+      
+      {{ if .Params.searchQuery }}
+        <p class="search-page-subtitle">
+          找到 {{ len .Pages }} 个结果
+        </p>
+      {{ end }}
+    </div>
+
+    {{ if .Params.searchQuery }}
+      {{ if .Pages }}
+        <div class="search-results">
+          {{ range .Pages }}
+            <article class="search-result-item">
+              <div class="search-result-content">
+                <h2 class="search-result-title">
+                  <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+                </h2>
+                
+                {{ if .Summary }}
+                  <p class="search-result-excerpt">
+                    {{ .Summary | truncate 200 }}
+                  </p>
+                {{ end }}
+                
+                <div class="search-result-meta">
+                  <time class="search-result-date" datetime="{{ .Date.Format "2006-01-02" }}">
+                    {{ .Date.Format "2006年1月2日" }}
+                  </time>
+                  
+                  {{ if .Params.categories }}
+                    <div class="search-result-categories">
+                      {{ range .Params.categories }}
+                        <span class="search-result-category">{{ . }}</span>
+                      {{ end }}
+                    </div>
+                  {{ end }}
+                  
+                  {{ if .Params.tags }}
+                    <div class="search-result-tags">
+                      {{ range .Params.tags }}
+                        <span class="search-result-tag">{{ . }}</span>
+                      {{ end }}
+                    </div>
+                  {{ end }}
+                </div>
+              </div>
+            </article>
+          {{ end }}
+        </div>
+      {{ else }}
+        <div class="search-no-results">
+          <p>未找到包含 "<strong>{{ .Params.searchQuery }}</strong>" 的结果</p>
+          <p>请尝试其他关键词</p>
+        </div>
+      {{ end }}
+    {{ else }}
+      <div class="search-placeholder">
+        <p>请输入搜索关键词</p>
+      </div>
+    {{ end }}
+  </div>
+</div>
+{{ end }}

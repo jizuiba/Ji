@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode | default "en" }}" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  {{ partial "head/meta.html" . }}
+  {{ partial "head/styles.html" . }}
+  {{ partial "head/scripts.html" . }}
+  
+  {{ block "head" . }}{{ end }}
+</head>
+
+<body class="theme-{{ .Site.Params.theme | default "light" }} {{ if .Site.Params.fonts }}{{ .Site.Params.fonts }}{{ end }}">
+  <a class="skip-link" href="#main-content">{{ i18n "skip_to_content" | default "Skip to content" }}</a>
+  
+  <div class="site-wrapper">
+    {{ partial "header.html" . }}
+    
+    <main id="main-content" class="main-content" role="main">
+      {{ block "main" . }}{{ end }}
+    </main>
+    
+    {{ partial "footer.html" . }}
+  </div>
+  
+  {{ partial "scripts.html" . }}
+  {{ block "scripts" . }}{{ end }}
+</body>
+</html>

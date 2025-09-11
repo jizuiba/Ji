@@ -1,0 +1,90 @@
+{
+  "name": "ji-hugo-theme",
+  "version": "1.0.0",
+  "description": "一款为性能、可访问性和精美设计打造的现代响应式 Hugo 主题。支持深色模式，拥有卓越的排版系统和简洁纯粹的美学风格。",
+  "main": "index.js",
+  "scripts": {
+    "build": "echo 'This theme uses Hugo for building. Run: hugo --minify'",
+    "dev": "hugo server -D",
+    "serve": "hugo server -D --bind 0.0.0.0 --port 1313",
+    "build:production": "hugo --minify --gc",
+    "build:drafts": "hugo --minify --buildDrafts",
+    "test": "echo 'No tests specified'",
+    "lint": "echo 'No linting specified'",
+    "clean": "rm -rf public resources",
+    "help": "echo 'Available commands: build, dev, serve, build:production, build:drafts, clean'"
+  },
+  "keywords": [
+    "hugo",
+    "theme",
+    "blog",
+    "responsive",
+    "dark-mode",
+    "modern",
+    "minimal",
+    "fast",
+    "accessible",
+    "seo",
+    "pwa",
+    "chinese",
+    "static-site",
+    "jamstack"
+  ],
+  "author": {
+    "name": "Jizuiba",
+    "email": "jizuiba@example.com",
+    "url": "https://github.com/jizuiba"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jizuiba/JI.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jizuiba/JI/issues"
+  },
+  "homepage": "https://github.com/jizuiba/JI#readme",
+  "engines": {
+    "hugo": ">=0.100.0"
+  },
+  "files": [
+    "assets/",
+    "layouts/",
+    "static/",
+    "exampleSite/",
+    "theme.toml",
+    "README.md",
+    "CONFIG.md",
+    "INSTALL.md",
+    "LICENSE"
+  ],
+  "devDependencies": {},
+  "dependencies": {},
+  "peerDependencies": {
+    "hugo": ">=0.100.0"
+  },
+  "hugo": {
+    "min_version": "0.100.0",
+    "extended": true
+  },
+  "theme": {
+    "name": "JI",
+    "description": "现代响应式 Hugo 主题",
+    "tags": [
+      "blog",
+      "responsive",
+      "dark-mode",
+      "modern",
+      "minimal"
+    ],
+    "features": [
+      "responsive",
+      "dark-mode",
+      "syntax-highlighting",
+      "search",
+      "rss",
+      "pwa",
+      "accessibility"
+    ]
+  }
+}

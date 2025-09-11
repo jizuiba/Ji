@@ -1,0 +1,83 @@
+{{ if .Paginator }}
+  {{ if gt .Paginator.TotalPages 1 }}
+    <nav class="pagination" role="navigation" aria-label="Pagination Navigation">
+      <div class="pagination-wrapper">
+        {{ if .Paginator.HasPrev }}
+          <a href="{{ .Paginator.Prev.URL }}" class="pagination-link pagination-prev" rel="prev">
+            <span>上一页</span>
+          </a>
+        {{ else }}
+          <span class="pagination-link pagination-prev pagination-disabled">
+            <span>上一页</span>
+          </span>
+        {{ end }}
+        
+        <div class="pagination-numbers">
+          {{ $currentPage := .Paginator.PageNumber }}
+          {{ $totalPages := .Paginator.TotalPages }}
+          
+          {{ if le $totalPages 7 }}
+            {{ range .Paginator.Pagers }}
+              {{ if eq .PageNumber $currentPage }}
+                <span class="pagination-number pagination-current" aria-current="page">{{ .PageNumber }}</span>
+              {{ else }}
+                <a href="{{ .URL }}" class="pagination-number">{{ .PageNumber }}</a>
+              {{ end }}
+            {{ end }}
+          {{ else }}
+            {{ if le $currentPage 4 }}
+              {{ range first 5 .Paginator.Pagers }}
+                {{ if eq .PageNumber $currentPage }}
+                  <span class="pagination-number pagination-current" aria-current="page">{{ .PageNumber }}</span>
+                {{ else }}
+                  <a href="{{ .URL }}" class="pagination-number">{{ .PageNumber }}</a>
+                {{ end }}
+              {{ end }}
+              <span class="pagination-ellipsis">…</span>
+              <a href="{{ .Paginator.Last.URL }}" class="pagination-number">{{ $totalPages }}</a>
+            {{ else if ge $currentPage (sub $totalPages 3) }}
+              <a href="{{ .Paginator.First.URL }}" class="pagination-number">1</a>
+              <span class="pagination-ellipsis">…</span>
+              {{ range last 5 .Paginator.Pagers }}
+                {{ if eq .PageNumber $currentPage }}
+                  <span class="pagination-number pagination-current" aria-current="page">{{ .PageNumber }}</span>
+                {{ else }}
+                  <a href="{{ .URL }}" class="pagination-number">{{ .PageNumber }}</a>
+                {{ end }}
+              {{ end }}
+            {{ else }}
+              <a href="{{ .Paginator.First.URL }}" class="pagination-number">1</a>
+              <span class="pagination-ellipsis">…</span>
+              {{ range (seq (sub $currentPage 1) (add $currentPage 1)) }}
+                {{ $page := index $.Paginator.Pagers (sub . 1) }}
+                {{ if eq $page.PageNumber $currentPage }}
+                  <span class="pagination-number pagination-current" aria-current="page">{{ $page.PageNumber }}</span>
+                {{ else }}
+                  <a href="{{ $page.URL }}" class="pagination-number">{{ $page.PageNumber }}</a>
+                {{ end }}
+              {{ end }}
+              <span class="pagination-ellipsis">…</span>
+              <a href="{{ .Paginator.Last.URL }}" class="pagination-number">{{ $totalPages }}</a>
+            {{ end }}
+          {{ end }}
+        </div>
+        
+        {{ if .Paginator.HasNext }}
+          <a href="{{ .Paginator.Next.URL }}" class="pagination-link pagination-next" rel="next">
+            <span>下一页</span>
+          </a>
+        {{ else }}
+          <span class="pagination-link pagination-next pagination-disabled">
+            <span>下一页</span>
+          </span>
+        {{ end }}
+      </div>
+      
+      <div class="pagination-info">
+        <span class="pagination-summary">
+          {{ i18n "page" | default "Page" }} {{ .Paginator.PageNumber }} {{ i18n "of" | default "of" }} {{ .Paginator.TotalPages }}
+        </span>
+      </div>
+    </nav>
+  {{ end }}
+{{ end }}

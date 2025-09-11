@@ -1,0 +1,627 @@
+/**
+ * Syntax Highlighting Styles
+ * Modern, accessible code highlighting with excellent contrast
+ */
+
+/* 确保页面不会因为代码块出现横向滚动 */
+body {
+  overflow-x: hidden;
+}
+
+/* 确保容器不会超出视口 */
+.container {
+  overflow-x: hidden;
+}
+
+/* Base code block styles - 统一的代码样式定义 */
+pre {
+  position: relative;
+  background: linear-gradient(135deg, var(--color-bg-secondary) 0%, var(--color-bg) 100%);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  overflow-y: hidden;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  padding: var(--spacing-lg);
+  margin: var(--spacing-lg) 0;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+  /* 确保代码块不会超出容器宽度 */
+  max-width: 100%;
+  word-wrap: break-word;
+  white-space: pre;
+}
+
+pre:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-border-hover);
+}
+
+code {
+  font-family: var(--font-family-mono);
+  font-size: 0.875em;
+}
+
+/* Inline code */
+:not(pre) > code {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text);
+  padding: 0.125em 0.25em;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  font-weight: 500;
+  /* 确保内联代码不会换行 */
+  white-space: nowrap;
+  word-break: keep-all;
+}
+
+/* Code block content */
+pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  font-weight: 400;
+  /* 确保代码内容可以正确滚动 */
+  display: block;
+  overflow: visible;
+  white-space: pre;
+  word-wrap: normal;
+  word-break: normal;
+}
+
+/* Syntax highlighting tokens - Light Theme */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #6a737d;
+  font-style: italic;
+}
+
+.token.punctuation {
+  color: #24292e;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: #d73a49;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  color: #032f62;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  color: #d73a49;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: #d73a49;
+}
+
+.token.function,
+.token.class-name {
+  color: #6f42c1;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  color: #e36209;
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+/* 兼容Hugo内置高亮的类名 */
+.highlight .c, .highlight .cm, .highlight .cp, .highlight .c1, .highlight .cs {
+  color: #6a737d;
+  font-style: italic;
+}
+
+.highlight .p, .highlight .pi, .highlight .pc {
+  color: #24292e;
+}
+
+.highlight .k, .highlight .kc, .highlight .kd, .highlight .kn, .highlight .kp, .highlight .kr, .highlight .kt {
+  color: #d73a49;
+}
+
+.highlight .s, .highlight .s1, .highlight .s2, .highlight .sb, .highlight .sc, .highlight .sd, .highlight .se, .highlight .sh, .highlight .si, .highlight .sx {
+  color: #032f62;
+}
+
+.highlight .n, .highlight .na, .highlight .nb, .highlight .nc, .highlight .no, .highlight .nd, .highlight .ni, .highlight .ne, .highlight .nf, .highlight .nl, .highlight .nn, .highlight .nx {
+  color: #24292e;
+}
+
+.highlight .o, .highlight .ow {
+  color: #d73a49;
+}
+
+.highlight .m, .highlight .mf, .highlight .mh, .highlight .mi, .highlight .il, .highlight .mo {
+  color: #d73a49;
+}
+
+.highlight .l, .highlight .ld, .highlight .m, .highlight .mf, .highlight .mh, .highlight .mi, .highlight .il, .highlight .mo {
+  color: #d73a49;
+}
+
+/* Dark theme syntax highlighting */
+.theme-dark .token.comment,
+.theme-dark .token.prolog,
+.theme-dark .token.doctype,
+.theme-dark .token.cdata {
+  color: #8b949e;
+  font-style: italic;
+}
+
+.theme-dark .token.punctuation {
+  color: #f0f6fc;
+}
+
+.theme-dark .token.property,
+.theme-dark .token.tag,
+.theme-dark .token.boolean,
+.theme-dark .token.number,
+.theme-dark .token.constant,
+.theme-dark .token.symbol,
+.theme-dark .token.deleted {
+  color: #f85149;
+}
+
+.theme-dark .token.selector,
+.theme-dark .token.attr-name,
+.theme-dark .token.string,
+.theme-dark .token.char,
+.theme-dark .token.builtin,
+.theme-dark .token.inserted {
+  color: #a5d6ff;
+}
+
+.theme-dark .token.operator,
+.theme-dark .token.entity,
+.theme-dark .token.url,
+.theme-dark .language-css .token.string,
+.theme-dark .style .token.string {
+  color: #f85149;
+}
+
+.theme-dark .token.atrule,
+.theme-dark .token.attr-value,
+.theme-dark .token.keyword {
+  color: #ff7b72;
+}
+
+.theme-dark .token.function,
+.theme-dark .token.class-name {
+  color: #d2a8ff;
+}
+
+.theme-dark .token.regex,
+.theme-dark .token.important,
+.theme-dark .token.variable {
+  color: #ffa657;
+}
+
+/* 深色主题的Hugo内置高亮兼容样式 */
+.theme-dark .highlight .c, .theme-dark .highlight .cm, .theme-dark .highlight .cp, .theme-dark .highlight .c1, .theme-dark .highlight .cs {
+  color: #8b949e;
+  font-style: italic;
+}
+
+.theme-dark .highlight .p, .theme-dark .highlight .pi, .theme-dark .highlight .pc {
+  color: #f0f6fc;
+}
+
+.theme-dark .highlight .k, .theme-dark .highlight .kc, .theme-dark .highlight .kd, .theme-dark .highlight .kn, .theme-dark .highlight .kp, .theme-dark .highlight .kr, .theme-dark .highlight .kt {
+  color: #ff7b72;
+}
+
+.theme-dark .highlight .s, .theme-dark .highlight .s1, .theme-dark .highlight .s2, .theme-dark .highlight .sb, .theme-dark .highlight .sc, .theme-dark .highlight .sd, .theme-dark .highlight .se, .theme-dark .highlight .sh, .theme-dark .highlight .si, .theme-dark .highlight .sx {
+  color: #a5d6ff;
+}
+
+.theme-dark .highlight .n, .theme-dark .highlight .na, .theme-dark .highlight .nb, .theme-dark .highlight .nc, .theme-dark .highlight .no, .theme-dark .highlight .nd, .theme-dark .highlight .ni, .theme-dark .highlight .ne, .theme-dark .highlight .nf, .theme-dark .highlight .nl, .theme-dark .highlight .nn, .theme-dark .highlight .nx {
+  color: #f0f6fc;
+}
+
+.theme-dark .highlight .o, .theme-dark .highlight .ow {
+  color: #f85149;
+}
+
+.theme-dark .highlight .m, .theme-dark .highlight .mf, .theme-dark .highlight .mh, .theme-dark .highlight .mi, .theme-dark .highlight .il, .theme-dark .highlight .mo {
+  color: #f85149;
+}
+
+.theme-dark .highlight .l, .theme-dark .highlight .ld, .theme-dark .highlight .m, .theme-dark .highlight .mf, .theme-dark .highlight .mh, .theme-dark .highlight .mi, .theme-dark .highlight .il, .theme-dark .highlight .mo {
+  color: #f85149;
+}
+
+/* Language-specific styles - Light Theme */
+.language-javascript .token.function,
+.language-js .token.function {
+  color: #6f42c1;
+}
+
+.language-python .token.function {
+  color: #6f42c1;
+}
+
+.language-html .token.tag {
+  color: #d73a49;
+}
+
+.language-html .token.attr-name {
+  color: #e36209;
+}
+
+.language-html .token.attr-value {
+  color: #032f62;
+}
+
+.language-css .token.selector {
+  color: #6f42c1;
+}
+
+.language-css .token.property {
+  color: #d73a49;
+}
+
+.language-css .token.value {
+  color: #032f62;
+}
+
+.language-json .token.property {
+  color: #d73a49;
+}
+
+.language-json .token.string {
+  color: #032f62;
+}
+
+.language-json .token.number {
+  color: #d73a49;
+}
+
+.language-bash .token.function {
+  color: #6f42c1;
+}
+
+.language-sql .token.keyword {
+  color: #d73a49;
+}
+
+.language-sql .token.string {
+  color: #032f62;
+}
+
+/* Language-specific styles - Dark Theme */
+.theme-dark .language-javascript .token.function,
+.theme-dark .language-js .token.function {
+  color: #d2a8ff;
+}
+
+.theme-dark .language-python .token.function {
+  color: #d2a8ff;
+}
+
+.theme-dark .language-html .token.tag {
+  color: #f85149;
+}
+
+.theme-dark .language-html .token.attr-name {
+  color: #ffa657;
+}
+
+.theme-dark .language-html .token.attr-value {
+  color: #a5d6ff;
+}
+
+.theme-dark .language-css .token.selector {
+  color: #d2a8ff;
+}
+
+.theme-dark .language-css .token.property {
+  color: #f85149;
+}
+
+.theme-dark .language-css .token.value {
+  color: #a5d6ff;
+}
+
+.theme-dark .language-json .token.property {
+  color: #f85149;
+}
+
+.theme-dark .language-json .token.string {
+  color: #a5d6ff;
+}
+
+.theme-dark .language-json .token.number {
+  color: #f85149;
+}
+
+.theme-dark .language-bash .token.function {
+  color: #d2a8ff;
+}
+
+.theme-dark .language-sql .token.keyword {
+  color: #f85149;
+}
+
+.theme-dark .language-sql .token.string {
+  color: #a5d6ff;
+}
+
+/* Code block enhancements */
+pre[class*="language-"] {
+  position: relative;
+}
+
+pre[class*="language-"]::before {
+  content: attr(class);
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: var(--color-border);
+  color: var(--color-text-muted);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  border-bottom-left-radius: var(--radius-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+  z-index: 1;
+}
+
+/* Dark theme language label */
+.theme-dark pre[class*="language-"]::before {
+  background-color: var(--color-border-dark);
+  color: var(--color-text-muted-dark);
+}
+
+/* Copy button positioning */
+.code-block-wrapper {
+  position: relative;
+}
+
+.code-block-wrapper .code-copy-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  opacity: 0;
+}
+
+.code-block-wrapper:hover .code-copy-button {
+  opacity: 1;
+}
+
+.code-block-wrapper .code-copy-button:hover {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.code-block-wrapper .code-copy-button.copied {
+  background-color: #10b981;
+  color: white;
+  border-color: #10b981;
+}
+
+.code-block-wrapper .code-copy-button.error {
+  background-color: #ef4444;
+  color: white;
+  border-color: #ef4444;
+}
+
+/* 深色主题下的复制按钮样式 */
+.theme-dark .code-block-wrapper .code-copy-button {
+  background-color: var(--color-bg-secondary-dark);
+  border-color: var(--color-border-dark);
+  color: var(--color-text-secondary-dark);
+}
+
+.theme-dark .code-block-wrapper .code-copy-button:hover {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+/* Line numbers */
+.code-block-wrapper.with-line-numbers {
+  display: flex;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.code-block-wrapper.with-line-numbers pre {
+  flex: 1;
+  margin: 0;
+  border-radius: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left: none;
+}
+
+.code-block-wrapper .line-numbers {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-right: none;
+  border-top-left-radius: var(--radius-md);
+  border-bottom-left-radius: var(--radius-md);
+  padding: var(--spacing-lg) var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  user-select: none;
+  min-width: 3rem;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.code-block-wrapper .line-number {
+  display: block;
+  line-height: var(--line-height-relaxed);
+  padding: 0 0.25rem;
+}
+
+/* 深色主题下的行号样式 */
+.theme-dark .code-block-wrapper .line-numbers {
+  background-color: var(--color-bg-secondary-dark);
+  border-color: var(--color-border-dark);
+  color: var(--color-text-muted-dark);
+}
+
+/* Enhanced code block styles - 已合并到上面的基础样式中 */
+
+/* Dark theme code blocks */
+.theme-dark pre {
+  background: linear-gradient(135deg, var(--color-bg-secondary-dark) 0%, var(--color-bg-dark) 100%);
+  border-color: var(--color-border-dark);
+}
+
+.theme-dark pre:hover {
+  border-color: var(--color-border-hover-dark);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  pre {
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-md);
+    /* 移动端优化：确保代码块在容器内正确显示 */
+    margin-left: calc(-1 * var(--container-padding));
+    margin-right: calc(-1 * var(--container-padding));
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    /* 确保横向滚动正常工作 */
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    /* 防止代码块超出视口 */
+    max-width: 100vw;
+    box-sizing: border-box;
+  }
+  
+  /* 为代码块添加左右边距，避免贴边 */
+  .post-content pre,
+  .page-content pre {
+    margin-left: calc(-1 * var(--container-padding));
+    margin-right: calc(-1 * var(--container-padding));
+    padding-left: var(--container-padding);
+    padding-right: var(--container-padding);
+  }
+  
+  .code-block-wrapper .line-numbers {
+    padding: var(--spacing-md) var(--spacing-xs);
+    min-width: 2.5rem;
+  }
+  
+  pre[class*="language-"]::before {
+    font-size: 0.625rem;
+    padding: 0.125rem 0.25rem;
+  }
+  
+  /* 移动端复制按钮优化 */
+  .code-block-wrapper .code-copy-button {
+    opacity: 1;
+    top: 0.25rem;
+    right: 0.25rem;
+    padding: 0.25rem;
+  }
+  
+  .code-block-wrapper .code-copy-button .copy-text {
+    display: none;
+  }
+}
+
+/* 小屏幕设备进一步优化 */
+@media (max-width: 480px) {
+  pre {
+    font-size: 0.75rem;
+    padding: var(--spacing-sm);
+    /* 小屏幕设备：更紧凑的边距 */
+    margin-left: calc(-1 * var(--container-padding));
+    margin-right: calc(-1 * var(--container-padding));
+    padding-left: var(--container-padding);
+    padding-right: var(--container-padding);
+  }
+  
+  .code-block-wrapper .line-numbers {
+    padding: var(--spacing-sm) var(--spacing-xs);
+    min-width: 2rem;
+    font-size: 0.75rem;
+  }
+  
+  pre[class*="language-"]::before {
+    font-size: 0.5rem;
+    padding: 0.125rem 0.25rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  pre {
+    background-color: #f8f9fa !important;
+    border: 1px solid #dee2e6 !important;
+    color: #212529 !important;
+  }
+  
+  .token.comment {
+    color: #6c757d !important;
+  }
+  
+  .token.keyword {
+    color: #007bff !important;
+  }
+  
+  .token.string {
+    color: #28a745 !important;
+  }
+  
+  .token.number {
+    color: #dc3545 !important;
+  }
+}

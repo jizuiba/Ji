@@ -1,0 +1,87 @@
+<!-- Main JavaScript -->
+{{ $js := resources.Get "js/main.js" | resources.Minify | resources.Fingerprint }}
+<script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}"></script>
+
+<!-- Dynamic Header JavaScript -->
+{{ $dynamicHeaderJS := resources.Get "js/dynamic-header.js" | resources.Minify | resources.Fingerprint }}
+<script src="{{ $dynamicHeaderJS.RelPermalink }}" integrity="{{ $dynamicHeaderJS.Data.Integrity }}"></script>
+
+<!-- Search functionality -->
+{{ if .Site.Params.search }}
+  {{ $searchCSS := resources.Get "css/search.css" | resources.Minify | resources.Fingerprint }}
+  <link rel="stylesheet" href="{{ $searchCSS.RelPermalink }}" integrity="{{ $searchCSS.Data.Integrity }}">
+  
+  {{ $searchJS := resources.Get "js/search.js" | resources.Minify | resources.Fingerprint }}
+  <script src="{{ $searchJS.RelPermalink }}" integrity="{{ $searchJS.Data.Integrity }}"></script>
+{{ end }}
+
+<!-- Code highlighting -->
+{{ if .Site.Params.syntaxHighlighting }}
+  {{ $codeJS := resources.Get "js/code-highlight.js" | resources.Minify | resources.Fingerprint }}
+  <script src="{{ $codeJS.RelPermalink }}" integrity="{{ $codeJS.Data.Integrity }}"></script>
+{{ end }}
+
+<!-- Table of Contents -->
+{{ if .TableOfContents }}
+  {{ $tocJS := resources.Get "js/toc.js" | resources.Minify | resources.Fingerprint }}
+  <script src="{{ $tocJS.RelPermalink }}" integrity="{{ $tocJS.Data.Integrity }}"></script>
+{{ end }}
+
+<!-- Custom JavaScript -->
+{{ if .Site.Params.customJS }}
+  {{ range .Site.Params.customJS }}
+    <script src="{{ . | relURL }}"></script>
+  {{ end }}
+{{ end }}
+
+<!-- Page-specific JavaScript -->
+{{ if .Params.customJS }}
+  {{ range .Params.customJS }}
+    <script src="{{ . | relURL }}"></script>
+  {{ end }}
+{{ end }}
+
+<!-- Analytics -->
+{{ if .Site.Params.analytics }}
+  {{ if .Site.Params.analytics.google }}
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ .Site.Params.analytics.google }}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '{{ .Site.Params.analytics.google }}');
+    </script>
+  {{ end }}
+  
+  {{ if .Site.Params.analytics.plausible }}
+    <!-- Plausible Analytics -->
+    <script defer data-domain="{{ .Site.Params.analytics.plausible }}" src="https://plausible.io/js/script.js"></script>
+  {{ end }}
+{{ end }}
+
+<!-- Comments -->
+{{ if .Site.Params.comments }}
+  {{ if .Site.Params.comments.disqus }}
+    <!-- Disqus -->
+    <script>
+      (function() {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://{{ .Site.Params.comments.disqus }}.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+      })();
+    </script>
+  {{ end }}
+  
+  {{ if .Site.Params.comments.utterances }}
+    <!-- Utterances -->
+    <script src="https://utteranc.es/client.js"
+            repo="{{ .Site.Params.comments.utterances.repo }}"
+            issue-term="{{ .Site.Params.comments.utterances.issueTerm | default "pathname" }}"
+            theme="{{ .Site.Params.comments.utterances.theme | default "github-light" }}"
+            crossorigin="anonymous"
+            async>
+    </script>
+  {{ end }}
+{{ end }}

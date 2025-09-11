@@ -1,0 +1,25 @@
+{{ define "main" }}
+<div class="home">
+  {{ if .Site.Params.hero }}
+    {{ partial "hero.html" . }}
+  {{ end }}
+  
+  <div class="container">
+    {{ if .Content }}
+      <div class="home-content">
+        {{ .Content }}
+      </div>
+    {{ end }}
+    
+    {{ if .Site.Params.featuredPosts }}
+      {{ partial "featured-posts.html" . }}
+    {{ end }}
+    
+    {{ if .Site.Params.recentPosts }}
+      {{ partial "recent-posts.html" . }}
+    {{ else }}
+      {{ partial "recent-posts.html" . }}
+    {{ end }}
+  </div>
+</div>
+{{ end }}

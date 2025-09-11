@@ -1,0 +1,286 @@
+{{ define "main" }}
+<div class="posts-list">
+  <div class="container">
+    <header class="page-header">
+      <h1 class="page-title" id="search-title">搜索</h1>
+      <p class="page-subtitle" id="search-subtitle" style="display: none;"></p>
+    </header>
+    
+    <div id="search-results-container">
+      <div class="no-posts">
+        <p>请输入搜索关键词</p>
+      </div>
+    </div>
+    
+    <!-- 分页组件 -->
+    <div id="search-pagination" style="display: none;"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  // 分页配置
+  const ITEMS_PER_PAGE = 8;
+  
+  // 全局变量
+  let allResults = [];
+  let currentPage = 1;
+  let currentQuery = '';
+  
+  // 获取URL参数
+  function getUrlParameter(name) {
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    var results = regex.exec(location.search);
+    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+  }
+  
+  // 获取页码参数
+  function getPageParameter() {
+    const page = getUrlParameter('page');
+    return page ? parseInt(page) : 1;
+  }
+
+  const query = getUrlParameter('q');
+  currentPage = getPageParameter();
+  
+  if (query) {
+    currentQuery = query;
+    // 更新页面标题
+    document.getElementById('search-title').textContent = '搜索结果 - "' + query + '"';
+    
+    // 执行搜索
+    performSearch(query);
+  }
+
+  async function performSearch(query) {
+    try {
+      // 加载搜索索引
+      const response = await fetch('/index.json');
+      if (!response.ok) {
+        throw new Error('搜索索引加载失败');
+      }
+      
+      const searchIndex = await response.json();
+      
+      // 过滤搜索结果
+      const results = searchIndex.filter(item => {
+        const searchText = `${item.title} ${item.content} ${item.summary || ''} ${(item.tags || []).join(' ')} ${(item.categories || []).join(' ')}`.toLowerCase();
+        const queryLower = query.toLowerCase();
+        
+        // 标题匹配优先
+        if (item.title.toLowerCase().includes(queryLower)) {
+          return true;
+        }
+        
+        // 内容匹配
+        if (searchText.includes(queryLower)) {
+          return true;
+        }
+        
+        // 标签/分类匹配
+        const tags = (item.tags || []).map(tag => tag.toLowerCase());
+        const categories = (item.categories || []).map(cat => cat.toLowerCase());
+        return tags.some(tag => tag.includes(queryLower)) || 
+               categories.some(cat => cat.includes(queryLower));
+      });
+
+      // 按相关性排序
+      results.sort((a, b) => {
+        const aTitle = a.title.toLowerCase();
+        const bTitle = b.title.toLowerCase();
+        const queryLower = query.toLowerCase();
+        
+        // 标题匹配优先
+        if (aTitle.includes(queryLower) && !bTitle.includes(queryLower)) return -1;
+        if (!aTitle.includes(queryLower) && bTitle.includes(queryLower)) return 1;
+        
+        // 按日期排序（新的在前）
+        return new Date(b.date) - new Date(a.date);
+      });
+
+      allResults = results;
+      displaySearchResults(results, query, currentPage);
+      
+    } catch (error) {
+      console.error('搜索失败:', error);
+      document.getElementById('search-results-container').innerHTML = `
+        <div class="no-posts">
+          <p>搜索失败，请稍后重试</p>
+        </div>
+      `;
+    }
+  }
+
+  function displaySearchResults(results, query, page = 1) {
+    const container = document.getElementById('search-results-container');
+    const subtitle = document.getElementById('search-subtitle');
+    const paginationContainer = document.getElementById('search-pagination');
+    
+    // 显示结果数量
+    subtitle.textContent = '找到 ' + results.length + ' 个结果';
+    subtitle.style.display = 'block';
+    
+    if (results.length === 0) {
+      container.innerHTML = `
+        <div class="no-posts">
+          <p>未找到包含 "<strong>${escapeHtml(query)}</strong>" 的结果</p>
+          <p>请尝试其他关键词</p>
+        </div>
+      `;
+      paginationContainer.style.display = 'none';
+      return;
+    }
+
+    // 计算分页
+    const totalPages = Math.ceil(results.length / ITEMS_PER_PAGE);
+    const startIndex = (page - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    const pageResults = results.slice(startIndex, endIndex);
+
+    const resultsHtml = pageResults.map((item, index) => {
+      const title = escapeHtml(item.title);
+      const date = item.date ? new Date(item.date).toLocaleDateString('zh-CN') : '';
+      const categories = item.categories || [];
+      const subtitle = item.subtitle || '';
+      
+      // 使用与首页一致的卡片样式，包含图片
+      return `
+        <article class="home-post-card home-post-medium${!item.featured_image ? ' no-image' : ''}">
+          <a href="${item.url}" class="home-post-link">
+            ${item.featured_image ? `
+              <div class="home-post-image">
+                <img src="${item.featured_image}" alt="${title}" loading="lazy">
+              </div>
+            ` : ''}
+            
+            <div class="home-post-content">
+              ${categories.length > 0 ? `
+                <div class="home-post-categories">
+                  <span class="category-tag">${escapeHtml(categories[0])}</span>
+                </div>
+              ` : ''}
+              
+              <h3 class="home-post-title">
+                ${title}
+              </h3>
+              
+              ${subtitle ? `
+                <p class="home-post-subtitle">${escapeHtml(subtitle)}</p>
+              ` : ''}
+              
+              <div class="home-post-meta">
+                <time datetime="${item.date}" class="post-date">${date}</time>
+              </div>
+            </div>
+          </a>
+        </article>
+      `;
+    }).join('');
+
+    container.innerHTML = `
+      <div class="posts-grid-two">
+        ${resultsHtml}
+      </div>
+    `;
+    
+    // 显示分页组件
+    if (totalPages > 1) {
+      paginationContainer.innerHTML = generatePaginationHTML(page, totalPages, query);
+      paginationContainer.style.display = 'block';
+    } else {
+      paginationContainer.style.display = 'none';
+    }
+  }
+
+
+  function generatePaginationHTML(currentPage, totalPages, query) {
+    let paginationHTML = '<nav class="pagination" role="navigation" aria-label="Pagination Navigation">';
+    paginationHTML += '<div class="pagination-wrapper">';
+    
+    // 上一页按钮
+    if (currentPage > 1) {
+      const prevPage = currentPage - 1;
+      paginationHTML += `<a href="?q=${encodeURIComponent(query)}&page=${prevPage}" class="pagination-link pagination-prev" rel="prev"><span>上一页</span></a>`;
+    } else {
+      paginationHTML += '<span class="pagination-link pagination-prev pagination-disabled"><span>上一页</span></span>';
+    }
+    
+    // 页码
+    paginationHTML += '<div class="pagination-numbers">';
+    
+    if (totalPages <= 7) {
+      // 显示所有页码
+      for (let i = 1; i <= totalPages; i++) {
+        if (i === currentPage) {
+          paginationHTML += `<span class="pagination-number pagination-current" aria-current="page">${i}</span>`;
+        } else {
+          paginationHTML += `<a href="?q=${encodeURIComponent(query)}&page=${i}" class="pagination-number">${i}</a>`;
+        }
+      }
+    } else {
+      // 复杂分页逻辑
+      if (currentPage <= 4) {
+        // 显示前5页
+        for (let i = 1; i <= 5; i++) {
+          if (i === currentPage) {
+            paginationHTML += `<span class="pagination-number pagination-current" aria-current="page">${i}</span>`;
+          } else {
+            paginationHTML += `<a href="?q=${encodeURIComponent(query)}&page=${i}" class="pagination-number">${i}</a>`;
+          }
+        }
+        paginationHTML += '<span class="pagination-ellipsis">…</span>';
+        paginationHTML += `<a href="?q=${encodeURIComponent(query)}&page=${totalPages}" class="pagination-number">${totalPages}</a>`;
+      } else if (currentPage >= totalPages - 3) {
+        // 显示后5页
+        paginationHTML += `<a href="?q=${encodeURIComponent(query)}&page=1" class="pagination-number">1</a>`;
+        paginationHTML += '<span class="pagination-ellipsis">…</span>';
+        for (let i = totalPages - 4; i <= totalPages; i++) {
+          if (i === currentPage) {
+            paginationHTML += `<span class="pagination-number pagination-current" aria-current="page">${i}</span>`;
+          } else {
+            paginationHTML += `<a href="?q=${encodeURIComponent(query)}&page=${i}" class="pagination-number">${i}</a>`;
+          }
+        }
+      } else {
+        // 显示中间页码
+        paginationHTML += `<a href="?q=${encodeURIComponent(query)}&page=1" class="pagination-number">1</a>`;
+        paginationHTML += '<span class="pagination-ellipsis">…</span>';
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          if (i === currentPage) {
+            paginationHTML += `<span class="pagination-number pagination-current" aria-current="page">${i}</span>`;
+          } else {
+            paginationHTML += `<a href="?q=${encodeURIComponent(query)}&page=${i}" class="pagination-number">${i}</a>`;
+          }
+        }
+        paginationHTML += '<span class="pagination-ellipsis">…</span>';
+        paginationHTML += `<a href="?q=${encodeURIComponent(query)}&page=${totalPages}" class="pagination-number">${totalPages}</a>`;
+      }
+    }
+    
+    paginationHTML += '</div>';
+    
+    // 下一页按钮
+    if (currentPage < totalPages) {
+      const nextPage = currentPage + 1;
+      paginationHTML += `<a href="?q=${encodeURIComponent(query)}&page=${nextPage}" class="pagination-link pagination-next" rel="next"><span>下一页</span></a>`;
+    } else {
+      paginationHTML += '<span class="pagination-link pagination-next pagination-disabled"><span>下一页</span></span>';
+    }
+    
+    paginationHTML += '</div>';
+    paginationHTML += `<div class="pagination-info"><span class="pagination-summary">第 ${currentPage} 页，共 ${totalPages} 页</span></div>`;
+    paginationHTML += '</nav>';
+    
+    return paginationHTML;
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+})();
+</script>
+{{ end }}

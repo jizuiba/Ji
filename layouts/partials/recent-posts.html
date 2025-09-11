@@ -1,0 +1,142 @@
+{{ $recentPosts := .Site.Params.recentPosts }}
+{{ $postsCount := $recentPosts.count | default 6 }}
+{{ $posts := first $postsCount .Site.RegularPages }}
+
+{{ if $posts }}
+<section class="recent-posts">
+  <div class="container">
+    <header class="section-header">
+      <h2 class="section-title">{{ $recentPosts.title | default "Recent Posts" }}</h2>
+      {{ if $recentPosts.subtitle }}
+        <p class="section-subtitle">{{ $recentPosts.subtitle }}</p>
+      {{ end }}
+    </header>
+    
+    <div class="home-posts-layout">
+      {{ range $index, $post := $posts }}
+        {{ if eq $index 0 }}
+          <!-- 第一篇：宽幅展示 -->
+          <article class="home-post-card home-post-featured{{ if not .Params.featured_image }} no-image{{ end }}">
+            <a href="{{ .RelPermalink }}" class="home-post-link">
+              {{ if .Params.featured_image }}
+                <div class="home-post-image">
+                  <img src="{{ .Params.featured_image | relURL }}" alt="{{ .Title }}" loading="lazy">
+                </div>
+              {{ end }}
+              
+              <div class="home-post-content">
+                {{ if .Params.categories }}
+                  <div class="home-post-categories">
+                    {{ range first 1 .Params.categories }}
+                      <span class="category-tag">{{ . }}</span>
+                    {{ end }}
+                  </div>
+                {{ end }}
+                
+                <h3 class="home-post-title">
+                  {{ .Title }}
+                </h3>
+                
+                <div class="home-post-meta">
+                  <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}" class="post-date">
+                    {{ .Date.Format (.Site.Params.dateFormat | default "2006年1月2日") }}
+                  </time>
+                  {{ if .Params.author }}
+                    <span class="post-author">by {{ .Params.author }}</span>
+                  {{ end }}
+                </div>
+              </div>
+            </a>
+          </article>
+        {{ else if or (eq $index 1) (eq $index 2) }}
+          <!-- 第二、三篇：一行两篇 -->
+          {{ if eq $index 1 }}
+            <div class="home-posts-row home-posts-two">
+          {{ end }}
+            <article class="home-post-card home-post-medium{{ if not .Params.featured_image }} no-image{{ end }}">
+              <a href="{{ .RelPermalink }}" class="home-post-link">
+                {{ if .Params.featured_image }}
+                  <div class="home-post-image">
+                    <img src="{{ .Params.featured_image | relURL }}" alt="{{ .Title }}" loading="lazy">
+                  </div>
+                {{ end }}
+                
+                <div class="home-post-content">
+                  {{ if .Params.categories }}
+                    <div class="home-post-categories">
+                      {{ range first 1 .Params.categories }}
+                        <span class="category-tag">{{ . }}</span>
+                      {{ end }}
+                    </div>
+                  {{ end }}
+                  
+                  <h3 class="home-post-title">
+                    {{ .Title }}
+                  </h3>
+                  
+                  <div class="home-post-meta">
+                    <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}" class="post-date">
+                      {{ .Date.Format (.Site.Params.dateFormat | default "2006年1月2日") }}
+                    </time>
+                  </div>
+                </div>
+              </a>
+            </article>
+          {{ if eq $index 2 }}
+            </div>
+          {{ end }}
+        {{ else }}
+          <!-- 其余文章：一行三篇 -->
+          {{ if eq $index 3 }}
+            <div class="home-posts-row home-posts-three">
+          {{ end }}
+            <article class="home-post-card home-post-small{{ if not .Params.featured_image }} no-image{{ end }}">
+              <a href="{{ .RelPermalink }}" class="home-post-link">
+                {{ if .Params.featured_image }}
+                  <div class="home-post-image">
+                    <img src="{{ .Params.featured_image | relURL }}" alt="{{ .Title }}" loading="lazy">
+                  </div>
+                {{ end }}
+                
+                <div class="home-post-content">
+                  {{ if .Params.categories }}
+                    <div class="home-post-categories">
+                      {{ range first 1 .Params.categories }}
+                        <span class="category-tag">{{ . }}</span>
+                      {{ end }}
+                    </div>
+                  {{ end }}
+                  
+                  <h3 class="home-post-title">
+                    {{ .Title }}
+                  </h3>
+                  
+                  <div class="home-post-meta">
+                    <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}" class="post-date">
+                      {{ .Date.Format (.Site.Params.dateFormat | default "2006年1月2日") }}
+                    </time>
+                  </div>
+                </div>
+              </a>
+            </article>
+          {{ if eq $index (sub $postsCount 1) }}
+            </div>
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    </div>
+    
+    {{ if $recentPosts.showAllLink }}
+      <div class="section-footer">
+        <a href="{{ $recentPosts.showAllLink.url | relURL }}" class="section-link">
+          {{ $recentPosts.showAllLink.text | default "View All Posts" }}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12,5 19,12 12,19"></polyline>
+          </svg>
+        </a>
+      </div>
+    {{ end }}
+  </div>
+</section>
+{{ end }}

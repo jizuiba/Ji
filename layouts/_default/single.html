@@ -1,0 +1,78 @@
+{{ define "main" }}
+<article class="post">
+  <header class="post-header">
+    <div class="container">
+      <h1 class="post-title" id="post-title">{{ .Title }}</h1>
+      
+      {{ if .Params.subtitle }}
+        <p class="post-subtitle">{{ .Params.subtitle }}</p>
+      {{ end }}
+      
+      <div class="post-meta">
+        <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}" class="post-date">
+          {{ .Date.Format (.Site.Params.dateFormat | default "2006年1月2日") }}
+        </time>
+        
+        {{ if .Params.author }}
+          <span class="post-author">by {{ .Params.author }}</span>
+        {{ end }}
+        
+        {{ if .Params.categories }}
+          <div class="post-categories">
+            {{ range .Params.categories }}
+              <a href="{{ "/categories/" | relLangURL }}{{ . | urlize }}" class="category-tag">{{ . }}</a>
+            {{ end }}
+          </div>
+        {{ end }}
+        
+        {{ if .Params.tags }}
+          <div class="post-tags">
+            {{ range .Params.tags }}
+              <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}" class="tag">{{ . }}</a>
+            {{ end }}
+          </div>
+        {{ end }}
+      </div>
+    </div>
+  </header>
+  
+  {{ if .Params.featured_image }}
+    <div class="post-featured-image">
+      <div class="container">
+        <img src="{{ .Params.featured_image | relURL }}" alt="{{ .Title }}" loading="lazy">
+      </div>
+    </div>
+  {{ end }}
+  
+  <div class="post-content">
+    <div class="container">
+      <main class="post-main">
+        {{ .Content }}
+      </main>
+    </div>
+  </div>
+  
+  {{ if .TableOfContents }}
+  <aside class="toc-sidebar">
+    {{ partial "toc.html" . }}
+  </aside>
+  {{ end }}
+  
+  {{ if .Site.Params.shareButtons }}
+    <div class="post-share">
+      <div class="container">
+        {{ partial "share-buttons.html" . }}
+      </div>
+    </div>
+  {{ end }}
+  
+  {{ if .Site.Params.relatedPosts }}
+    <div class="related-posts">
+      <div class="container">
+        {{ partial "related-posts.html" . }}
+      </div>
+    </div>
+  {{ end }}
+</article>
+
+{{ end }}
