@@ -8,7 +8,10 @@ class TableOfContents {
   constructor() {
     this.tocContainer = document.querySelector('.toc-container');
     this.tocNav = document.querySelector('.toc-nav');
-    this.tocLinks = Array.from(document.querySelectorAll('.toc-nav a'));
+    // 更通用的TOC链接选择器，支持Hugo生成的TOC结构
+    this.tocLinks = Array.from(document.querySelectorAll('.toc a, #TableOfContents a, .toc-nav a'));
+    this.slider = document.querySelector('.toc .slider');
+    this.overflow = document.querySelector('.toc .overflow');
     this.headings = [];
     this.activeLink = null;
     this.isScrolling = false;
@@ -20,16 +23,25 @@ class TableOfContents {
 
   init() {
     if (!this.tocContainer || !this.tocLinks || !this.tocLinks.length) {
+      console.log('TOC: No TOC container or links found');
       return;
     }
 
+    console.log('TOC: Initializing with', this.tocLinks.length, 'links');
+    
     this.setupHeadings();
     this.setupSmoothScrolling();
     this.setupScrollSpy();
     this.setupKeyboardNavigation();
+    this.setupSlider();
     
     // Initialize active section on page load
-    this.updateActiveSection();
+    setTimeout(() => {
+      this.updateActiveSection();
+    }, 100);
+    
+    // Handle responsive behavior
+    this.setupResponsive();
   }
 
   setupHeadings() {
@@ -122,7 +134,7 @@ class TableOfContents {
     const documentHeight = document.documentElement.scrollHeight;
     
     // If we're at the bottom of the page, activate the last heading
-    if (scrollTop + windowHeight >= documentHeight - 100) {
+    if (scrollTop + windowHeight >= documentHeight - 50) {
       const lastHeading = this.headings[this.headings.length - 1];
       if (lastHeading) {
         this.setActiveLink(lastHeading.link);
@@ -132,20 +144,24 @@ class TableOfContents {
 
     // Find the current active heading based on scroll position
     let activeHeading = null;
+    const offset = 100; // 距离顶部100px开始高亮
     
-    // Check each heading from bottom to top
-    for (let i = this.headings.length - 1; i >= 0; i--) {
+    // Check each heading from top to bottom to find the one closest to the top
+    for (let i = 0; i < this.headings.length; i++) {
       const heading = this.headings[i];
       const rect = heading.element.getBoundingClientRect();
+      const elementTop = rect.top + scrollTop;
       
-      // If heading is in the viewport or just above it
-      if (rect.top <= windowHeight * 0.3) {
+      // If heading is above the offset point, it's a candidate
+      if (elementTop <= scrollTop + offset) {
         activeHeading = heading;
+      } else {
+        // Once we find a heading below the offset, break
         break;
       }
     }
     
-    // If no heading is found in viewport, use the first one
+    // If no heading is found above the offset, use the first one
     if (!activeHeading && this.headings.length > 0) {
       activeHeading = this.headings[0];
     }
@@ -170,6 +186,9 @@ class TableOfContents {
     if (activeLink) {
       activeLink.classList.add('active');
       this.activeLink = activeLink;
+      
+      // Auto-scroll TOC to show active item
+      this.scrollToActiveItem(activeLink);
     }
   }
 
@@ -218,6 +237,43 @@ class TableOfContents {
     }
   }
 
+  
+  
+  setupSlider() {
+    // Slider functionality disabled - using native scrollbar only
+    return;
+  }
+  
+  updateSlider() {
+    // Slider functionality disabled - using native scrollbar only
+    return;
+  }
+  
+  setupResponsive() {
+    // Responsive behavior handled by CSS media queries
+  }
+  
+  scrollToActiveItem(activeLink) {
+    if (!this.overflow) return;
+    
+    const linkRect = activeLink.getBoundingClientRect();
+    const overflowRect = this.overflow.getBoundingClientRect();
+    
+    // Check if the active link is visible in the overflow container
+    if (linkRect.top < overflowRect.top || linkRect.bottom > overflowRect.bottom) {
+      // Calculate scroll position to center the active link
+      const scrollTop = this.overflow.scrollTop + 
+                       (linkRect.top - overflowRect.top) - 
+                       (overflowRect.height / 2) + 
+                       (linkRect.height / 2);
+      
+      this.overflow.scrollTo({
+        top: scrollTop,
+        behavior: 'smooth'
+      });
+    }
+  }
+
   // Cleanup method
   destroy() {
     if (this.observer) {
@@ -230,6 +286,8 @@ class TableOfContents {
     
     window.removeEventListener('scroll', this.handleScroll);
     window.removeEventListener('resize', this.handleScroll);
+    
+    // Clean up TOC button events
   }
 }
 
