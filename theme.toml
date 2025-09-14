@@ -1,8 +1,8 @@
 name = "Ji"
 license = "MIT"
-licenselink = "https://github.com/yourusername/Ji/blob/main/LICENSE"
+licenselink = "https://github.com/jizuiba/Ji/blob/main/LICENSE"
 description = "一个简洁现代的 Hugo 主题，适合个人博客使用。"
-homepage = "https://github.com/yourusername/Ji"
+homepage = "https://github.com/jizuiba/Ji"
 tags = [
   "blog",
   "responsive",
@@ -17,7 +17,7 @@ features = [
   "search",
   "rss"
 ]
-min_version = "1.100.0"
+min_version = "0.149.1"
 
 [author]
   name = "jizuiba"

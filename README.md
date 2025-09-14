@@ -15,9 +15,15 @@
 
 ## 安装
 
-1. 克隆主题到 themes 目录：
+1. 使用 Git 子模块：
 ```bash
-git clone https://github.com/jizuiba/Ji.git themes/Ji
+git submodule add https://github.com/jizuiba/Ji.git themes/Ji
+```
+更新方式
+```bash
+cd themes/Ji
+
+git pull origin main
 ```
 
 2. 在 `config.toml` 中设置主题：
