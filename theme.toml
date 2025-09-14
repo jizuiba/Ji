@@ -1,70 +1,24 @@
-# =============================================================================
-# JI Hugo 主题元数据
-# =============================================================================
-
-name = "JI"
+name = "Ji"
 license = "MIT"
-licenselink = "https://github.com/jizuiba/JI/blob/main/LICENSE"
-description = "一款为性能、可访问性和精美设计打造的现代响应式 Hugo 主题。支持深色模式，拥有卓越的排版系统和简洁纯粹的美学风格。"
-homepage = "https://github.com/jizuiba/JI"
+licenselink = "https://github.com/yourusername/Ji/blob/main/LICENSE"
+description = "一个简洁现代的 Hugo 主题，适合个人博客使用。"
+homepage = "https://github.com/yourusername/Ji"
 tags = [
   "blog",
-  "responsive", 
+  "responsive",
   "dark-mode",
   "modern",
-  "minimal",
-  "fast",
-  "accessible",
-  "seo",
-  "pwa",
-  "chinese"
+  "minimal"
 ]
 features = [
   "responsive",
-  "dark-mode", 
+  "dark-mode",
   "syntax-highlighting",
   "search",
-  "rss",
-  "pwa",
-  "accessibility",
-  "seo",
-  "code-copy",
-  "toc",
-  "pagination"
+  "rss"
 ]
-min_version = "0.100.0"
+min_version = "1.100.0"
 
 [author]
-  name = "Jizuiba"
+  name = "jizuiba"
   homepage = "https://github.com/jizuiba"
-
-# 主题演示站点
-[demo]
-  url = "https://ji-demo.netlify.app"
-  title = "JI 主题演示"
-
-# 主题截图
-[screenshots]
-  [screenshots.desktop]
-    src = "/images/screenshot-desktop.png"
-    title = "桌面端截图"
-  [screenshots.mobile]
-    src = "/images/screenshot-mobile.png" 
-    title = "移动端截图"
-  [screenshots.dark]
-    src = "/images/screenshot-dark.png"
-    title = "深色模式截图"
-
-# 主题版本信息
-[release]
-  version = "1.0.0"
-  date = "2024-01-15"
-  notes = [
-    "初始版本发布",
-    "支持深色模式切换",
-    "内置搜索功能",
-    "代码高亮和复制功能",
-    "响应式设计",
-    "PWA 支持",
-    "无障碍访问优化"
-  ]
