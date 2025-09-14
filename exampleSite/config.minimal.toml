@@ -1,15 +1,9 @@
-# =============================================================================
-# JI 主题最小配置示例
-# 适合快速开始和简单站点
-# =============================================================================
-
-# 基本站点信息
+# 最小配置示例
 baseURL = "https://example.com"
 languageCode = "zh-cn"
 title = "我的博客"
-theme = "JI"
+theme = "Ji"
 
-# 基本参数
 [params]
   title = "我的博客"
   description = "我的个人博客"
@@ -18,7 +12,6 @@ theme = "JI"
   search = true
   syntaxHighlighting = true
 
-# 导航菜单
 [[menu.main]]
   name = "首页"
   url = "/"
@@ -29,14 +22,14 @@ theme = "JI"
   url = "/posts"
   weight = 2
 
-# 语法高亮
 [markup.highlight]
   style = "github"
-  lineNos = false
   codeFences = true
-  guessSyntax = true
+  lineNumbersInTable = false # 表格中的行号
+  noClasses = false          # 使用CSS类
 
-# 输出格式
 [outputs]
-  home = ["HTML", "RSS"]
+  home = ["HTML", "RSS", "JSON"]
   page = ["HTML"]
+  section = ["HTML", "RSS"]
+  taxonomy = ["HTML", "RSS"]
