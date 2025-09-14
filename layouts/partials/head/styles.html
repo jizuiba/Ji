@@ -154,6 +154,12 @@
   <link rel="stylesheet" href="{{ $syntaxCSS.RelPermalink }}" integrity="{{ $syntaxCSS.Data.Integrity }}">
 {{ end }}
 
+<!-- Search CSS -->
+{{ if .Site.Params.search }}
+  {{ $searchCSS := resources.Get "css/search.css" | resources.Minify | resources.Fingerprint }}
+  <link rel="stylesheet" href="{{ $searchCSS.RelPermalink }}" integrity="{{ $searchCSS.Data.Integrity }}">
+{{ end }}
+
 <!-- Custom CSS -->
 {{ if .Site.Params.customCSS }}
   {{ range .Site.Params.customCSS }}

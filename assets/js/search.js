@@ -5,9 +5,19 @@
 (function() {
   'use strict';
 
-  document.addEventListener('DOMContentLoaded', function() {
-    initSearch();
-  });
+  // 立即初始化搜索功能，不等待DOMContentLoaded
+  // 这样可以防止在页面加载过程中出现样式问题
+  function initSearchImmediate() {
+    // 如果DOM已经加载完成，立即初始化
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initSearch);
+    } else {
+      initSearch();
+    }
+  }
+
+  // 立即执行初始化
+  initSearchImmediate();
 
   function initSearch() {
     const searchContainer = document.querySelector('.search-container');
@@ -18,20 +28,9 @@
     if (!searchContainer || !searchToggle || !searchForm || !searchInput) return;
 
     let isSearchOpen = false;
-    let userInitiatedSearch = false; // 标记是否为用户主动触发的搜索
-    let isPageLoading = true; // 标记页面是否正在加载
-
-    // 页面加载完成后允许搜索功能
-    setTimeout(() => {
-      isPageLoading = false;
-    }, 1000);
 
     // 切换搜索框显示/隐藏
-    function toggleSearch(userInitiated = false) {
-      if (userInitiated) {
-        userInitiatedSearch = true;
-      }
-      
+    function toggleSearch() {
       isSearchOpen = !isSearchOpen;
       
       if (isSearchOpen) {
@@ -52,7 +51,6 @@
         
         searchInput.blur();
         searchInput.value = '';
-        userInitiatedSearch = false;
       }
     }
 
@@ -66,7 +64,6 @@
         
         searchInput.blur();
         searchInput.value = '';
-        userInitiatedSearch = false;
       }
     }
 
@@ -75,12 +72,9 @@
       e.preventDefault();
       e.stopPropagation();
       
-      // 页面加载期间不允许打开搜索框
-      if (isPageLoading) return;
-      
       // 如果搜索框是关闭的，先打开它
       if (!isSearchOpen) {
-        toggleSearch(true); // 标记为用户主动触发
+        toggleSearch();
       } else {
         // 如果搜索框是打开的，直接提交搜索
         const query = searchInput.value.trim();
@@ -123,22 +117,6 @@
       }
     });
 
-    // 防止菜单点击时意外触发搜索框
-    const menuItems = document.querySelectorAll('.menu-item a, .mobile-primary-menu a');
-    menuItems.forEach(menuItem => {
-      menuItem.addEventListener('click', function() {
-        // 确保在菜单点击时关闭搜索框
-        closeSearch();
-        // 重置用户主动触发标记
-        userInitiatedSearch = false;
-      });
-    });
-
-    // 防止页面导航时搜索框保持打开状态
-    window.addEventListener('beforeunload', function() {
-      closeSearch();
-    });
-
     // ESC键关闭搜索
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape' && isSearchOpen) {
@@ -157,20 +135,9 @@
     });
 
     // 搜索输入框获得焦点时确保搜索框打开
-    // 但只有在用户主动点击搜索相关元素时才打开
-    searchInput.addEventListener('focus', function(e) {
-      // 页面加载期间或非用户主动触发时不打开搜索框
-      if (isPageLoading || !userInitiatedSearch) return;
-      
-      // 只有在用户主动触发搜索时才允许通过焦点打开搜索框
+    searchInput.addEventListener('focus', function() {
       if (!isSearchOpen) {
-        // 检查焦点是否来自用户主动操作（点击搜索按钮或搜索容器）
-        const relatedTarget = e.relatedTarget;
-        if (relatedTarget === searchToggle || 
-            relatedTarget === searchContainer ||
-            searchContainer.contains(relatedTarget)) {
-          toggleSearch(true);
-        }
+        toggleSearch();
       }
     });
   }
