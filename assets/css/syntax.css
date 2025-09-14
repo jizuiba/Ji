@@ -1,627 +1,677 @@
-/**
- * Syntax Highlighting Styles
- * Modern, accessible code highlighting with excellent contrast
- */
+/* ==========================================================================
+   JetBrains 2025 Inspired Code Syntax Highlighting
+   ========================================================================== */
 
-/* 确保页面不会因为代码块出现横向滚动 */
-body {
-  overflow-x: hidden;
+/* CSS Variables for Code Blocks - JetBrains 2025 Inspired */
+:root {
+  /* Code Block Colors - Light Theme */
+  --code-bg: #fafbfc;
+  --code-bg-hover: #f5f7fa;
+  --code-border: #e1e4e8;
+  --code-border-hover: #d0d7de;
+  --code-text: #24292f;
+  --code-text-secondary: #656d76;
+  --code-text-muted: #8b949e;
+  
+  /* Code Block Shadows - Modern and Subtle */
+  --code-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --code-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --code-shadow-focus: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  
+  /* Line Numbers */
+  --line-number-bg: #f6f8fa;
+  --line-number-text: #8b949e;
+  --line-number-border: #e1e4e8;
+  --line-number-active: #0969da;
+  
+  /* Language Label */
+  --label-bg: #f6f8fa;
+  --label-text: #656d76;
+  --label-border: #e1e4e8;
+  
+  /* Copy Button */
+  --copy-btn-bg: #ffffff;
+  --copy-btn-text: #656d76;
+  --copy-btn-border: #e1e4e8;
+  --copy-btn-hover-bg: #f6f8fa;
+  --copy-btn-hover-text: #24292f;
+  --copy-btn-success-bg: #1a7f37;
+  --copy-btn-success-text: #ffffff;
+  --copy-btn-error-bg: #d1242f;
+  --copy-btn-error-text: #ffffff;
+  
+  /* Syntax Highlighting Colors - GitHub inspired with JetBrains improvements */
+  --syntax-keyword: #cf222e;
+  --syntax-string: #0a3069;
+  --syntax-comment: #656d76;
+  --syntax-number: #0550ae;
+  --syntax-function: #8250df;
+  --syntax-variable: #953800;
+  --syntax-type: #0969da;
+  --syntax-operator: #cf222e;
+  --syntax-punctuation: #24292f;
+  --syntax-constant: #0550ae;
+  --syntax-attribute: #8250df;
+  --syntax-tag: #116329;
+  --syntax-class: #8250df;
+  --syntax-builtin: #0550ae;
+  --syntax-regex: #0a3069;
+  --syntax-escape: #cf222e;
+  --syntax-link: #0969da;
+  --syntax-meta: #656d76;
+  --syntax-diff-add: #1a7f37;
+  --syntax-diff-remove: #d1242f;
+  --syntax-diff-change: #9a6700;
+  --syntax-diff-header: #656d76;
 }
 
-/* 确保容器不会超出视口 */
-.container {
-  overflow-x: hidden;
+/* Dark Theme Variables */
+.theme-dark {
+  /* Code Block Colors - Dark Theme */
+  --code-bg: #0d1117;
+  --code-bg-hover: #161b22;
+  --code-border: #30363d;
+  --code-border-hover: #484f58;
+  --code-text: #e6edf3;
+  --code-text-secondary: #8b949e;
+  --code-text-muted: #6e7681;
+  
+  /* Code Block Shadows - Dark Theme */
+  --code-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.1);
+  --code-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
+  --code-shadow-focus: 0 0 0 3px rgba(88, 166, 255, 0.3);
+  
+  /* Line Numbers - Dark Theme */
+  --line-number-bg: #161b22;
+  --line-number-text: #6e7681;
+  --line-number-border: #30363d;
+  --line-number-active: #58a6ff;
+  
+  /* Language Label - Dark Theme */
+  --label-bg: #161b22;
+  --label-text: #8b949e;
+  --label-border: #30363d;
+  
+  /* Copy Button - Dark Theme */
+  --copy-btn-bg: #21262d;
+  --copy-btn-text: #8b949e;
+  --copy-btn-border: #30363d;
+  --copy-btn-hover-bg: #30363d;
+  --copy-btn-hover-text: #e6edf3;
+  --copy-btn-success-bg: #238636;
+  --copy-btn-success-text: #ffffff;
+  --copy-btn-error-bg: #da3633;
+  --copy-btn-error-text: #ffffff;
+  
+  /* Syntax Highlighting Colors - Dark Theme */
+  --syntax-keyword: #ff7b72;
+  --syntax-string: #a5d6ff;
+  --syntax-comment: #8b949e;
+  --syntax-number: #79c0ff;
+  --syntax-function: #d2a8ff;
+  --syntax-variable: #ffa657;
+  --syntax-type: #58a6ff;
+  --syntax-operator: #ff7b72;
+  --syntax-punctuation: #e6edf3;
+  --syntax-constant: #79c0ff;
+  --syntax-attribute: #d2a8ff;
+  --syntax-tag: #7ee787;
+  --syntax-class: #d2a8ff;
+  --syntax-builtin: #79c0ff;
+  --syntax-regex: #a5d6ff;
+  --syntax-escape: #ff7b72;
+  --syntax-link: #58a6ff;
+  --syntax-meta: #8b949e;
+  --syntax-diff-add: #238636;
+  --syntax-diff-remove: #da3633;
+  --syntax-diff-change: #d29922;
+  --syntax-diff-header: #8b949e;
 }
 
-/* Base code block styles - 统一的代码样式定义 */
-pre {
+/* ==========================================================================
+   Code Block Container
+   ========================================================================== */
+
+/* Main Code Block Wrapper */
+.code-block-wrapper {
   position: relative;
-  background: linear-gradient(135deg, var(--color-bg-secondary) 0%, var(--color-bg) 100%);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  overflow-x: auto;
-  overflow-y: hidden;
-  font-family: var(--font-family-mono);
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-relaxed);
-  padding: var(--spacing-lg);
-  margin: var(--spacing-lg) 0;
-  box-shadow: var(--shadow-sm);
-  transition: all var(--transition-fast);
-  /* 确保代码块不会超出容器宽度 */
-  max-width: 100%;
-  word-wrap: break-word;
-  white-space: pre;
+  margin: 1.5rem 0;
+  border-radius: 12px;
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  box-shadow: var(--code-shadow);
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
 }
 
-pre:hover {
-  box-shadow: var(--shadow-md);
-  border-color: var(--color-border-hover);
+.code-block-wrapper:hover {
+  border-color: var(--code-border-hover);
+  box-shadow: var(--code-shadow-hover);
+  transform: translateY(-1px);
 }
 
-code {
-  font-family: var(--font-family-mono);
-  font-size: 0.875em;
+.code-block-wrapper:focus-within {
+  box-shadow: var(--code-shadow-focus);
+  border-color: var(--color-primary);
 }
 
-/* Inline code */
-:not(pre) > code {
-  background-color: var(--color-bg-secondary);
-  color: var(--color-text);
-  padding: 0.125em 0.25em;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
-  font-weight: 500;
-  /* 确保内联代码不会换行 */
-  white-space: nowrap;
-  word-break: keep-all;
-}
-
-/* Code block content */
-pre code {
-  background: none;
-  border: none;
-  padding: 0;
-  color: inherit;
-  font-weight: 400;
-  /* 确保代码内容可以正确滚动 */
-  display: block;
-  overflow: visible;
-  white-space: pre;
-  word-wrap: normal;
-  word-break: normal;
-}
-
-/* Syntax highlighting tokens - Light Theme */
-.token.comment,
-.token.prolog,
-.token.doctype,
-.token.cdata {
-  color: #6a737d;
-  font-style: italic;
-}
-
-.token.punctuation {
-  color: #24292e;
-}
-
-.token.property,
-.token.tag,
-.token.boolean,
-.token.number,
-.token.constant,
-.token.symbol,
-.token.deleted {
-  color: #d73a49;
-}
-
-.token.selector,
-.token.attr-name,
-.token.string,
-.token.char,
-.token.builtin,
-.token.inserted {
-  color: #032f62;
-}
-
-.token.operator,
-.token.entity,
-.token.url,
-.language-css .token.string,
-.style .token.string {
-  color: #d73a49;
-}
-
-.token.atrule,
-.token.attr-value,
-.token.keyword {
-  color: #d73a49;
-}
-
-.token.function,
-.token.class-name {
-  color: #6f42c1;
-}
-
-.token.regex,
-.token.important,
-.token.variable {
-  color: #e36209;
-}
-
-.token.important,
-.token.bold {
-  font-weight: bold;
-}
-
-.token.italic {
-  font-style: italic;
-}
-
-.token.entity {
-  cursor: help;
-}
-
-/* 兼容Hugo内置高亮的类名 */
-.highlight .c, .highlight .cm, .highlight .cp, .highlight .c1, .highlight .cs {
-  color: #6a737d;
-  font-style: italic;
-}
-
-.highlight .p, .highlight .pi, .highlight .pc {
-  color: #24292e;
-}
-
-.highlight .k, .highlight .kc, .highlight .kd, .highlight .kn, .highlight .kp, .highlight .kr, .highlight .kt {
-  color: #d73a49;
-}
-
-.highlight .s, .highlight .s1, .highlight .s2, .highlight .sb, .highlight .sc, .highlight .sd, .highlight .se, .highlight .sh, .highlight .si, .highlight .sx {
-  color: #032f62;
-}
-
-.highlight .n, .highlight .na, .highlight .nb, .highlight .nc, .highlight .no, .highlight .nd, .highlight .ni, .highlight .ne, .highlight .nf, .highlight .nl, .highlight .nn, .highlight .nx {
-  color: #24292e;
-}
-
-.highlight .o, .highlight .ow {
-  color: #d73a49;
-}
-
-.highlight .m, .highlight .mf, .highlight .mh, .highlight .mi, .highlight .il, .highlight .mo {
-  color: #d73a49;
-}
-
-.highlight .l, .highlight .ld, .highlight .m, .highlight .mf, .highlight .mh, .highlight .mi, .highlight .il, .highlight .mo {
-  color: #d73a49;
-}
-
-/* Dark theme syntax highlighting */
-.theme-dark .token.comment,
-.theme-dark .token.prolog,
-.theme-dark .token.doctype,
-.theme-dark .token.cdata {
-  color: #8b949e;
-  font-style: italic;
-}
-
-.theme-dark .token.punctuation {
-  color: #f0f6fc;
-}
-
-.theme-dark .token.property,
-.theme-dark .token.tag,
-.theme-dark .token.boolean,
-.theme-dark .token.number,
-.theme-dark .token.constant,
-.theme-dark .token.symbol,
-.theme-dark .token.deleted {
-  color: #f85149;
-}
-
-.theme-dark .token.selector,
-.theme-dark .token.attr-name,
-.theme-dark .token.string,
-.theme-dark .token.char,
-.theme-dark .token.builtin,
-.theme-dark .token.inserted {
-  color: #a5d6ff;
-}
-
-.theme-dark .token.operator,
-.theme-dark .token.entity,
-.theme-dark .token.url,
-.theme-dark .language-css .token.string,
-.theme-dark .style .token.string {
-  color: #f85149;
-}
-
-.theme-dark .token.atrule,
-.theme-dark .token.attr-value,
-.theme-dark .token.keyword {
-  color: #ff7b72;
-}
-
-.theme-dark .token.function,
-.theme-dark .token.class-name {
-  color: #d2a8ff;
-}
-
-.theme-dark .token.regex,
-.theme-dark .token.important,
-.theme-dark .token.variable {
-  color: #ffa657;
-}
-
-/* 深色主题的Hugo内置高亮兼容样式 */
-.theme-dark .highlight .c, .theme-dark .highlight .cm, .theme-dark .highlight .cp, .theme-dark .highlight .c1, .theme-dark .highlight .cs {
-  color: #8b949e;
-  font-style: italic;
-}
-
-.theme-dark .highlight .p, .theme-dark .highlight .pi, .theme-dark .highlight .pc {
-  color: #f0f6fc;
-}
-
-.theme-dark .highlight .k, .theme-dark .highlight .kc, .theme-dark .highlight .kd, .theme-dark .highlight .kn, .theme-dark .highlight .kp, .theme-dark .highlight .kr, .theme-dark .highlight .kt {
-  color: #ff7b72;
-}
-
-.theme-dark .highlight .s, .theme-dark .highlight .s1, .theme-dark .highlight .s2, .theme-dark .highlight .sb, .theme-dark .highlight .sc, .theme-dark .highlight .sd, .theme-dark .highlight .se, .theme-dark .highlight .sh, .theme-dark .highlight .si, .theme-dark .highlight .sx {
-  color: #a5d6ff;
-}
-
-.theme-dark .highlight .n, .theme-dark .highlight .na, .theme-dark .highlight .nb, .theme-dark .highlight .nc, .theme-dark .highlight .no, .theme-dark .highlight .nd, .theme-dark .highlight .ni, .theme-dark .highlight .ne, .theme-dark .highlight .nf, .theme-dark .highlight .nl, .theme-dark .highlight .nn, .theme-dark .highlight .nx {
-  color: #f0f6fc;
-}
-
-.theme-dark .highlight .o, .theme-dark .highlight .ow {
-  color: #f85149;
-}
-
-.theme-dark .highlight .m, .theme-dark .highlight .mf, .theme-dark .highlight .mh, .theme-dark .highlight .mi, .theme-dark .highlight .il, .theme-dark .highlight .mo {
-  color: #f85149;
-}
-
-.theme-dark .highlight .l, .theme-dark .highlight .ld, .theme-dark .highlight .m, .theme-dark .highlight .mf, .theme-dark .highlight .mh, .theme-dark .highlight .mi, .theme-dark .highlight .il, .theme-dark .highlight .mo {
-  color: #f85149;
-}
-
-/* Language-specific styles - Light Theme */
-.language-javascript .token.function,
-.language-js .token.function {
-  color: #6f42c1;
-}
-
-.language-python .token.function {
-  color: #6f42c1;
-}
-
-.language-html .token.tag {
-  color: #d73a49;
-}
-
-.language-html .token.attr-name {
-  color: #e36209;
-}
-
-.language-html .token.attr-value {
-  color: #032f62;
-}
-
-.language-css .token.selector {
-  color: #6f42c1;
-}
-
-.language-css .token.property {
-  color: #d73a49;
-}
-
-.language-css .token.value {
-  color: #032f62;
-}
-
-.language-json .token.property {
-  color: #d73a49;
-}
-
-.language-json .token.string {
-  color: #032f62;
-}
-
-.language-json .token.number {
-  color: #d73a49;
-}
-
-.language-bash .token.function {
-  color: #6f42c1;
-}
-
-.language-sql .token.keyword {
-  color: #d73a49;
-}
-
-.language-sql .token.string {
-  color: #032f62;
-}
-
-/* Language-specific styles - Dark Theme */
-.theme-dark .language-javascript .token.function,
-.theme-dark .language-js .token.function {
-  color: #d2a8ff;
-}
-
-.theme-dark .language-python .token.function {
-  color: #d2a8ff;
-}
-
-.theme-dark .language-html .token.tag {
-  color: #f85149;
-}
-
-.theme-dark .language-html .token.attr-name {
-  color: #ffa657;
-}
-
-.theme-dark .language-html .token.attr-value {
-  color: #a5d6ff;
-}
-
-.theme-dark .language-css .token.selector {
-  color: #d2a8ff;
-}
-
-.theme-dark .language-css .token.property {
-  color: #f85149;
-}
-
-.theme-dark .language-css .token.value {
-  color: #a5d6ff;
-}
-
-.theme-dark .language-json .token.property {
-  color: #f85149;
-}
-
-.theme-dark .language-json .token.string {
-  color: #a5d6ff;
-}
-
-.theme-dark .language-json .token.number {
-  color: #f85149;
-}
-
-.theme-dark .language-bash .token.function {
-  color: #d2a8ff;
-}
-
-.theme-dark .language-sql .token.keyword {
-  color: #f85149;
-}
-
-.theme-dark .language-sql .token.string {
-  color: #a5d6ff;
-}
-
-/* Code block enhancements */
-pre[class*="language-"] {
-  position: relative;
-}
+/* ==========================================================================
+   Language Label
+   ========================================================================== */
 
-pre[class*="language-"]::before {
-  content: attr(class);
+.code-language-label {
   position: absolute;
   top: 0;
   right: 0;
-  background-color: var(--color-border);
-  color: var(--color-text-muted);
-  padding: 0.25rem 0.5rem;
+  background: var(--label-bg);
+  color: var(--label-text);
   font-size: 0.75rem;
-  border-bottom-left-radius: var(--radius-sm);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   font-weight: 500;
-  z-index: 1;
-}
-
-/* Dark theme language label */
-.theme-dark pre[class*="language-"]::before {
-  background-color: var(--color-border-dark);
-  color: var(--color-text-muted-dark);
-}
-
-/* Copy button positioning */
-.code-block-wrapper {
-  position: relative;
-}
-
-.code-block-wrapper .code-copy-button {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  border-bottom-left-radius: 8px;
+  border-left: 1px solid var(--label-border);
+  border-bottom: 1px solid var(--label-border);
   z-index: 10;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+}
+
+.code-block-wrapper:hover .code-language-label {
+  background: var(--code-bg-hover);
+  color: var(--code-text-secondary);
+}
+
+/* ==========================================================================
+   Copy Button
+   ========================================================================== */
+
+.code-copy-button {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.5rem;
-  background-color: var(--color-bg-secondary);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  color: var(--color-text-secondary);
+  gap: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--copy-btn-bg);
+  color: var(--copy-btn-text);
+  border: 1px solid var(--copy-btn-border);
+  border-radius: 8px;
   font-size: 0.75rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 20;
   opacity: 0;
+  transform: translateY(-4px);
+  backdrop-filter: blur(8px);
 }
 
 .code-block-wrapper:hover .code-copy-button {
   opacity: 1;
+  transform: translateY(0);
 }
 
-.code-block-wrapper .code-copy-button:hover {
-  background-color: var(--color-primary);
-  color: white;
-  border-color: var(--color-primary);
+.code-copy-button:hover {
+  background: var(--copy-btn-hover-bg);
+  color: var(--copy-btn-hover-text);
+  border-color: var(--code-border-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.code-block-wrapper .code-copy-button.copied {
-  background-color: #10b981;
-  color: white;
-  border-color: #10b981;
+.code-copy-button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
-.code-block-wrapper .code-copy-button.error {
-  background-color: #ef4444;
-  color: white;
-  border-color: #ef4444;
+.code-copy-button svg {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.2s ease;
 }
 
-/* 深色主题下的复制按钮样式 */
-.theme-dark .code-block-wrapper .code-copy-button {
-  background-color: var(--color-bg-secondary-dark);
-  border-color: var(--color-border-dark);
-  color: var(--color-text-secondary-dark);
+.code-copy-button:hover svg {
+  transform: scale(1.1);
 }
 
-.theme-dark .code-block-wrapper .code-copy-button:hover {
-  background-color: var(--color-primary);
-  color: white;
-  border-color: var(--color-primary);
+/* Copy Button States */
+.code-copy-button.copied {
+  background: var(--copy-btn-success-bg);
+  color: var(--copy-btn-success-text);
+  border-color: var(--copy-btn-success-bg);
 }
 
-/* Line numbers */
-.code-block-wrapper.with-line-numbers {
-  display: flex;
-  border-radius: var(--radius-md);
-  overflow: hidden;
+.code-copy-button.error {
+  background: var(--copy-btn-error-bg);
+  color: var(--copy-btn-error-text);
+  border-color: var(--copy-btn-error-bg);
+}
+
+/* ==========================================================================
+   Line Numbers
+   ========================================================================== */
+
+.line-numbers {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3.5rem;
+  background: var(--line-number-bg);
+  border-right: 1px solid var(--line-number-border);
+  padding: 1rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--line-number-text);
+  user-select: none;
+  z-index: 5;
+  transition: all 0.2s ease;
 }
 
 .code-block-wrapper.with-line-numbers pre {
-  flex: 1;
-  margin: 0;
-  border-radius: 0;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  border-left: none;
+  padding-left: 4.5rem;
 }
 
-.code-block-wrapper .line-numbers {
-  background-color: var(--color-bg-secondary);
-  border: 1px solid var(--color-border);
-  border-right: none;
-  border-top-left-radius: var(--radius-md);
-  border-bottom-left-radius: var(--radius-md);
-  padding: var(--spacing-lg) var(--spacing-sm);
-  font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
-  user-select: none;
-  min-width: 3rem;
-  text-align: right;
-  flex-shrink: 0;
-}
-
-.code-block-wrapper .line-number {
+.line-number {
   display: block;
-  line-height: var(--line-height-relaxed);
+  text-align: right;
   padding: 0 0.25rem;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+  margin: 0 -0.25rem;
 }
 
-/* 深色主题下的行号样式 */
-.theme-dark .code-block-wrapper .line-numbers {
-  background-color: var(--color-bg-secondary-dark);
-  border-color: var(--color-border-dark);
-  color: var(--color-text-muted-dark);
+.line-number:hover {
+  background: var(--code-bg-hover);
+  color: var(--line-number-active);
 }
 
-/* Enhanced code block styles - 已合并到上面的基础样式中 */
-
-/* Dark theme code blocks */
-.theme-dark pre {
-  background: linear-gradient(135deg, var(--color-bg-secondary-dark) 0%, var(--color-bg-dark) 100%);
-  border-color: var(--color-border-dark);
+/* Active line highlighting */
+.line-number.active {
+  background: var(--line-number-active);
+  color: white;
+  font-weight: 600;
 }
 
-.theme-dark pre:hover {
-  border-color: var(--color-border-hover-dark);
+/* ==========================================================================
+   Code Content
+   ========================================================================== */
+
+/* Pre and Code Elements */
+.code-block-wrapper pre {
+  margin: 0;
+  padding: 1rem 1.25rem;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--code-text);
+  position: relative;
+  z-index: 1;
 }
 
-/* Responsive adjustments */
+.code-block-wrapper code {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  white-space: pre;
+  word-wrap: normal;
+  overflow-wrap: normal;
+}
+
+/* ==========================================================================
+   Syntax Highlighting
+   ========================================================================== */
+
+/* Keywords */
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-built_in,
+.hljs-name,
+.hljs-tag {
+  color: var(--syntax-keyword);
+  font-weight: 600;
+}
+
+/* Strings */
+.hljs-string,
+.hljs-title,
+.hljs-section,
+.hljs-attribute,
+.hljs-literal,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-type,
+.hljs-addition {
+  color: var(--syntax-string);
+}
+
+/* Comments */
+.hljs-comment,
+.hljs-quote,
+.hljs-deletion,
+.hljs-meta {
+  color: var(--syntax-comment);
+  font-style: italic;
+}
+
+/* Numbers */
+.hljs-number,
+.hljs-regexp,
+.hljs-symbol,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-link,
+.hljs-selector-attr,
+.hljs-selector-pseudo {
+  color: var(--syntax-number);
+}
+
+/* Functions */
+.hljs-function,
+.hljs-title.function_,
+.hljs-params {
+  color: var(--syntax-function);
+}
+
+/* Variables */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-strong,
+.hljs-emphasis {
+  color: var(--syntax-variable);
+}
+
+/* Types */
+.hljs-type,
+.hljs-class,
+.hljs-title.class_,
+.hljs-title.class_.inherited__ {
+  color: var(--syntax-type);
+}
+
+/* Operators */
+.hljs-operator,
+.hljs-punctuation {
+  color: var(--syntax-operator);
+}
+
+/* Constants */
+.hljs-literal,
+.hljs-constant {
+  color: var(--syntax-constant);
+}
+
+/* Attributes */
+.hljs-attr,
+.hljs-attribute {
+  color: var(--syntax-attribute);
+}
+
+/* Tags */
+.hljs-tag,
+.hljs-name {
+  color: var(--syntax-tag);
+}
+
+/* Classes */
+.hljs-class,
+.hljs-title.class_ {
+  color: var(--syntax-class);
+}
+
+/* Built-in functions */
+.hljs-built_in,
+.hljs-title.function_ {
+  color: var(--syntax-builtin);
+}
+
+/* Regular expressions */
+.hljs-regexp {
+  color: var(--syntax-regex);
+}
+
+/* Escape sequences */
+.hljs-escape {
+  color: var(--syntax-escape);
+}
+
+/* Links */
+.hljs-link {
+  color: var(--syntax-link);
+  text-decoration: underline;
+}
+
+/* Meta information */
+.hljs-meta {
+  color: var(--syntax-meta);
+}
+
+/* ==========================================================================
+   Diff Syntax Highlighting
+   ========================================================================== */
+
+.hljs-diff-addition {
+  background: rgba(26, 127, 55, 0.1);
+  color: var(--syntax-diff-add);
+}
+
+.hljs-diff-deletion {
+  background: rgba(209, 36, 47, 0.1);
+  color: var(--syntax-diff-remove);
+}
+
+.hljs-diff-change {
+  background: rgba(154, 103, 0, 0.1);
+  color: var(--syntax-diff-change);
+}
+
+.hljs-diff-header {
+  color: var(--syntax-diff-header);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Inline Code
+   ========================================================================== */
+
+/* Inline code styling */
+p code,
+li code,
+td code,
+th code {
+  background: var(--code-bg);
+  color: var(--code-text);
+  padding: 0.125rem 0.375rem;
+  border-radius: 6px;
+  font-size: 0.875em;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
+  border: 1px solid var(--code-border);
+  transition: all 0.2s ease;
+}
+
+p code:hover,
+li code:hover,
+td code:hover,
+th code:hover {
+  background: var(--code-bg-hover);
+  border-color: var(--code-border-hover);
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
 @media (max-width: 768px) {
-  pre {
-    font-size: var(--font-size-xs);
-    padding: var(--spacing-md);
-    /* 移动端优化：确保代码块在容器内正确显示 */
-    margin-left: calc(-1 * var(--container-padding));
-    margin-right: calc(-1 * var(--container-padding));
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
-    /* 确保横向滚动正常工作 */
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    /* 防止代码块超出视口 */
-    max-width: 100vw;
-    box-sizing: border-box;
+  .code-block-wrapper {
+    margin: 1rem 0;
+    border-radius: 8px;
   }
   
-  /* 为代码块添加左右边距，避免贴边 */
-  .post-content pre,
-  .page-content pre {
-    margin-left: calc(-1 * var(--container-padding));
-    margin-right: calc(-1 * var(--container-padding));
-    padding-left: var(--container-padding);
-    padding-right: var(--container-padding);
+  .code-block-wrapper pre {
+    padding: 0.75rem 1rem;
+    font-size: 0.8125rem;
   }
   
-  .code-block-wrapper .line-numbers {
-    padding: var(--spacing-md) var(--spacing-xs);
-    min-width: 2.5rem;
+  .code-language-label {
+    font-size: 0.6875rem;
+    padding: 0.25rem 0.5rem;
   }
   
-  pre[class*="language-"]::before {
-    font-size: 0.625rem;
-    padding: 0.125rem 0.25rem;
+  .code-copy-button {
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.375rem 0.5rem;
+    font-size: 0.6875rem;
   }
   
-  /* 移动端复制按钮优化 */
-  .code-block-wrapper .code-copy-button {
-    opacity: 1;
-    top: 0.25rem;
-    right: 0.25rem;
-    padding: 0.25rem;
+  .line-numbers {
+    width: 3rem;
+    padding: 0.75rem 0.5rem;
+    font-size: 0.8125rem;
   }
   
-  .code-block-wrapper .code-copy-button .copy-text {
+  .code-block-wrapper.with-line-numbers pre {
+    padding-left: 4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .code-block-wrapper pre {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+  }
+  
+  .line-numbers {
+    width: 2.5rem;
+    padding: 0.5rem 0.375rem;
+    font-size: 0.75rem;
+  }
+  
+  .code-block-wrapper.with-line-numbers pre {
+    padding-left: 3.5rem;
+  }
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+
+@media print {
+  .code-block-wrapper {
+    box-shadow: none;
+    border: 1px solid #ccc;
+    break-inside: avoid;
+  }
+  
+  .code-copy-button,
+  .code-language-label {
     display: none;
   }
-}
-
-/* 小屏幕设备进一步优化 */
-@media (max-width: 480px) {
-  pre {
-    font-size: 0.75rem;
-    padding: var(--spacing-sm);
-    /* 小屏幕设备：更紧凑的边距 */
-    margin-left: calc(-1 * var(--container-padding));
-    margin-right: calc(-1 * var(--container-padding));
-    padding-left: var(--container-padding);
-    padding-right: var(--container-padding);
+  
+  .line-numbers {
+    background: #f5f5f5;
+    color: #666;
   }
   
-  .code-block-wrapper .line-numbers {
-    padding: var(--spacing-sm) var(--spacing-xs);
-    min-width: 2rem;
-    font-size: 0.75rem;
-  }
-  
-  pre[class*="language-"]::before {
-    font-size: 0.5rem;
-    padding: 0.125rem 0.25rem;
+  .code-block-wrapper pre {
+    color: #000;
   }
 }
 
-/* Print styles */
-@media print {
-  pre {
-    background-color: #f8f9fa !important;
-    border: 1px solid #dee2e6 !important;
-    color: #212529 !important;
+/* ==========================================================================
+   Accessibility
+   ========================================================================== */
+
+/* Focus styles for keyboard navigation */
+.code-copy-button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .code-block-wrapper,
+  .code-copy-button,
+  .line-number,
+  .code-language-label {
+    transition: none;
   }
   
-  .token.comment {
-    color: #6c757d !important;
+  .code-block-wrapper:hover {
+    transform: none;
   }
   
-  .token.keyword {
-    color: #007bff !important;
+  .code-copy-button:hover {
+    transform: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .code-block-wrapper {
+    border-width: 2px;
   }
   
-  .token.string {
-    color: #28a745 !important;
+  .code-copy-button {
+    border-width: 2px;
   }
   
-  .token.number {
-    color: #dc3545 !important;
+  .line-numbers {
+    border-right-width: 2px;
   }
+}
+
+/* ==========================================================================
+   Animation Keyframes
+   ========================================================================== */
+
+@keyframes codeHighlight {
+  0% {
+    background: rgba(37, 99, 235, 0.1);
+  }
+  100% {
+    background: transparent;
+  }
+}
+
+.code-line-highlight {
+  animation: codeHighlight 2s ease-out;
+}
+
+/* ==========================================================================
+   Custom Scrollbar for Code Blocks
+   ========================================================================== */
+
+.code-block-wrapper pre::-webkit-scrollbar {
+  height: 8px;
+}
+
+.code-block-wrapper pre::-webkit-scrollbar-track {
+  background: var(--line-number-bg);
+  border-radius: 4px;
+}
+
+.code-block-wrapper pre::-webkit-scrollbar-thumb {
+  background: var(--line-number-text);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.code-block-wrapper pre::-webkit-scrollbar-thumb:hover {
+  background: var(--line-number-active);
+}
+
+/* Firefox scrollbar */
+.code-block-wrapper pre {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-number-text) var(--line-number-bg);
 }

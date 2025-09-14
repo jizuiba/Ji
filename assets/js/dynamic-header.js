@@ -27,7 +27,7 @@
       const pathname = window.location.pathname;
       const body = document.body;
       
-      if (body.classList.contains('single') || pathname.includes('/posts/') || pathname.match(/\/\d{4}\/\d{2}\/\d{2}\//)) {
+      if (body.classList.contains('single') || pathname.includes('/posts/')) {
         return 'post';
       } else if (pathname.includes('/categories/') && pathname !== '/categories/') {
         return 'category';
@@ -40,7 +40,7 @@
     // 获取目标标题
     function getTargetTitle() {
       if (currentPageType === 'post') {
-        const postTitle = document.querySelector('#post-title, .post-title, h1.post-title');
+        const postTitle = document.querySelector('.title, #post-title, .post-title, h1.post-title');
         return postTitle ? postTitle.textContent.trim() : '';
       } else if (currentPageType === 'category') {
         const categoryTitle = document.querySelector('#category-title, .page-title, .category-title');

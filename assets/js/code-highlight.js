@@ -9,6 +9,7 @@
     initCodeHighlighting();
     initCodeCopyButtons();
     initCodeLineNumbers();
+    initCodeBlockInteractions();
   });
 
   /**
@@ -35,11 +36,16 @@
       pre.parentNode.insertBefore(wrapper, pre);
       wrapper.appendChild(pre);
       
+      // Add language label
+      addLanguageLabel(wrapper, codeBlock);
+      
       // Add copy button
       addCopyButton(wrapper);
       
-      // Add line numbers if enabled
-      if (shouldShowLineNumbers(codeBlock)) {
+      // Add line numbers for blocks with more than 3 lines (if enabled)
+      const lineCount = codeBlock.textContent.split('\n').length;
+      const showLineNumbers = window.themeConfig && window.themeConfig.showLineNumbers !== false;
+      if (lineCount > 3 && showLineNumbers) {
         addLineNumbers(wrapper);
       }
     });
@@ -76,6 +82,134 @@
     }
     
     return null;
+  }
+
+  /**
+   * Add Language Label to Code Blocks
+   */
+  function addLanguageLabel(wrapper, codeBlock) {
+    const language = getLanguageFromClass(codeBlock.className);
+    if (!language) return;
+    
+    const label = document.createElement('div');
+    label.className = 'code-language-label';
+    label.textContent = getLanguageDisplayName(language);
+    label.setAttribute('title', `编程语言: ${getLanguageDisplayName(language)}`);
+    
+    wrapper.appendChild(label);
+  }
+
+  /**
+   * Get Language from Class Name
+   */
+  function getLanguageFromClass(className) {
+    const match = className.match(/language-(\w+)/);
+    return match ? match[1] : null;
+  }
+
+  /**
+   * Get Display Name for Language
+   */
+  function getLanguageDisplayName(language) {
+    const languageNames = {
+      'javascript': 'JavaScript',
+      'typescript': 'TypeScript',
+      'python': 'Python',
+      'html': 'HTML',
+      'css': 'CSS',
+      'scss': 'SCSS',
+      'sass': 'Sass',
+      'less': 'Less',
+      'json': 'JSON',
+      'yaml': 'YAML',
+      'yml': 'YAML',
+      'bash': 'Bash',
+      'shell': 'Shell',
+      'sh': 'Shell',
+      'sql': 'SQL',
+      'php': 'PHP',
+      'java': 'Java',
+      'cpp': 'C++',
+      'c': 'C',
+      'csharp': 'C#',
+      'cs': 'C#',
+      'go': 'Go',
+      'golang': 'Go',
+      'rust': 'Rust',
+      'kotlin': 'Kotlin',
+      'swift': 'Swift',
+      'ruby': 'Ruby',
+      'rb': 'Ruby',
+      'scala': 'Scala',
+      'dart': 'Dart',
+      'r': 'R',
+      'matlab': 'MATLAB',
+      'octave': 'Octave',
+      'lua': 'Lua',
+      'perl': 'Perl',
+      'pl': 'Perl',
+      'powershell': 'PowerShell',
+      'ps1': 'PowerShell',
+      'dockerfile': 'Dockerfile',
+      'docker': 'Dockerfile',
+      'nginx': 'Nginx',
+      'apache': 'Apache',
+      'vim': 'Vim',
+      'viml': 'Vim',
+      'emacs': 'Emacs Lisp',
+      'lisp': 'Lisp',
+      'clojure': 'Clojure',
+      'clj': 'Clojure',
+      'haskell': 'Haskell',
+      'hs': 'Haskell',
+      'ocaml': 'OCaml',
+      'fsharp': 'F#',
+      'fs': 'F#',
+      'erlang': 'Erlang',
+      'erl': 'Erlang',
+      'elixir': 'Elixir',
+      'ex': 'Elixir',
+      'exs': 'Elixir',
+      'julia': 'Julia',
+      'jl': 'Julia',
+      'nim': 'Nim',
+      'crystal': 'Crystal',
+      'zig': 'Zig',
+      'assembly': 'Assembly',
+      'asm': 'Assembly',
+      'markdown': 'Markdown',
+      'md': 'Markdown',
+      'text': 'Text',
+      'plain': 'Plain Text',
+      'plaintext': 'Plain Text',
+      'diff': 'Diff',
+      'patch': 'Patch',
+      'git': 'Git',
+      'gitignore': 'Git Ignore',
+      'dockerignore': 'Docker Ignore',
+      'editorconfig': 'EditorConfig',
+      'ini': 'INI',
+      'toml': 'TOML',
+      'xml': 'XML',
+      'svg': 'SVG',
+      'graphql': 'GraphQL',
+      'gql': 'GraphQL',
+      'protobuf': 'Protocol Buffers',
+      'proto': 'Protocol Buffers',
+      'thrift': 'Apache Thrift',
+      'avro': 'Apache Avro',
+      'yacc': 'Yacc',
+      'lex': 'Lex',
+      'bnf': 'BNF',
+      'ebnf': 'EBNF',
+      'peg': 'PEG',
+      'jison': 'Jison',
+      'antlr': 'ANTLR',
+      'flex': 'Flex',
+      'bison': 'Bison'
+    };
+    
+    return languageNames[language.toLowerCase()] || language.toUpperCase();
   }
 
   /**
@@ -203,16 +337,6 @@
     // This is handled in initCodeHighlighting
   }
 
-  /**
-   * Check if Line Numbers Should Be Shown
-   */
-  function shouldShowLineNumbers(codeBlock) {
-    // Check if line numbers are enabled in theme config
-    const config = window.JI?.config || {};
-    const lineCount = codeBlock.textContent.split('\n').length;
-    // Show line numbers for blocks with more than 3 lines
-    return config.showLineNumbers !== false && lineCount > 3;
-  }
 
   /**
    * Add Line Numbers to Code Blocks
@@ -227,12 +351,31 @@
     // Create line numbers container
     const lineNumbers = document.createElement('div');
     lineNumbers.className = 'line-numbers';
+    lineNumbers.setAttribute('aria-label', 'Line numbers');
     
     // Add line numbers
     lines.forEach((_, index) => {
       const lineNumber = document.createElement('span');
       lineNumber.className = 'line-number';
       lineNumber.textContent = index + 1;
+      lineNumber.setAttribute('data-line', index + 1);
+      lineNumber.setAttribute('role', 'button');
+      lineNumber.setAttribute('tabindex', '0');
+      lineNumber.setAttribute('aria-label', `Line ${index + 1}`);
+      
+      // Add click handler for line highlighting
+      lineNumber.addEventListener('click', function() {
+        highlightLine(this, wrapper);
+      });
+      
+      // Add keyboard support
+      lineNumber.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          highlightLine(this, wrapper);
+        }
+      });
+      
       lineNumbers.appendChild(lineNumber);
     });
     
@@ -242,12 +385,102 @@
   }
 
   /**
+   * Highlight a specific line
+   */
+  function highlightLine(lineElement, wrapper) {
+    // Remove previous highlights
+    const previousActive = wrapper.querySelector('.line-number.active');
+    if (previousActive) {
+      previousActive.classList.remove('active');
+    }
+    
+    // Add highlight to clicked line
+    lineElement.classList.add('active');
+    
+    // Scroll to line if needed
+    const lineNumber = parseInt(lineElement.getAttribute('data-line'));
+    const pre = wrapper.querySelector('pre');
+    const code = pre.querySelector('code');
+    const lines = code.textContent.split('\n');
+    
+    if (lineNumber <= lines.length) {
+      // Calculate approximate scroll position
+      const lineHeight = 24; // Approximate line height
+      const scrollTop = (lineNumber - 1) * lineHeight;
+      pre.scrollTop = Math.max(0, scrollTop - 100); // Offset for better visibility
+    }
+  }
+
+  /**
    * Initialize Line Numbers
    */
   function initCodeLineNumbers() {
     // This is handled in initCodeHighlighting
   }
 
-  // CSS样式已在syntax.css中定义，无需重复添加
+  /**
+   * Initialize Code Block Interactions
+   */
+  function initCodeBlockInteractions() {
+    const codeBlocks = document.querySelectorAll('.code-block-wrapper');
+    
+    codeBlocks.forEach(block => {
+      // Add keyboard navigation support
+      block.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          // Remove focus from any active line numbers
+          const activeLine = block.querySelector('.line-number.active');
+          if (activeLine) {
+            activeLine.classList.remove('active');
+            activeLine.blur();
+          }
+        }
+      });
+      
+      // Add focus management
+      const copyButton = block.querySelector('.code-copy-button');
+      if (copyButton) {
+        copyButton.addEventListener('keydown', function(e) {
+          if (e.key === 'Tab' && !e.shiftKey) {
+            // Focus first line number when tabbing from copy button
+            const firstLine = block.querySelector('.line-number');
+            if (firstLine) {
+              e.preventDefault();
+              firstLine.focus();
+            }
+          }
+        });
+      }
+      
+      // Add line number keyboard navigation
+      const lineNumbers = block.querySelectorAll('.line-number');
+      lineNumbers.forEach((line, index) => {
+        line.addEventListener('keydown', function(e) {
+          switch(e.key) {
+            case 'ArrowDown':
+              e.preventDefault();
+              const nextLine = lineNumbers[index + 1];
+              if (nextLine) nextLine.focus();
+              break;
+            case 'ArrowUp':
+              e.preventDefault();
+              const prevLine = lineNumbers[index - 1];
+              if (prevLine) prevLine.focus();
+              else if (copyButton) copyButton.focus();
+              break;
+            case 'Home':
+              e.preventDefault();
+              lineNumbers[0].focus();
+              break;
+            case 'End':
+              e.preventDefault();
+              lineNumbers[lineNumbers.length - 1].focus();
+              break;
+          }
+        });
+      });
+    });
+  }
+
 
 })();

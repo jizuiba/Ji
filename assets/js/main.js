@@ -196,6 +196,10 @@
   function setTheme(theme) {
     localStorage.setItem('theme', theme);
     
+    // Add transitioning class for smooth animations
+    document.documentElement.classList.add('theme-transitioning');
+    
+    // Apply theme immediately for better performance
     if (theme === 'auto') {
       // Remove all theme classes to let CSS media queries handle auto detection
       document.documentElement.classList.remove('theme-dark', 'theme-light');
@@ -206,6 +210,11 @@
       document.documentElement.classList.remove('theme-dark');
       document.documentElement.classList.add('theme-light');
     }
+    
+    // Remove transitioning class after animation completes
+    setTimeout(() => {
+      document.documentElement.classList.remove('theme-transitioning');
+    }, 200); // Match --theme-transition duration
   }
 
 
@@ -326,13 +335,23 @@
   }
 
 
+  // Global theme toggle function for inline scripts
+  window.toggleTheme = function() {
+    const isDark = document.documentElement.classList.contains('theme-dark');
+    const newTheme = isDark ? 'light' : 'dark';
+    setTheme(newTheme);
+    updateThemeIcon();
+    updateThemeSelector();
+  };
+
   // Make functions available globally
   window.JI = {
     debounce,
     throttle,
     updateThemeIcon,
     setTheme,
-    updateThemeSelector
+    updateThemeSelector,
+    toggleTheme
   };
 
 })();

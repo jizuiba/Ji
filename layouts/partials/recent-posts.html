@@ -37,12 +37,16 @@
                   {{ .Title }}
                 </h3>
                 
+                {{ if .Params.subtitle }}
+                  <p class="home-post-subtitle desktop-only">{{ .Params.subtitle }}</p>
+                {{ end }}
+                
                 <div class="home-post-meta">
                   <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}" class="post-date">
                     {{ .Date.Format (.Site.Params.dateFormat | default "2006年1月2日") }}
                   </time>
                   {{ if .Params.author }}
-                    <span class="post-author">by {{ .Params.author }}</span>
+                    <span class="post-author desktop-only">by {{ .Params.author }}</span>
                   {{ end }}
                 </div>
               </div>
@@ -74,10 +78,17 @@
                     {{ .Title }}
                   </h3>
                   
+                  {{ if .Params.subtitle }}
+                    <p class="home-post-subtitle desktop-only">{{ .Params.subtitle }}</p>
+                  {{ end }}
+                  
                   <div class="home-post-meta">
                     <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}" class="post-date">
                       {{ .Date.Format (.Site.Params.dateFormat | default "2006年1月2日") }}
                     </time>
+                    {{ if .Params.author }}
+                      <span class="post-author desktop-only">by {{ .Params.author }}</span>
+                    {{ end }}
                   </div>
                 </div>
               </a>

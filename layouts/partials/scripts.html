@@ -17,6 +17,11 @@
 
 <!-- Code highlighting -->
 {{ if .Site.Params.syntaxHighlighting }}
+  <script>
+    window.themeConfig = {
+      showLineNumbers: {{ .Site.Params.showLineNumbers | default true }}
+    };
+  </script>
   {{ $codeJS := resources.Get "js/code-highlight.js" | resources.Minify | resources.Fingerprint }}
   <script src="{{ $codeJS.RelPermalink }}" integrity="{{ $codeJS.Data.Integrity }}"></script>
 {{ end }}
@@ -25,6 +30,12 @@
 {{ if .TableOfContents }}
   {{ $tocJS := resources.Get "js/toc.js" | resources.Minify | resources.Fingerprint }}
   <script src="{{ $tocJS.RelPermalink }}" integrity="{{ $tocJS.Data.Integrity }}"></script>
+{{ end }}
+
+<!-- Featured Image Optimization -->
+{{ if .Params.featured_image }}
+  {{ $featuredImageJS := resources.Get "js/featured-image.js" | resources.Minify | resources.Fingerprint }}
+  <script src="{{ $featuredImageJS.RelPermalink }}" integrity="{{ $featuredImageJS.Data.Integrity }}"></script>
 {{ end }}
 
 <!-- Custom JavaScript -->

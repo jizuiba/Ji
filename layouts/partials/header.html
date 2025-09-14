@@ -52,21 +52,6 @@
           {{ end }}
         </ul>
         
-        {{ if .Site.Menus.social }}
-          <ul class="social-menu">
-            {{ range .Site.Menus.social }}
-              <li class="social-item">
-                <a href="{{ .URL }}" target="_blank" rel="noopener noreferrer" aria-label="{{ .Name }}">
-                  {{ if .Pre }}
-                    <span class="social-icon">{{ .Pre | safeHTML }}</span>
-                  {{ else }}
-                    <span class="social-icon">{{ .Name }}</span>
-                  {{ end }}
-                </a>
-              </li>
-            {{ end }}
-          </ul>
-        {{ end }}
       </nav>
 
       <!-- 搜索按钮 -->
@@ -106,21 +91,6 @@
         {{ end }}
       </ul>
       
-      {{ if .Site.Menus.social }}
-        <ul class="mobile-social-menu">
-          {{ range .Site.Menus.social }}
-            <li class="social-item">
-              <a href="{{ .URL }}" target="_blank" rel="noopener noreferrer" aria-label="{{ .Name }}">
-                {{ if .Pre }}
-                  <span class="social-icon">{{ .Pre | safeHTML }}</span>
-                {{ else }}
-                  <span class="social-icon">{{ .Name }}</span>
-                {{ end }}
-              </a>
-            </li>
-          {{ end }}
-        </ul>
-      {{ end }}
     </nav>
   </div>
 </header>

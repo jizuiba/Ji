@@ -23,11 +23,8 @@ class TableOfContents {
 
   init() {
     if (!this.tocContainer || !this.tocLinks || !this.tocLinks.length) {
-      console.log('TOC: No TOC container or links found');
       return;
     }
-
-    console.log('TOC: Initializing with', this.tocLinks.length, 'links');
     
     this.setupHeadings();
     this.setupSmoothScrolling();
@@ -226,31 +223,16 @@ class TableOfContents {
     });
   }
 
-  // Public method to programmatically scroll to a section
-  scrollToSection(sectionId) {
-    const targetElement = document.getElementById(sectionId);
-    if (targetElement) {
-      targetElement.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }
-  }
-
-  
-  
   setupSlider() {
-    // Slider functionality disabled - using native scrollbar only
     return;
   }
   
   updateSlider() {
-    // Slider functionality disabled - using native scrollbar only
     return;
   }
   
   setupResponsive() {
-    // Responsive behavior handled by CSS media queries
+    return;
   }
   
   scrollToActiveItem(activeLink) {
@@ -291,12 +273,6 @@ class TableOfContents {
   }
 }
 
-// Initialize TOC when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   new TableOfContents();
 });
-
-// Export for potential external use
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = TableOfContents;
-}

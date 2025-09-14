@@ -166,11 +166,14 @@
               </h3>
               
               ${subtitle ? `
-                <p class="home-post-subtitle">${escapeHtml(subtitle)}</p>
+                <p class="home-post-subtitle desktop-only">${escapeHtml(subtitle)}</p>
               ` : ''}
               
               <div class="home-post-meta">
                 <time datetime="${item.date}" class="post-date">${date}</time>
+                ${item.author ? `
+                  <span class="post-author desktop-only">by ${escapeHtml(item.author)}</span>
+                ` : ''}
               </div>
             </div>
           </a>

@@ -52,10 +52,21 @@
 
   <!-- Featured Image -->
   {{ if .Params.featured_image }}
-    <section class="feature-image">
+    <section class="feature-image" aria-label="文章特色图片">
       <div class="screen">
         <div class="feature-image-content">
-          <img src="{{ .Params.featured_image | absURL }}" alt="{{ .Title }}" class="feature-img">
+          <figure class="feature-image-wrapper">
+            <img 
+              src="{{ .Params.featured_image | absURL }}" 
+              alt="{{ .Title }}" 
+              class="feature-img"
+              loading="eager"
+              decoding="async"
+            >
+            {{ if .Params.featured_image_caption }}
+              <figcaption class="feature-image-caption">{{ .Params.featured_image_caption }}</figcaption>
+            {{ end }}
+          </figure>
         </div>
       </div>
     </section>
