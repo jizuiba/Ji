@@ -1,20 +1,9 @@
 # Ji Theme
 
-一个简洁现代的 Hugo 主题，专为个人博客设计。
+自己用用的 Hugo 主题。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Hugo](https://img.shields.io/badge/Hugo-0.149.1+-blue.svg)](https://gohugo.io/)
-
-## ✨ 特性
-
-- 🎨 **简洁现代** - 清爽的设计风格，专注内容展示
-- 🌙 **深色模式** - 支持自动切换和手动切换
-- 📱 **响应式布局** - 完美适配各种设备
-- 🔍 **内置搜索** - 强大的全文搜索功能
-- 📝 **代码高亮** - 支持多种编程语言
-- ⚡ **快速加载** - 优化的性能和SEO
-- 🏷️ **标签分类** - 完整的分类和标签系统
-- 📄 **分页支持** - 自动分页和导航
 
 ## 🚀 快速开始
 
@@ -28,7 +17,7 @@ git submodule add https://github.com/jizuiba/Ji.git themes/Ji
 
 ### 2. 基本配置
 
-在您的 `hugo.toml` 或 `config.toml` 中添加：
+在您的 `hugo.toml` 中添加：
 
 ```toml
 baseURL = "https://example.com"
@@ -60,8 +49,6 @@ hugo server -D
 访问 `http://localhost:1313` 查看您的站点。
 
 ## 🔍 搜索功能配置
-
-本主题内置了强大的搜索功能，支持全文搜索、标签搜索和分类搜索。
 
 ### 启用搜索功能
 
@@ -101,24 +88,6 @@ type: "search"
 hugo --cleanDestinationDir
 ```
 
-### 搜索功能特性
-
-- ✅ **全文搜索** - 搜索文章标题、内容和摘要
-- ✅ **标签搜索** - 支持按标签搜索文章
-- ✅ **分类搜索** - 支持按分类搜索文章
-- ✅ **智能排序** - 标题匹配优先，按日期排序
-- ✅ **分页支持** - 搜索结果自动分页
-- ✅ **响应式设计** - 移动端友好的搜索界面
-
-### 故障排除
-
-如果搜索功能出现"Page Not Found"错误，请检查：
-
-1. ✅ 配置文件中 `[params]` 包含 `search = true`
-2. ✅ 配置文件中 `[outputs]` 包含 `"JSON"`
-3. ✅ 存在 `content/search/_index.md` 文件
-4. ✅ 重新构建了站点（`hugo --cleanDestinationDir`）
-
 ## 📝 内容管理
 
 ### 创建文章
@@ -139,11 +108,14 @@ hugo new categories/技术.md
 ```markdown
 ---
 title: "文章标题"
-date: 2024-01-01
+subtitle: "副标题"
+author: "作者"
+date: 2025-01-01
 draft: false
 tags: ["标签1", "标签2"]
 categories: ["分类1"]
 featured_image: "/images/featured.jpg"
+featured_image_caption: "图片描述"
 summary: "文章摘要"
 ---
 ```
@@ -279,24 +251,6 @@ themes/Ji/
 cd themes/Ji
 git pull origin main
 ```
-
-## 🐛 常见问题
-
-### Q: 搜索功能不工作？
-A: 请确保：
-1. 配置文件中启用了搜索功能
-2. 包含了JSON输出格式
-3. 创建了搜索页面文件
-4. 重新构建了站点
-
-### Q: 如何自定义样式？
-A: 可以通过以下方式：
-1. 覆盖主题的CSS文件
-2. 在站点根目录创建 `assets/css/custom.css`
-3. 修改主题的SCSS源文件
-
-### Q: 如何添加新的页面类型？
-A: 在 `layouts/` 目录下创建对应的模板文件，或参考现有模板进行修改。
 
 ## 📄 许可证
 

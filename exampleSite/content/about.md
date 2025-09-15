@@ -1,6 +1,6 @@
 ---
 title: "关于我"
-date: 2024-01-15T10:00:00Z
+date: 2025-09-15
 draft: false
 description: "了解我的故事和经历"
 ---
@@ -12,18 +12,6 @@ description: "了解我的故事和经历"
 ## 我的故事
 
 在这里，我会分享我的学习心得和技术感悟。希望通过这个平台，能够与更多的朋友交流学习。
-
-## 技能专长
-
-- **编程语言**：JavaScript, Python, Go，Java
-- **前端技术**：React, Vue, HTML/CSS
-- **后端技术**：Node.js, Django, Express，Spring
-
-## 兴趣爱好
-
-- 📚 阅读技术书籍
-- 🎵 听音乐
-- 🏃 跑步健身
 
 ## 联系方式
 
