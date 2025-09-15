@@ -1,7 +1,7 @@
 {
   "name": "ji-hugo-theme",
   "version": "1.0.0",
-  "description": "一款为性能、可访问性和精美设计打造的现代响应式 Hugo 主题。支持深色模式，拥有卓越的排版系统和简洁纯粹的美学风格。",
+  "description": "一个简洁现代的 Hugo 主题",
   "main": "index.js",
   "scripts": {
     "build": "echo 'This theme uses Hugo for building. Run: hugo --minify'",
@@ -68,8 +68,8 @@
     "extended": true
   },
   "theme": {
-    "name": "JI",
-    "description": "现代响应式 Hugo 主题",
+    "name": "Ji",
+    "description": "一个简洁现代的 Hugo 主题",
     "tags": [
       "blog",
       "responsive",

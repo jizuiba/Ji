@@ -1,6 +1,6 @@
 ---
 title: "功能展示"
-date: 2024-01-15T10:00:00Z
+date: 2025-09-15
 draft: false
 categories: ["功能展示"]
 tags: ["hugo", "主题", "功能"]
@@ -57,7 +57,3 @@ body {
 
 - [外部链接](https://github.com)
 - [内部链接](/about)
-
----
-
-这就是主题的主要功能展示！
