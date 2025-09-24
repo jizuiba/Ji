@@ -12,17 +12,16 @@
     initCodeBlockInteractions();
   });
 
-  /**
-   * Initialize Code Highlighting
-   */
   function initCodeHighlighting() {
     const preBlocks = document.querySelectorAll('pre');
     
     preBlocks.forEach(pre => {
+      // Skip mermaid diagrams to avoid interfering with Mermaid rendering
+      if (pre.classList.contains('mermaid')) return;
+
       const codeBlock = pre.querySelector('code');
       if (!codeBlock) return;
       
-      // Add language class if not present
       if (!codeBlock.className.includes('language-')) {
         const language = detectLanguage(codeBlock.textContent);
         if (language) {
@@ -30,19 +29,27 @@
         }
       }
       
-      // Wrap pre block in container
       const wrapper = document.createElement('div');
       wrapper.className = 'code-block-wrapper';
       pre.parentNode.insertBefore(wrapper, pre);
       wrapper.appendChild(pre);
+
+      // Build a header area to avoid overlapping UI on code content
+      const header = document.createElement('div');
+      header.className = 'code-block-header';
+
+      // Add copy button (left)
+      const copyButton = createCopyButton();
+      header.appendChild(copyButton);
+
+      // Add language label (right)
+      const languageLabel = createLanguageLabel(codeBlock);
+      if (languageLabel) header.appendChild(languageLabel);
+
+      // Insert header before the <pre>
+      wrapper.insertBefore(header, pre);
       
-      // Add language label
-      addLanguageLabel(wrapper, codeBlock);
-      
-      // Add copy button
-      addCopyButton(wrapper);
-      
-      // Add line numbers for blocks with more than 3 lines (if enabled)
+      // Add line numbers
       const lineCount = codeBlock.textContent.split('\n').length;
       const showLineNumbers = window.themeConfig && window.themeConfig.showLineNumbers !== false;
       if (lineCount > 3 && showLineNumbers) {
@@ -51,9 +58,6 @@
     });
   }
 
-  /**
-   * Detect Programming Language
-   */
   function detectLanguage(code) {
     const patterns = {
       javascript: /^(function|const|let|var|import|export|class|async|await|console\.log)/m,
@@ -84,32 +88,23 @@
     return null;
   }
 
-  /**
-   * Add Language Label to Code Blocks
-   */
-  function addLanguageLabel(wrapper, codeBlock) {
+  // Create language label element
+  function createLanguageLabel(codeBlock) {
     const language = getLanguageFromClass(codeBlock.className);
-    if (!language) return;
+    if (!language) return null;
     
     const label = document.createElement('div');
     label.className = 'code-language-label';
     label.textContent = getLanguageDisplayName(language);
     label.setAttribute('title', `编程语言: ${getLanguageDisplayName(language)}`);
-    
-    wrapper.appendChild(label);
+    return label;
   }
 
-  /**
-   * Get Language from Class Name
-   */
   function getLanguageFromClass(className) {
     const match = className.match(/language-(\w+)/);
     return match ? match[1] : null;
   }
 
-  /**
-   * Get Display Name for Language
-   */
   function getLanguageDisplayName(language) {
     const languageNames = {
       'javascript': 'JavaScript',
@@ -212,10 +207,8 @@
     return languageNames[language.toLowerCase()] || language.toUpperCase();
   }
 
-  /**
-   * Add Copy Button to Code Blocks
-   */
-  function addCopyButton(wrapper) {
+  // Create copy button element (not absolutely positioned)
+  function createCopyButton() {
     const button = document.createElement('button');
     button.className = 'code-copy-button';
     button.setAttribute('aria-label', 'Copy code to clipboard');
@@ -231,15 +224,12 @@
       copyCodeToClipboard(this);
     });
     
-    wrapper.appendChild(button);
+    return button;
   }
 
-  /**
-   * Copy Code to Clipboard
-   */
   function copyCodeToClipboard(button) {
-    const wrapper = button.parentNode;
-    const codeBlock = wrapper.querySelector('code');
+    const wrapper = button.closest('.code-block-wrapper');
+    const codeBlock = wrapper && wrapper.querySelector('code');
     if (!codeBlock) return;
     
     const code = codeBlock.textContent;
@@ -255,9 +245,6 @@
     }
   }
 
-  /**
-   * Fallback Copy Method
-   */
   function fallbackCopyToClipboard(text, button) {
     const textArea = document.createElement('textarea');
     textArea.value = text;
@@ -279,9 +266,6 @@
     document.body.removeChild(textArea);
   }
 
-  /**
-   * Show Copy Success Feedback
-   */
   function showCopySuccess(button) {
     const originalText = button.querySelector('.copy-text').textContent;
     const icon = button.querySelector('svg');
@@ -289,7 +273,6 @@
     button.querySelector('.copy-text').textContent = 'Copied!';
     button.classList.add('copied');
     
-    // Change icon to checkmark
     icon.innerHTML = `
       <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
     `;
@@ -304,9 +287,6 @@
     }, 2000);
   }
 
-  /**
-   * Show Copy Error Feedback
-   */
   function showCopyError(button) {
     const originalText = button.querySelector('.copy-text').textContent;
     const icon = button.querySelector('svg');
@@ -314,7 +294,6 @@
     button.querySelector('.copy-text').textContent = 'Error';
     button.classList.add('error');
     
-    // Change icon to X
     icon.innerHTML = `
       <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"></line>
       <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"></line>
@@ -330,17 +309,10 @@
     }, 2000);
   }
 
-  /**
-   * Initialize Code Copy Buttons
-   */
   function initCodeCopyButtons() {
-    // This is handled in initCodeHighlighting
+    // handled during initialization
   }
 
-
-  /**
-   * Add Line Numbers to Code Blocks
-   */
   function addLineNumbers(wrapper) {
     const pre = wrapper.querySelector('pre');
     const code = pre.querySelector('code');
@@ -348,12 +320,10 @@
     
     const lines = code.textContent.split('\n');
     
-    // Create line numbers container
     const lineNumbers = document.createElement('div');
     lineNumbers.className = 'line-numbers';
     lineNumbers.setAttribute('aria-label', 'Line numbers');
     
-    // Add line numbers
     lines.forEach((_, index) => {
       const lineNumber = document.createElement('span');
       lineNumber.className = 'line-number';
@@ -363,12 +333,10 @@
       lineNumber.setAttribute('tabindex', '0');
       lineNumber.setAttribute('aria-label', `Line ${index + 1}`);
       
-      // Add click handler for line highlighting
       lineNumber.addEventListener('click', function() {
         highlightLine(this, wrapper);
       });
       
-      // Add keyboard support
       lineNumber.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
@@ -379,56 +347,40 @@
       lineNumbers.appendChild(lineNumber);
     });
     
-    // Insert line numbers before pre
     wrapper.insertBefore(lineNumbers, pre);
     wrapper.classList.add('with-line-numbers');
   }
 
-  /**
-   * Highlight a specific line
-   */
   function highlightLine(lineElement, wrapper) {
-    // Remove previous highlights
     const previousActive = wrapper.querySelector('.line-number.active');
     if (previousActive) {
       previousActive.classList.remove('active');
     }
     
-    // Add highlight to clicked line
     lineElement.classList.add('active');
     
-    // Scroll to line if needed
     const lineNumber = parseInt(lineElement.getAttribute('data-line'));
     const pre = wrapper.querySelector('pre');
     const code = pre.querySelector('code');
     const lines = code.textContent.split('\n');
     
     if (lineNumber <= lines.length) {
-      // Calculate approximate scroll position
-      const lineHeight = 24; // Approximate line height
+      const lineHeight = 24;
       const scrollTop = (lineNumber - 1) * lineHeight;
-      pre.scrollTop = Math.max(0, scrollTop - 100); // Offset for better visibility
+      pre.scrollTop = Math.max(0, scrollTop - 100);
     }
   }
 
-  /**
-   * Initialize Line Numbers
-   */
   function initCodeLineNumbers() {
-    // This is handled in initCodeHighlighting
+    // handled during initialization
   }
 
-  /**
-   * Initialize Code Block Interactions
-   */
   function initCodeBlockInteractions() {
     const codeBlocks = document.querySelectorAll('.code-block-wrapper');
     
     codeBlocks.forEach(block => {
-      // Add keyboard navigation support
       block.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
-          // Remove focus from any active line numbers
           const activeLine = block.querySelector('.line-number.active');
           if (activeLine) {
             activeLine.classList.remove('active');
@@ -437,12 +389,10 @@
         }
       });
       
-      // Add focus management
       const copyButton = block.querySelector('.code-copy-button');
       if (copyButton) {
         copyButton.addEventListener('keydown', function(e) {
           if (e.key === 'Tab' && !e.shiftKey) {
-            // Focus first line number when tabbing from copy button
             const firstLine = block.querySelector('.line-number');
             if (firstLine) {
               e.preventDefault();
@@ -452,7 +402,6 @@
         });
       }
       
-      // Add line number keyboard navigation
       const lineNumbers = block.querySelectorAll('.line-number');
       lineNumbers.forEach((line, index) => {
         line.addEventListener('keydown', function(e) {
@@ -481,6 +430,5 @@
       });
     });
   }
-
 
 })();

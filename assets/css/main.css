@@ -3903,4 +3903,118 @@ button:focus {
   }
 }
 
+/* Mermaid zoom overlay */
+#mermaid-zoom-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 24px;
+}
+
+#mermaid-zoom-overlay.show {
+  display: flex;
+}
+
+#mermaid-zoom-overlay .mermaid-zoom-content {
+  background: var(--color-bg);
+  color: var(--color-text);
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow: auto;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  padding: 16px;
+}
+
+.theme-dark #mermaid-zoom-overlay .mermaid-zoom-content {
+  background: var(--color-bg-dark);
+  color: var(--color-text-dark);
+}
+
+body.no-scroll {
+  overflow: hidden;
+}
+
+/* Improve default Mermaid text contrast in dark theme */
+.theme-dark .mermaid svg {
+  color: #e6edf3;
+}
+
+.theme-dark .mermaid svg .label, 
+.theme-dark .mermaid svg text, 
+.theme-dark .mermaid svg tspan {
+  fill: #e6edf3 !important;
+}
+
+/* links and lines */
+.theme-dark .mermaid svg .edgePath path, 
+.theme-dark .mermaid svg .flowchart-link {
+  stroke: #58a6ff !important;
+}
+
+/* nodes */
+.theme-dark .mermaid svg .node rect,
+.theme-dark .mermaid svg .node circle,
+.theme-dark .mermaid svg .node polygon,
+.theme-dark .mermaid svg .node path {
+  fill: #161b22 !important;
+  stroke: #58a6ff !important;
+}
+
+/* activation bars, sequence arrows */
+.theme-dark .mermaid svg .actor,
+.theme-dark .mermaid svg .actor-man,
+.theme-dark .mermaid svg .messageLine0,
+.theme-dark .mermaid svg .messageLine1 {
+  stroke: #58a6ff !important;
+  fill: #0d1117 !important;
+}
+
+/* lifelines */
+.theme-dark .mermaid svg .lifeline {
+  stroke: #58a6ff !important;
+}
+
+/* notes */
+.theme-dark .mermaid svg .note {
+  fill: #0d1117 !important;
+  stroke: #58a6ff !important;
+}
+
+/* Mermaid light theme readability improvements */
+.mermaid svg {
+  color: #24292f;
+}
+
+.mermaid svg .label,
+.mermaid svg text,
+.mermaid svg tspan {
+  fill: #24292f !important;
+}
+
+.mermaid svg .edgePath path,
+.mermaid svg .flowchart-link {
+  stroke: #0a3069 !important;
+}
+
+.mermaid svg .node rect,
+.mermaid svg .node circle,
+.mermaid svg .node polygon,
+.mermaid svg .node path {
+  fill: #ffffff !important;
+  stroke: #0a3069 !important;
+}
+
+/* Refine zoom content sizing */
+#mermaid-zoom-overlay .mermaid-zoom-content svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
 

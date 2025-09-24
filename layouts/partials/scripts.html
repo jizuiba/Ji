@@ -49,6 +49,62 @@
   {{ end }}
 {{ end }}
 
+<!-- Mermaid Diagrams (loaded only when needed) -->
+{{ if .Store.Get "hasMermaid" }}
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+
+    const lightConfig = {
+      theme: 'default',
+      themeVariables: {
+        background: 'transparent',
+        primaryColor: '#0a3069',
+        primaryTextColor: '#24292f',
+        primaryBorderColor: '#0a3069',
+        lineColor: '#0a3069',
+        textColor: '#24292f',
+        tertiaryColor: '#f6f8fa'
+      }
+    };
+
+    const darkConfig = {
+      theme: 'dark',
+      themeVariables: {
+        background: 'transparent',
+        primaryColor: '#58a6ff',
+        primaryTextColor: '#e6edf3',
+        primaryBorderColor: '#58a6ff',
+        lineColor: '#58a6ff',
+        textColor: '#e6edf3',
+        tertiaryColor: '#161b22'
+      }
+    };
+
+    function isDarkTheme() {
+      return document.documentElement.classList.contains('theme-dark');
+    }
+
+    function initializeMermaidForCurrentTheme(startOnLoad = true) {
+      const config = isDarkTheme() ? darkConfig : lightConfig;
+      mermaid.initialize({ startOnLoad, ...config });
+    }
+
+    function renderMermaid(selector = '.mermaid, pre.mermaid, .language-mermaid') {
+      mermaid.run({ querySelector: selector });
+    }
+
+    // Initial init + render
+    initializeMermaidForCurrentTheme(true);
+
+    // Re-render on theme changes
+    const themeObserver = new MutationObserver(() => {
+      initializeMermaidForCurrentTheme(false);
+      renderMermaid();
+    });
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  </script>
+{{ end }}
+
 <!-- Analytics -->
 {{ if .Site.Params.analytics }}
   {{ if .Site.Params.analytics.google }}
