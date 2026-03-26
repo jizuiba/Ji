@@ -3,56 +3,64 @@
  * Provides offline functionality and caching
  */
 
-const CACHE_NAME = 'ji-v1';
-const urlsToCache = [
-  '/',
-  '/css/main.css',
-  '/js/main.js',
-  '/offline.html'
-];
+const CACHE_NAME = 'ji-v2';
+const BASE_URL = new URL('./', self.registration ? self.registration.scope : self.location.href);
+const OFFLINE_URL = new URL('offline.html', BASE_URL).toString();
 
 // Install event
 self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(function(cache) {
-        return cache.addAll(urlsToCache);
+        return cache.add(OFFLINE_URL);
       })
   );
+
+  self.skipWaiting();
 });
 
 // Fetch event
 self.addEventListener('fetch', function(event) {
+  if (event.request.method !== 'GET') {
+    return;
+  }
+
+  const requestUrl = new URL(event.request.url);
+
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).catch(function() {
+        return caches.match(OFFLINE_URL);
+      })
+    );
+    return;
+  }
+
+  if (requestUrl.origin !== self.location.origin) {
+    return;
+  }
+
   event.respondWith(
-    caches.match(event.request)
-      .then(function(response) {
-        // Return cached version or fetch from network
-        if (response) {
+    caches.match(event.request).then(function(cachedResponse) {
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+
+      return fetch(event.request).then(function(response) {
+        if (!response || response.status !== 200 || response.type !== 'basic') {
           return response;
         }
-        
-        return fetch(event.request).then(function(response) {
-          // Check if we received a valid response
-          if (!response || response.status !== 200 || response.type !== 'basic') {
-            return response;
-          }
-          
-          // Clone the response
+
+        if (['style', 'script', 'image', 'font'].includes(event.request.destination)) {
           const responseToCache = response.clone();
-          
-          caches.open(CACHE_NAME)
-            .then(function(cache) {
-              cache.put(event.request, responseToCache);
-            });
-          
-          return response;
-        }).catch(function() {
-          // Return offline page for navigation requests
-          if (event.request.destination === 'document') {
-            return caches.match('/offline.html');
-          }
-        });
-      })
+          caches.open(CACHE_NAME).then(function(cache) {
+            cache.put(event.request, responseToCache);
+          });
+        }
+
+        return response;
+      });
+    })
   );
 });
 
@@ -69,4 +77,6 @@ self.addEventListener('activate', function(event) {
       );
     })
   );
+
+  self.clients.claim();
 });

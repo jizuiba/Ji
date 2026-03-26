@@ -1,6 +1,13 @@
-<pre class="mermaid">
-  {{- .Inner | htmlEscape | safeHTML -}}
-</pre>
-{{ .Page.Store.Set "hasMermaid" true }}
+{{- $params := .Page.Site.Params -}}
+{{- $maxHeight := "32rem" -}}
+{{- with $params.codeBlock -}}
+  {{- if .maxHeight -}}
+    {{- $maxHeight = .maxHeight -}}
+  {{- end -}}
+{{- end -}}
+
+<figure class="article-codeblock article-codeblock--mermaid" data-code-language="mermaid" style="--code-max-height: {{ $maxHeight }};">
+  <pre class="mermaid">{{- .Inner | htmlEscape | safeHTML -}}</pre>
+</figure>
 
 

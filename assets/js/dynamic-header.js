@@ -1,114 +1,175 @@
 /**
- * 动态Header功能
- * 向下滚动显示动态标题，向上滚动显示默认Header
+ * Dynamic header title (supports PJAX page swaps)
+ * Uses IntersectionObserver instead of scroll threshold polling.
  */
 
 (function() {
   'use strict';
 
-  document.addEventListener('DOMContentLoaded', function() {
-    initDynamicHeader();
-  });
+  const TITLE_SELECTORS = [
+    '.post-info .title-box .title',
+    '#post-title',
+    '#category-title',
+    '#tag-title',
+    '#search-title',
+    '.page-title'
+  ];
 
-  function initDynamicHeader() {
-    const siteHeader = document.querySelector('.site-header');
-    const dynamicHeader = document.getElementById('dynamic-header');
-    const dynamicTitle = document.getElementById('dynamic-title');
-    
-    if (!siteHeader || !dynamicHeader || !dynamicTitle) return;
+  const state = {
+    initialized: false,
+    observer: null,
+    siteHeader: null,
+    dynamicHeader: null,
+    dynamicTitle: null,
+    titleSource: null,
+    targetTitle: '',
+    titlePassed: false,
+    lastScrollY: 0,
+    lastDirection: 'down',
+    ticking: false
+  };
 
-    let lastScrollY = window.scrollY;
-    let ticking = false;
-    let currentPageType = getPageType();
-    let targetTitle = getTargetTitle();
-
-    // 获取页面类型
-    function getPageType() {
-      const pathname = window.location.pathname;
-      const body = document.body;
-      
-      if (body.classList.contains('single') || pathname.includes('/posts/')) {
-        return 'post';
-      } else if (pathname.includes('/categories/') && pathname !== '/categories/') {
-        return 'category';
-      } else if (pathname.includes('/tags/') && pathname !== '/tags/') {
-        return 'tag';
-      }
-      return 'home';
-    }
-
-    // 获取目标标题
-    function getTargetTitle() {
-      if (currentPageType === 'post') {
-        const postTitle = document.querySelector('.title, #post-title, .post-title, h1.post-title');
-        return postTitle ? postTitle.textContent.trim() : '';
-      } else if (currentPageType === 'category') {
-        const categoryTitle = document.querySelector('#category-title, .page-title, .category-title');
-        return categoryTitle ? categoryTitle.textContent.trim() : '';
-      } else if (currentPageType === 'tag') {
-        const tagTitle = document.querySelector('#tag-title, .page-title, .tag-title');
-        return tagTitle ? tagTitle.textContent.trim() : '';
-      }
-      return '';
-    }
-
-    // 检测滚动方向
-    function getScrollDirection() {
-      const currentScrollY = window.scrollY;
-      const direction = currentScrollY > lastScrollY ? 'down' : 'up';
-      lastScrollY = currentScrollY;
-      return direction;
-    }
-
-    // 更新Header状态
-    function updateHeader() {
-      const scrollDirection = getScrollDirection();
-      
-      // 只有在有目标标题时才处理
-      if (!targetTitle) return;
-      
-      if (scrollDirection === 'down' && window.scrollY > 50) {
-        // 向下滚动且滚动超过50px，显示动态标题
-        showDynamicTitle();
-      } else if (scrollDirection === 'up' || window.scrollY <= 50) {
-        // 向上滚动或滚动到顶部，显示默认Header
-        hideDynamicTitle();
-      }
-      
-      ticking = false;
-    }
-
-    // 显示动态标题
-    function showDynamicTitle() {
-      if (targetTitle) {
-        dynamicTitle.textContent = targetTitle;
-        dynamicHeader.classList.add('active');
-        siteHeader.classList.add('dynamic-active');
+  function getTitleSource() {
+    for (const selector of TITLE_SELECTORS) {
+      const element = document.querySelector(selector);
+      if (element && element.textContent.trim()) {
+        return element;
       }
     }
 
-    // 隐藏动态标题
-    function hideDynamicTitle() {
-      dynamicHeader.classList.remove('active');
-      siteHeader.classList.remove('dynamic-active');
-    }
-
-    // 请求动画帧
-    function requestTick() {
-      if (!ticking) {
-        requestAnimationFrame(updateHeader);
-        ticking = true;
-      }
-    }
-
-    // 监听滚动事件
-    window.addEventListener('scroll', requestTick, { passive: true });
-
-    // 页面加载完成后重新计算
-    window.addEventListener('load', function() {
-      currentPageType = getPageType();
-      targetTitle = getTargetTitle();
-    });
+    return null;
   }
 
+  function setDynamicState(active) {
+    if (!state.dynamicHeader || !state.siteHeader || !state.targetTitle) {
+      return;
+    }
+
+    state.dynamicTitle.textContent = state.targetTitle;
+    state.dynamicHeader.classList.toggle('active', active);
+    state.siteHeader.classList.toggle('dynamic-active', active);
+  }
+
+  function clearDynamicState() {
+    if (state.observer) {
+      state.observer.disconnect();
+      state.observer = null;
+    }
+
+    state.titleSource = null;
+    state.targetTitle = '';
+    state.titlePassed = false;
+    state.lastScrollY = window.scrollY || 0;
+    state.lastDirection = 'down';
+    state.ticking = false;
+
+    if (state.dynamicTitle) {
+      state.dynamicTitle.textContent = '';
+    }
+
+    if (state.dynamicHeader) {
+      state.dynamicHeader.classList.remove('active');
+    }
+
+    if (state.siteHeader) {
+      state.siteHeader.classList.remove('dynamic-active');
+    }
+  }
+
+  function updateHeaderMode() {
+    state.ticking = false;
+
+    if (!state.targetTitle || !state.titlePassed) {
+      setDynamicState(false);
+      return;
+    }
+
+    const currentScrollY = window.scrollY || 0;
+    const delta = currentScrollY - state.lastScrollY;
+
+    if (Math.abs(delta) > 2) {
+      state.lastDirection = delta > 0 ? 'down' : 'up';
+    }
+
+    state.lastScrollY = currentScrollY;
+
+    setDynamicState(state.lastDirection === 'down');
+  }
+
+  function onScroll() {
+    if (state.ticking) return;
+    state.ticking = true;
+    requestAnimationFrame(updateHeaderMode);
+  }
+
+  function bindObserver() {
+    if (!state.siteHeader || !state.dynamicHeader || !state.dynamicTitle) {
+      return;
+    }
+
+    clearDynamicState();
+
+    const source = getTitleSource();
+    if (!source) {
+      return;
+    }
+
+    state.titleSource = source;
+    state.targetTitle = source.textContent.trim();
+    state.dynamicTitle.textContent = state.targetTitle;
+    state.lastScrollY = window.scrollY || 0;
+
+    const headerHeight = state.siteHeader.offsetHeight || 0;
+    const observerOptions = {
+      root: null,
+      threshold: [0, 1],
+      rootMargin: `-${headerHeight + 8}px 0px 0px 0px`
+    };
+
+    state.observer = new IntersectionObserver((entries) => {
+      const entry = entries[0];
+      if (!entry || !state.targetTitle) {
+        state.titlePassed = false;
+        setDynamicState(false);
+        return;
+      }
+
+      state.titlePassed = !entry.isIntersecting && entry.boundingClientRect.bottom <= headerHeight + 8;
+
+      if (!state.titlePassed) {
+        setDynamicState(false);
+        return;
+      }
+
+      updateHeaderMode();
+    }, observerOptions);
+
+    state.observer.observe(source);
+  }
+
+  function refreshDynamicHeader() {
+    bindObserver();
+  }
+
+  function initDynamicHeader() {
+    if (!state.initialized) {
+      state.siteHeader = document.querySelector('.site-header');
+      state.dynamicHeader = document.getElementById('dynamic-header');
+      state.dynamicTitle = document.getElementById('dynamic-title');
+
+      if (!state.siteHeader || !state.dynamicHeader || !state.dynamicTitle) {
+        return;
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', refreshDynamicHeader, { passive: true });
+      state.initialized = true;
+    }
+
+    refreshDynamicHeader();
+  }
+
+  document.addEventListener('DOMContentLoaded', initDynamicHeader);
+  document.addEventListener('ji:page-loading', clearDynamicState);
+  document.addEventListener('ji:page-ready', initDynamicHeader);
 })();

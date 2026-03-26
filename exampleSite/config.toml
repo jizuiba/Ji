@@ -2,7 +2,11 @@
 baseURL = "https://example.com"
 languageCode = "zh-cn"
 title = "我的博客"
+# themesDir = ""
 theme = "Ji"
+
+# 中文支持配置
+hasCJKLanguage = true
 
 # 站点参数配置
 [params]
@@ -15,7 +19,47 @@ theme = "Ji"
   # 主题功能开关
   darkMode = true              # 启用深色模式
   search = true                # 启用搜索功能
-  syntaxHighlighting = true    # 启用语法高亮
+  pagination = true            # 启用分页功能
+
+[params.codeBlock]
+  enabled = true               # 是否启用主题代码块系统
+  showLineNumbers = false      # 是否显示行号
+  copyButton = true            # 是否显示复制按钮
+  languageLabel = true         # 是否显示语言标签
+  maxHeight = "32rem"          # 代码块最大高度
+  copyText = "复制"
+  copiedText = "已复制"
+  copyErrorText = "失败"
+
+# 首页配置
+[params.homeTiles]
+  introTitle = "个人介绍"
+  nickname = "nickname"
+  bio = "签名"
+  avatar = "/images/avatar.jpeg"
+  timezone = "Asia/Shanghai"
+  latestCount = 5
+
+[params.homeTiles.music]
+  playlist = [
+  "/audio/music1.mp3",
+  "/audio/music2.mp3"
+  ]
+
+[params.homeTiles.dailyQuote]
+  switchTime = 5000 # 停留多久
+  typeSpeed = 90 # 打字速度，越小越快
+  deleteSpeed = 60 # 删除速度，越小越快
+  items = [
+    "把喜欢的事情做到极致，惊喜会在路上出现。",
+    "慢一点也没关系，重要的是一直在向前。",
+    "认真生活的人，总会和美好不期而遇。"
+  ]
+
+[params.homeTiles.image]
+  src = "/images/home.jpg"
+  alt = "首页展示图片"
+  # link = "/posts"
 
 # 分页配置
 [pagination]
@@ -50,22 +94,6 @@ theme = "Ji"
   # 可自定义图标
   # pre = "<svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22'></path></svg>"
 
-# 页脚快速链接 可选配置
-[[menu.footer]]
-  name = "关于"
-  url = "/about"
-  weight = 1
-
-[[menu.footer]]
-  name = "隐私政策"
-  url = "/privacy"
-  weight = 2
-
-[[menu.footer]]
-  name = "使用条款"
-  url = "/terms"
-  weight = 3
-
 # Markup 配置
 [markup]
   [markup.goldmark]
@@ -76,18 +104,10 @@ theme = "Ji"
   [markup.tableOfContents]
     startLevel = 2
     endLevel = 4
-    ordered = false
-
-  # 语法高亮配置
-  [markup.highlight]
-    style = "github"
-    lineNos = false
-    codeFences = true
-    guessSyntax = true
 
 # 输出格式配置
 [outputs]
-  home = ["HTML", "RSS"]
+  home = ["HTML", "RSS", "JSON"]
   page = ["HTML"]
   section = ["HTML", "RSS"]
   taxonomy = ["HTML", "RSS"]

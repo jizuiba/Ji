@@ -1,0 +1,37 @@
+{{ $page := .page }}
+{{ $loading := .loading | default "lazy" }}
+
+<article class="home-post-card home-post-unified{{ if not $page.Params.cover_image }} no-image{{ end }}">
+  <a href="{{ $page.RelPermalink }}" class="home-post-link">
+    {{ if $page.Params.cover_image }}
+      <div class="home-post-image">
+        <img src="{{ $page.Params.cover_image | relURL }}" alt="{{ $page.Title }}" loading="{{ $loading }}" decoding="async">
+      </div>
+    {{ end }}
+
+    <div class="home-post-content">
+      {{ if $page.Params.categories }}
+        <div class="home-post-categories">
+          {{ range first 3 $page.Params.categories }}
+            <span class="category-tag">{{ . }}</span>
+          {{ end }}
+        </div>
+      {{ end }}
+
+      <h3 class="home-post-title">{{ $page.Title }}</h3>
+
+      {{ if $page.Params.subtitle }}
+        <p class="home-post-subtitle desktop-only">{{ $page.Params.subtitle }}</p>
+      {{ end }}
+
+      <div class="home-post-meta">
+        <time datetime="{{ $page.Date.Format "2006-01-02T15:04:05Z07:00" }}" class="post-date">
+          {{ $page.Date.Format ($page.Site.Params.dateFormat | default "2006年1月2日") }}
+        </time>
+        {{ if $page.Params.author }}
+          <span class="post-author desktop-only">by {{ $page.Params.author }}</span>
+        {{ end }}
+      </div>
+    </div>
+  </a>
+</article>

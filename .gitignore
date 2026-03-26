@@ -1,0 +1,22 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Node / tooling
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Hugo build artifacts
+public/
+resources/
+.hugo_build.lock
+
+# exampleSite local build artifacts
+exampleSite/public/
+exampleSite/resources/
+exampleSite/.hugo_build.lock

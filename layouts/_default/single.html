@@ -1,5 +1,5 @@
 {{ define "main" }}
-<main id="pjax-box" class="single">
+<main class="single">
   <!-- 文章信息头部 -->
   <section class="post-info narrow">
     <div class="screen">
@@ -50,28 +50,6 @@
     </div>
   </section>
 
-  <!-- Featured Image -->
-  {{ if .Params.featured_image }}
-    <section class="feature-image" aria-label="文章特色图片">
-      <div class="screen">
-        <div class="feature-image-content">
-          <figure class="feature-image-wrapper">
-            <img 
-              src="{{ .Params.featured_image | absURL }}" 
-              alt="{{ .Title }}" 
-              class="feature-img"
-              loading="eager"
-              decoding="async"
-            >
-            {{ if .Params.featured_image_caption }}
-              <figcaption class="feature-image-caption">{{ .Params.featured_image_caption }}</figcaption>
-            {{ end }}
-          </figure>
-        </div>
-      </div>
-    </section>
-  {{ end }}
-
   <!-- 文章内容和TOC -->
   <section class="single post-content narrow">
     <div class="screen">
@@ -99,13 +77,6 @@
   {{ end }}
 
   <!-- 相关文章 -->
-  {{ if .Site.Params.relatedPosts }}
-    <section class="related-posts">
-      <div class="screen">
-        {{ partial "related-posts.html" . }}
-      </div>
-    </section>
-  {{ end }}
 </main>
 
 

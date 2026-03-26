@@ -3,23 +3,134 @@
   {{ if .Site.Params.hero }}
     {{ partial "hero.html" . }}
   {{ end }}
-  
+
+  {{ $homeTiles := .Site.Params.homeTiles | default dict }}
+  {{ $nickname := $homeTiles.nickname | default (.Site.Params.author | default .Site.Title) }}
+  {{ $bio := $homeTiles.bio | default (.Site.Params.footerDescription | default "欢迎来到我的博客。") }}
+  {{ $avatar := $homeTiles.avatar | default "/images/mini.png" }}
+  {{ $timezone := $homeTiles.timezone | default "Asia/Shanghai" }}
+  {{ $music := $homeTiles.music | default dict }}
+  {{ $musicPlaylist := $music.playlist | default slice }}
+  {{ $dailyQuote := $homeTiles.dailyQuote | default dict }}
+  {{ $dailyQuoteItems := $dailyQuote.items | default slice }}
+  {{ $dailyQuoteSwitchTime := $dailyQuote.switchTime | default ($dailyQuote.interval | default 2600) }}
+  {{ $dailyQuoteTypeSpeed := $dailyQuote.typeSpeed | default 90 }}
+  {{ $dailyQuoteDeleteSpeed := $dailyQuote.deleteSpeed | default 45 }}
+  {{ $homeImage := $homeTiles.image | default dict }}
+  {{ $homeImageSrc := $homeImage.src | default "" }}
+  {{ $homeImageAlt := $homeImage.alt | default (.Site.Title | default "Home image") }}
+  {{ $homeImageLink := $homeImage.link | default "" }}
+  {{ $defaultMusicName := "暂无曲目" }}
+  {{ if gt (len $musicPlaylist) 0 }}
+    {{ $firstTrack := index $musicPlaylist 0 }}
+    {{ if $firstTrack }}
+      {{ $defaultMusicName = replaceRE "\\.[^.]+$" "" (path.Base $firstTrack) }}
+    {{ end }}
+  {{ end }}
+  {{ $latestCount := $homeTiles.latestCount | default 5 }}
+  {{ $latestPosts := first $latestCount ((where .Site.RegularPages "Type" "posts").ByDate.Reverse) }}
+
   <div class="container">
-    {{ if .Content }}
-      <div class="home-content">
-        {{ .Content }}
+    <section class="home-mosaic" aria-label="首页磁贴">
+      <div class="home-mosaic-grid">
+        <section class="home-mosaic-tile tile-latest tile-4x2">
+          {{ if $latestPosts }}
+            <ul class="home-latest-list">
+              {{ range $latestPosts }}
+                <li>
+                  <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+                  <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+                    {{ .Date.Format ($.Site.Params.dateFormat | default "2006年1月2日") }}
+                  </time>
+                </li>
+              {{ end }}
+            </ul>
+            <div class="home-latest-foot">
+              <a href="{{ "/posts" | relURL }}" class="tile-link">更多文章</a>
+            </div>
+          {{ else }}
+            <p class="home-empty-state">还没有文章，先去写一篇吧。</p>
+          {{ end }}
+        </section>
+
+        <article class="home-mosaic-tile tile-profile tile-2x1">
+          <div class="home-profile">
+            <img class="home-profile-avatar" src="{{ $avatar | relURL }}" alt="{{ $nickname }}" loading="lazy" decoding="async">
+            <div class="home-profile-meta">
+              <h3>{{ $nickname }}</h3>
+              <p>{{ $bio }}</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="home-mosaic-tile tile-time tile-1x1">
+          <div class="home-time-box">
+            <p class="home-time-value" data-current-time data-timezone="{{ $timezone }}">--:--</p>
+          </div>
+        </article>
+
+        <article class="home-mosaic-tile tile-image tile-1x1{{ if not $homeImageSrc }} tile-image-empty{{ end }}">
+          {{ if $homeImageSrc }}
+            {{ if $homeImageLink }}<a class="home-image-link" href="{{ $homeImageLink | safeURL }}">{{ end }}
+              <img class="home-image-media" src="{{ $homeImageSrc | relURL }}" alt="{{ $homeImageAlt }}" loading="lazy" decoding="async">
+            {{ if $homeImageLink }}</a>{{ end }}
+          {{ else }}
+            <div class="home-image-placeholder" aria-hidden="true"></div>
+          {{ end }}
+        </article>
+
+        <article class="home-mosaic-tile tile-music tile-2x1" data-home-music-player data-playlist='{{ $musicPlaylist | jsonify }}'>
+          <p class="home-music-track" data-music-track>{{ $defaultMusicName }}</p>
+
+          <div class="home-music-progress" data-music-progress>
+            <span class="home-music-progress-bar" data-music-progress-bar></span>
+          </div>
+
+          <button class="home-music-nav home-music-prev" type="button" data-music-prev aria-label="上一首">
+            <span aria-hidden="true">
+              <img class="home-music-icon" src="{{ "/icons/music/prev.svg" | relURL }}" alt="">
+            </span>
+          </button>
+
+          <button class="home-music-toggle" type="button" data-music-toggle aria-label="播放或暂停">
+            <span class="music-state-play" aria-hidden="true">
+              <img class="home-music-icon" src="{{ "/icons/music/play.svg" | relURL }}" alt="">
+            </span>
+            <span class="music-state-pause" aria-hidden="true">
+              <img class="home-music-icon" src="{{ "/icons/music/pause.svg" | relURL }}" alt="">
+            </span>
+          </button>
+
+          <button class="home-music-nav home-music-next" type="button" data-music-next aria-label="下一首">
+            <span aria-hidden="true">
+              <img class="home-music-icon" src="{{ "/icons/music/next.svg" | relURL }}" alt="">
+            </span>
+          </button>
+
+          <div class="home-music-volume-row">
+            <button class="home-music-volume-btn" type="button" data-music-mute aria-label="静音或恢复音量">
+              <span class="music-state-volume" aria-hidden="true">
+                <img class="home-music-icon" src="{{ "/icons/music/volume.svg" | relURL }}" alt="">
+              </span>
+              <span class="music-state-mute" aria-hidden="true">
+                <img class="home-music-icon" src="{{ "/icons/music/mute.svg" | relURL }}" alt="">
+              </span>
+            </button>
+            <label class="sr-only" for="home-music-volume">音量</label>
+            <input id="home-music-volume" class="home-music-volume-range" data-music-volume type="range" min="0" max="100" value="70" step="1">
+          </div>
+        </article>
+        <article class="home-mosaic-tile tile-quote tile-2x1" data-home-daily-quote data-switch-time="{{ $dailyQuoteSwitchTime }}" data-type-speed="{{ $dailyQuoteTypeSpeed }}" data-delete-speed="{{ $dailyQuoteDeleteSpeed }}" data-quotes='{{ $dailyQuoteItems | jsonify }}'>
+          <div class="home-quote-box">
+            <p class="home-quote-text" data-daily-quote-text>把喜欢的事情做到极致，惊喜会在路上出现。</p>
+          </div>
+        </article>
+        <article class="home-mosaic-tile tile-blank tile-1x1" aria-hidden="true"></article>
+        <article class="home-mosaic-tile tile-blank tile-1x1" aria-hidden="true"></article>
       </div>
-    {{ end }}
-    
-    {{ if .Site.Params.featuredPosts }}
-      {{ partial "featured-posts.html" . }}
-    {{ end }}
-    
-    {{ if .Site.Params.recentPosts }}
-      {{ partial "recent-posts.html" . }}
-    {{ else }}
-      {{ partial "recent-posts.html" . }}
-    {{ end }}
+    </section>
   </div>
 </div>
 {{ end }}
+
+

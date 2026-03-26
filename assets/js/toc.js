@@ -1,221 +1,305 @@
 /**
  * Table of Contents (TOC) functionality
- * Stable implementation with smooth scrolling and active section highlighting
- * Based on best practices from popular open source projects
+ * IntersectionObserver-based implementation with smooth scrolling
+ * and stable active section highlighting.
  */
 
 class TableOfContents {
   constructor() {
     this.tocContainer = document.querySelector('.toc-container');
-    this.tocNav = document.querySelector('.toc-nav');
-    // 更通用的TOC链接选择器，支持Hugo生成的TOC结构
-    this.tocLinks = Array.from(document.querySelectorAll('.toc a, #TableOfContents a, .toc-nav a'));
-    this.slider = document.querySelector('.toc .slider');
-    this.overflow = document.querySelector('.toc .overflow');
+    this.overflow = this.tocContainer?.querySelector('.toc-body, .overflow') || null;
+    this.tocLinks = Array.from(document.querySelectorAll('.toc a[href^="#"], #TableOfContents a[href^="#"]'));
     this.headings = [];
     this.activeLink = null;
-    this.isScrolling = false;
-    this.scrollTimeout = null;
+    this.activeId = null;
+    this.scrollOffset = 96;
     this.observer = null;
-    
+    this.programmaticScrollTimer = null;
+    this.isProgrammaticScroll = false;
+    this.reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    this.handleResize = this.handleResize.bind(this);
+    this.handleLoad = this.handleLoad.bind(this);
+    this.handleHashChange = this.handleHashChange.bind(this);
+    this.handleIntersections = this.handleIntersections.bind(this);
+
     this.init();
   }
 
   init() {
-    if (!this.tocContainer || !this.tocLinks || !this.tocLinks.length) {
+    if (!this.tocContainer || !this.tocLinks.length) {
       return;
     }
-    
-    this.setupHeadings();
+
+    this.collectHeadings();
+
+    if (!this.headings.length) {
+      return;
+    }
+
+    this.updateScrollOffset();
     this.setupSmoothScrolling();
-    this.setupScrollSpy();
     this.setupKeyboardNavigation();
-    this.setupSlider();
-    
-    // Initialize active section on page load
-    setTimeout(() => {
-      this.updateActiveSection();
-    }, 100);
-    
-    // Handle responsive behavior
-    this.setupResponsive();
+    this.setupObserver();
+    this.syncActiveHeading(this.getHashId());
+
+    window.addEventListener('resize', this.handleResize, { passive: true });
+    window.addEventListener('load', this.handleLoad, { once: true });
+    window.addEventListener('hashchange', this.handleHashChange);
   }
 
-  setupHeadings() {
-    // Get all headings that have corresponding TOC links
-    this.tocLinks.forEach(link => {
+  collectHeadings() {
+    const seen = new Set();
+
+    this.headings = this.tocLinks.reduce((items, link) => {
       const href = link.getAttribute('href');
-      if (href && href.startsWith('#')) {
-        const id = href.substring(1);
-        const heading = document.getElementById(id);
-        if (heading) {
-          this.headings.push({
-            element: heading,
-            link: link,
-            id: id,
-            offsetTop: 0
-          });
-        }
+
+      if (!href || !href.startsWith('#')) {
+        return items;
       }
+
+      const id = this.normalizeHash(href.slice(1));
+
+      if (!id || seen.has(id)) {
+        return items;
+      }
+
+      const heading = document.getElementById(id);
+
+      if (!heading) {
+        return items;
+      }
+
+      seen.add(id);
+      items.push({ id, element: heading, link });
+      return items;
+    }, []);
+  }
+
+  normalizeHash(hash) {
+    if (!hash) {
+      return '';
+    }
+
+    try {
+      return decodeURIComponent(hash);
+    } catch (error) {
+      return hash;
+    }
+  }
+
+  getHashId() {
+    return this.normalizeHash(window.location.hash.replace(/^#/, ''));
+  }
+
+  updateScrollOffset() {
+    const header = document.querySelector('.site-header');
+    const headerHeight = header ? Math.ceil(header.getBoundingClientRect().height) : 72;
+
+    this.scrollOffset = headerHeight + 24;
+    document.documentElement.style.setProperty('--toc-scroll-offset', `${this.scrollOffset}px`);
+  }
+
+  setupObserver() {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+
+    const bottomMargin = Math.max(window.innerHeight - this.scrollOffset - 160, 160);
+
+    this.observer = new IntersectionObserver(this.handleIntersections, {
+      root: null,
+      rootMargin: `-${this.scrollOffset}px 0px -${bottomMargin}px 0px`,
+      threshold: [0, 0.1, 0.25, 0.5, 0.75, 1]
     });
 
-    // Sort headings by their position in the document
-    this.headings.sort((a, b) => {
-      return a.element.offsetTop - b.element.offsetTop;
+    this.headings.forEach(({ element }) => {
+      this.observer.observe(element);
     });
+  }
+
+  handleIntersections() {
+    if (this.isProgrammaticScroll) {
+      return;
+    }
+
+    this.syncActiveHeading('', false);
   }
 
   setupSmoothScrolling() {
     this.tocLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
+      link.addEventListener('click', (event) => {
         const href = link.getAttribute('href');
-        if (href && href.startsWith('#')) {
-          e.preventDefault();
-          const targetId = href.substring(1);
-          const targetElement = document.getElementById(targetId);
-          
-          if (targetElement) {
-            // Temporarily disable scroll spy to prevent conflicts
-            this.isScrolling = true;
-            
-            // Smooth scroll to target
-            targetElement.scrollIntoView({
-              behavior: 'smooth',
-              block: 'start'
-            });
 
-            // Update URL without triggering scroll
-            history.pushState(null, null, href);
-            
-            // Update active link immediately
-            this.setActiveLink(link);
-            
-            // Re-enable scroll spy after scroll animation
-            setTimeout(() => {
-              this.isScrolling = false;
-            }, 1000);
-          }
+        if (!href || !href.startsWith('#')) {
+          return;
         }
+
+        const targetId = this.normalizeHash(href.slice(1));
+        const targetElement = document.getElementById(targetId);
+
+        if (!targetElement) {
+          return;
+        }
+
+        event.preventDefault();
+
+        this.setProgrammaticScrolling(true);
+        this.setActiveLink(link);
+
+        const targetTop = Math.max(
+          window.scrollY + targetElement.getBoundingClientRect().top - this.scrollOffset,
+          0
+        );
+
+        window.scrollTo({
+          top: targetTop,
+          behavior: this.reducedMotionQuery.matches ? 'auto' : 'smooth'
+        });
+
+        history.replaceState(null, '', href);
+        this.scheduleProgrammaticScrollingReset(targetId);
       });
     });
   }
 
-  setupScrollSpy() {
-    // Use a more reliable scroll spy implementation
-    const handleScroll = () => {
-      if (this.isScrolling) return;
-      
-      // Clear existing timeout
-      if (this.scrollTimeout) {
-        clearTimeout(this.scrollTimeout);
-      }
-      
-      // Debounce scroll events
-      this.scrollTimeout = setTimeout(() => {
-        this.updateActiveSection();
-      }, 10);
-    };
+  setProgrammaticScrolling(isActive) {
+    if (this.programmaticScrollTimer) {
+      clearTimeout(this.programmaticScrollTimer);
+      this.programmaticScrollTimer = null;
+    }
 
-    // Listen for scroll events
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    
-    // Also listen for resize events
-    window.addEventListener('resize', handleScroll, { passive: true });
+    this.isProgrammaticScroll = isActive;
   }
 
-  updateActiveSection() {
-    if (this.isScrolling || !this.headings.length) return;
+  scheduleProgrammaticScrollingReset(preferredId) {
+    if (this.programmaticScrollTimer) {
+      clearTimeout(this.programmaticScrollTimer);
+    }
 
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const windowHeight = window.innerHeight;
-    const documentHeight = document.documentElement.scrollHeight;
-    
-    // If we're at the bottom of the page, activate the last heading
-    if (scrollTop + windowHeight >= documentHeight - 50) {
-      const lastHeading = this.headings[this.headings.length - 1];
-      if (lastHeading) {
-        this.setActiveLink(lastHeading.link);
-      }
+    const delay = this.reducedMotionQuery.matches ? 0 : 450;
+
+    this.programmaticScrollTimer = window.setTimeout(() => {
+      this.isProgrammaticScroll = false;
+      this.programmaticScrollTimer = null;
+      this.syncActiveHeading(preferredId);
+    }, delay);
+  }
+
+  syncActiveHeading(preferredId = '', fallbackToFirst = true) {
+    if (!this.headings.length) {
       return;
     }
 
-    // Find the current active heading based on scroll position
+    const offsetLine = this.scrollOffset + 8;
     let activeHeading = null;
-    const offset = 100; // 距离顶部100px开始高亮
-    
-    // Check each heading from top to bottom to find the one closest to the top
-    for (let i = 0; i < this.headings.length; i++) {
-      const heading = this.headings[i];
-      const rect = heading.element.getBoundingClientRect();
-      const elementTop = rect.top + scrollTop;
-      
-      // If heading is above the offset point, it's a candidate
-      if (elementTop <= scrollTop + offset) {
-        activeHeading = heading;
-      } else {
-        // Once we find a heading below the offset, break
-        break;
+
+    if (preferredId) {
+      activeHeading = this.headings.find((item) => item.id === preferredId) || null;
+    }
+
+    const isNearBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 8;
+
+    if (isNearBottom) {
+      activeHeading = this.headings[this.headings.length - 1];
+    }
+
+    if (!activeHeading) {
+      for (let index = this.headings.length - 1; index >= 0; index -= 1) {
+        const candidate = this.headings[index];
+
+        if (candidate.element.getBoundingClientRect().top <= offsetLine) {
+          activeHeading = candidate;
+          break;
+        }
       }
     }
-    
-    // If no heading is found above the offset, use the first one
-    if (!activeHeading && this.headings.length > 0) {
+
+    if (!activeHeading && fallbackToFirst) {
       activeHeading = this.headings[0];
     }
-    
+
     if (activeHeading) {
       this.setActiveLink(activeHeading.link);
     }
   }
 
   setActiveLink(activeLink) {
-    // Don't update if it's the same link
     if (activeLink === this.activeLink) {
       return;
     }
-    
-    // Remove active class from all links
-    this.tocLinks.forEach(link => {
-      link.classList.remove('active');
+
+    this.tocLinks.forEach((link) => {
+      const isActive = link === activeLink;
+      link.classList.toggle('active', isActive);
+
+      if (isActive) {
+        link.setAttribute('aria-current', 'true');
+      } else {
+        link.removeAttribute('aria-current');
+      }
     });
 
-    // Add active class to current link
+    this.activeLink = activeLink;
+    this.activeId = activeLink ? this.normalizeHash(activeLink.getAttribute('href')?.slice(1) || '') : null;
+
     if (activeLink) {
-      activeLink.classList.add('active');
-      this.activeLink = activeLink;
-      
-      // Auto-scroll TOC to show active item
       this.scrollToActiveItem(activeLink);
     }
   }
 
+  scrollToActiveItem(activeLink) {
+    if (!this.overflow) {
+      return;
+    }
+
+    const linkTop = activeLink.offsetTop;
+    const linkBottom = linkTop + activeLink.offsetHeight;
+    const viewportTop = this.overflow.scrollTop;
+    const viewportBottom = viewportTop + this.overflow.clientHeight;
+    const safePadding = 12;
+
+    if (linkTop >= viewportTop + safePadding && linkBottom <= viewportBottom - safePadding) {
+      return;
+    }
+
+    const nextScrollTop = Math.max(
+      linkTop - (this.overflow.clientHeight / 2) + (activeLink.offsetHeight / 2),
+      0
+    );
+
+    this.overflow.scrollTo({
+      top: nextScrollTop,
+      behavior: this.reducedMotionQuery.matches ? 'auto' : 'smooth'
+    });
+  }
+
   setupKeyboardNavigation() {
-    // Add keyboard navigation support
     this.tocLinks.forEach((link, index) => {
-      link.addEventListener('keydown', (e) => {
+      link.addEventListener('keydown', (event) => {
         let targetIndex = index;
-        
-        switch (e.key) {
+
+        switch (event.key) {
           case 'ArrowDown':
-            e.preventDefault();
+            event.preventDefault();
             targetIndex = Math.min(index + 1, this.tocLinks.length - 1);
             break;
           case 'ArrowUp':
-            e.preventDefault();
+            event.preventDefault();
             targetIndex = Math.max(index - 1, 0);
             break;
           case 'Home':
-            e.preventDefault();
+            event.preventDefault();
             targetIndex = 0;
             break;
           case 'End':
-            e.preventDefault();
+            event.preventDefault();
             targetIndex = this.tocLinks.length - 1;
             break;
           default:
             return;
         }
-        
+
         if (targetIndex !== index) {
           this.tocLinks[targetIndex].focus();
         }
@@ -223,56 +307,44 @@ class TableOfContents {
     });
   }
 
-  setupSlider() {
-    return;
-  }
-  
-  updateSlider() {
-    return;
-  }
-  
-  setupResponsive() {
-    return;
-  }
-  
-  scrollToActiveItem(activeLink) {
-    if (!this.overflow) return;
-    
-    const linkRect = activeLink.getBoundingClientRect();
-    const overflowRect = this.overflow.getBoundingClientRect();
-    
-    // Check if the active link is visible in the overflow container
-    if (linkRect.top < overflowRect.top || linkRect.bottom > overflowRect.bottom) {
-      // Calculate scroll position to center the active link
-      const scrollTop = this.overflow.scrollTop + 
-                       (linkRect.top - overflowRect.top) - 
-                       (overflowRect.height / 2) + 
-                       (linkRect.height / 2);
-      
-      this.overflow.scrollTo({
-        top: scrollTop,
-        behavior: 'smooth'
-      });
-    }
+  handleResize() {
+    this.updateScrollOffset();
+    this.setupObserver();
+    this.syncActiveHeading(this.activeId);
   }
 
-  // Cleanup method
+  handleLoad() {
+    this.handleResize();
+  }
+
+  handleHashChange() {
+    this.syncActiveHeading(this.getHashId());
+  }
+
   destroy() {
     if (this.observer) {
       this.observer.disconnect();
     }
-    
-    if (this.scrollTimeout) {
-      clearTimeout(this.scrollTimeout);
+
+    if (this.programmaticScrollTimer) {
+      clearTimeout(this.programmaticScrollTimer);
     }
-    
-    window.removeEventListener('scroll', this.handleScroll);
-    window.removeEventListener('resize', this.handleScroll);
-    
-    // Clean up TOC button events
+
+    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener('load', this.handleLoad);
+    window.removeEventListener('hashchange', this.handleHashChange);
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  new TableOfContents();
-});
+let tocInstance = null;
+
+function bootTableOfContents() {
+  if (tocInstance && typeof tocInstance.destroy === 'function') {
+    tocInstance.destroy();
+  }
+
+  tocInstance = new TableOfContents();
+}
+
+document.addEventListener('DOMContentLoaded', bootTableOfContents);
+document.addEventListener('ji:page-ready', bootTableOfContents);

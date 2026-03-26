@@ -40,8 +40,9 @@
     </a>
     
     <!-- Copy Link -->
-    <button class="share-button share-button-copy" 
-            onclick="copyToClipboard('{{ .Permalink }}')" 
+    <button class="share-button share-button-copy"
+            type="button"
+            data-copy-link="{{ .Permalink }}"
             aria-label="Copy link">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -51,50 +52,3 @@
     </button>
   </div>
 </div>
-
-<script>
-function copyToClipboard(text) {
-  if (navigator.clipboard && window.isSecureContext) {
-    navigator.clipboard.writeText(text).then(function() {
-      showCopyNotification();
-    });
-  } else {
-    // Fallback for older browsers
-    const textArea = document.createElement('textarea');
-    textArea.value = text;
-    textArea.style.position = 'fixed';
-    textArea.style.left = '-999999px';
-    textArea.style.top = '-999999px';
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-    
-    try {
-      document.execCommand('copy');
-      showCopyNotification();
-    } catch (err) {
-      console.error('Failed to copy text: ', err);
-    }
-    
-    document.body.removeChild(textArea);
-  }
-}
-
-function showCopyNotification() {
-  const notification = document.createElement('div');
-  notification.className = 'copy-notification';
-  notification.textContent = 'Link copied to clipboard!';
-  document.body.appendChild(notification);
-  
-  setTimeout(() => {
-    notification.classList.add('show');
-  }, 100);
-  
-  setTimeout(() => {
-    notification.classList.remove('show');
-    setTimeout(() => {
-      document.body.removeChild(notification);
-    }, 300);
-  }, 2000);
-}
-</script>

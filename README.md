@@ -25,12 +25,21 @@ languageCode = "zh-cn"
 title = "我的博客"
 theme = "Ji"
 
+# 中文支持配置
+hasCJKLanguage = true
+
 [params]
   author = "您的名字"
   description = "我的个人博客"
   darkMode = true
   search = true
-  syntaxHighlighting = true
+
+[params.codeBlock]
+  enabled = true
+  showLineNumbers = false
+  copyButton = true
+  languageLabel = true
+  maxHeight = "32rem"
 
 # 输出格式配置（搜索功能必需）
 [outputs]
@@ -47,6 +56,8 @@ hugo server -D
 ```
 
 访问 `http://localhost:1313` 查看您的站点。
+
+如果您在主题仓库的 `exampleSite/` 中本地调试，请确保 `themesDir` 指向主题目录的上级目录；文档与示例配置中的主题名统一使用 `Ji`。
 
 ## 🔍 搜索功能配置
 
@@ -114,8 +125,7 @@ date: 2025-01-01
 draft: false
 tags: ["标签1", "标签2"]
 categories: ["分类1"]
-featured_image: "/images/featured.jpg"
-featured_image_caption: "图片描述"
+cover_image: "/images/cover.jpg"
 summary: "文章摘要"
 ---
 ```
@@ -169,11 +179,15 @@ summary: "文章摘要"
 ### 语法高亮
 
 ```toml
-[markup.highlight]
-  style = "github"
-  lineNos = false
-  codeFences = true
-  guessSyntax = true
+[params.codeBlock]
+  enabled = true
+  showLineNumbers = false
+  copyButton = true
+  languageLabel = true
+  maxHeight = "32rem"
+  copyText = "Copy"
+  copiedText = "Copied!"
+  copyErrorText = "Error"
 ```
 
 ## 🔧 高级配置
@@ -185,64 +199,115 @@ summary: "文章摘要"
 baseURL = "https://example.com"
 languageCode = "zh-cn"
 title = "我的博客"
+# themesDir = ""
 theme = "Ji"
 
-# 站点参数
+# 中文支持配置
+hasCJKLanguage = true
+
+# 站点参数配置
 [params]
-  author = "您的名字"
+  # 基本信息
+  title = "我的博客"
   description = "我的个人博客"
+  author = "您的名字"
   dateFormat = "2006年1月2日"
-  
-  # 功能开关
-  darkMode = true
-  search = true
-  pagination = true
-  syntaxHighlighting = true
-  showLineNumbers = false
+
+  # 主题功能开关
+  darkMode = true              # 启用深色模式
+  search = true                # 启用搜索功能
+  pagination = true            # 启用分页功能
+
+[params.codeBlock]
+  enabled = true               # 是否启用主题代码块系统
+  showLineNumbers = false      # 是否显示行号
+  copyButton = true            # 是否显示复制按钮
+  languageLabel = true         # 是否显示语言标签
+  maxHeight = "32rem"          # 代码块最大高度
+  copyText = "复制"
+  copiedText = "已复制"
+  copyErrorText = "失败"
+
+# 首页配置
+[params.homeTiles]
+  introTitle = "个人介绍"
+  nickname = "nickname"
+  bio = "签名"
+  avatar = "/images/avatar.jpeg"
+  timezone = "Asia/Shanghai"
+  latestCount = 5
+
+[params.homeTiles.music]
+  playlist = [
+  "/audio/music1.mp3",
+  "/audio/music2.mp3"
+  ]
+
+[params.homeTiles.dailyQuote]
+  switchTime = 5000 # 停留多久
+  typeSpeed = 90 # 打字速度，越小越快
+  deleteSpeed = 60 # 删除速度，越小越快
+  items = [
+    "把喜欢的事情做到极致，惊喜会在路上出现。",
+    "慢一点也没关系，重要的是一直在向前。",
+    "认真生活的人，总会和美好不期而遇。"
+  ]
+
+[params.homeTiles.image]
+  src = "/images/home.jpg"
+  alt = "首页展示图片"
+  # link = "/posts"
 
 # 分页配置
 [pagination]
-  pagerSize = 8
-  path = "page"
+  pagerSize = 8                # 每页显示文章数量
+  path = "page"                # 分页URL路径
 
-# 输出格式
-[outputs]
-  home = ["HTML", "RSS", "JSON"]
-  page = ["HTML"]
-  section = ["HTML", "RSS"]
-  taxonomy = ["HTML", "RSS"]
+# 导航菜单
+[[menu.main]]
+  name = "首页"
+  url = "/"
+  weight = 1
+
+[[menu.main]]
+  name = "文章"
+  url = "/posts"
+  weight = 2
+
+[[menu.main]]
+  name = "分类"
+  url = "/categories"
+  weight = 3
+
+[[menu.main]]
+  name = "标签"
+  url = "/tags"
+  weight = 4
+
+  # 社交链接
+[[menu.social]]
+  name = "GitHub"
+  url = "https://github.com/jizuiba"
+  # 可自定义图标
+  # pre = "<svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22'></path></svg>"
 
 # Markup 配置
 [markup]
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true
-  
+
+  # 目录配置
   [markup.tableOfContents]
     startLevel = 2
     endLevel = 4
-    ordered = false
-  
-  [markup.highlight]
-    style = "github"
-    lineNos = false
-    codeFences = true
-    guessSyntax = true
-```
 
-## 📁 项目结构
-
-```
-themes/Ji/
-├── assets/          # 静态资源
-│   ├── css/        # 样式文件
-│   └── js/         # JavaScript文件
-├── layouts/         # 模板文件
-│   ├── _default/   # 默认模板
-│   ├── partials/   # 部分模板
-│   └── ...
-├── static/          # 静态文件
-└── README.md        # 说明文档
+# 输出格式配置
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+  page = ["HTML"]
+  section = ["HTML", "RSS"]
+  taxonomy = ["HTML", "RSS"]
 ```
 
 ## 🔄 更新主题
@@ -252,19 +317,15 @@ cd themes/Ji
 git pull origin main
 ```
 
+## 🙏 资源鸣谢
+
+- 首页音乐播放器图标来自 **Iconfont**
+- 图标作者：**一只老羊来了**
+- 使用位置：`static/icons/music/`
+
 ## 📄 许可证
 
 本项目采用 [MIT License](https://opensource.org/licenses/MIT) 许可证。
-
-## 🤝 贡献
-
-欢迎提交 Issue 和 Pull Request！
-
-1. Fork 本项目
-2. 创建您的特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交您的更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 打开一个 Pull Request
 
 ## 📞 支持
 
@@ -277,3 +338,4 @@ git pull origin main
 ---
 
 **注意：本主题仅供学习使用，非专业 Hugo 主题。**
+

@@ -1,666 +1,418 @@
 /* ==========================================================================
-   JetBrains 2025 Inspired Code Syntax Highlighting
+   Code Block System (Theme Redesign)
    ========================================================================== */
 
-/* CSS Variables for Code Blocks - JetBrains 2025 Inspired */
 :root {
-  /* Code Block Colors - Light Theme */
-  --code-bg: #fafbfc;
-  --code-bg-hover: #f5f7fa;
-  --code-border: #e1e4e8;
-  --code-border-hover: #d0d7de;
-  --code-text: #24292f;
-  --code-text-secondary: #656d76;
-  --code-text-muted: #8b949e;
-  
-  /* Code Block Shadows - Modern and Subtle */
-  --code-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
-  --code-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.06);
-  --code-shadow-focus: 0 0 0 3px rgba(37, 99, 235, 0.1);
-  
-  /* Line Numbers */
-  --line-number-bg: #f6f8fa;
-  --line-number-text: #8b949e;
-  --line-number-border: #e1e4e8;
-  --line-number-active: #0969da;
-  
-  /* Language Label */
-  --label-bg: #f6f8fa;
-  --label-text: #656d76;
-  --label-border: #e1e4e8;
-  
-  /* Copy Button */
-  --copy-btn-bg: #ffffff;
-  --copy-btn-text: #656d76;
-  --copy-btn-border: #e1e4e8;
-  --copy-btn-hover-bg: #f6f8fa;
-  --copy-btn-hover-text: #24292f;
-  --copy-btn-success-bg: #1a7f37;
-  --copy-btn-success-text: #ffffff;
-  --copy-btn-error-bg: #d1242f;
-  --copy-btn-error-text: #ffffff;
-  
-  /* Syntax Highlighting Colors - GitHub inspired with JetBrains improvements */
-  --syntax-keyword: #cf222e;
-  --syntax-string: #0a3069;
-  --syntax-comment: #656d76;
-  --syntax-number: #0550ae;
-  --syntax-function: #8250df;
-  --syntax-variable: #953800;
-  --syntax-type: #0969da;
-  --syntax-operator: #cf222e;
-  --syntax-punctuation: #24292f;
-  --syntax-constant: #0550ae;
-  --syntax-attribute: #8250df;
-  --syntax-tag: #116329;
-  --syntax-class: #8250df;
-  --syntax-builtin: #0550ae;
-  --syntax-regex: #0a3069;
-  --syntax-escape: #cf222e;
-  --syntax-link: #0969da;
-  --syntax-meta: #656d76;
-  --syntax-diff-add: #1a7f37;
-  --syntax-diff-remove: #d1242f;
-  --syntax-diff-change: #9a6700;
-  --syntax-diff-header: #656d76;
+  --code-bg: #f2f2f2;
+  --code-surface: #ffffff;
+  --code-border: #ebecf0;
+  --code-text: #000000;
+  --code-muted: #8c8c8c;
+  --code-accent: #3574f0;
+  --code-toolbar-bg: #f2f2f2;
+  --code-toolbar-border: #ebecf0;
+  --code-copy-bg: #ffffff;
+  --code-copy-border: #d9dce2;
+  --code-copy-text: #4b5563;
+  --code-copy-hover-bg: #f6f7fa;
+  --code-copy-success-bg: #067d17;
+  --code-copy-error-bg: #cf514e;
+  --code-scrollbar-track: #eceef2;
+  --code-scrollbar-thumb: #c2c7d0;
+  --code-line-number: #8c8c8c;
+  --code-line-number-bg: #f2f2f2;
+  --code-line-highlight: rgba(53, 116, 240, 0.1);
+
+  --code-token-keyword: #0033b3;
+  --code-token-string: #067d17;
+  --code-token-comment: #8c8c8c;
+  --code-token-number: #1750eb;
+  --code-token-function: #00627a;
+  --code-token-variable: #000000;
+  --code-token-type: #0033b3;
+  --code-token-operator: #000000;
+  --code-token-attr: #174ad4;
+  --code-token-regex: #0b8043;
+  --code-token-diff-add: #067d17;
+  --code-token-diff-remove: #cf514e;
+  --code-token-diff-header: #8c8c8c;
+  --code-font: "JetBrains Mono", "Cascadia Code", "Fira Code", Consolas, Monaco, "Courier New", monospace;
 }
 
-/* Dark Theme Variables */
 .theme-dark {
-  /* Code Block Colors - Dark Theme */
-  --code-bg: #0d1117;
-  --code-bg-hover: #161b22;
-  --code-border: #30363d;
-  --code-border-hover: #484f58;
-  --code-text: #e6edf3;
-  --code-text-secondary: #8b949e;
-  --code-text-muted: #6e7681;
-  
-  /* Code Block Shadows - Dark Theme */
-  --code-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.1);
-  --code-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
-  --code-shadow-focus: 0 0 0 3px rgba(88, 166, 255, 0.3);
-  
-  /* Line Numbers - Dark Theme */
-  --line-number-bg: #161b22;
-  --line-number-text: #6e7681;
-  --line-number-border: #30363d;
-  --line-number-active: #58a6ff;
-  
-  /* Language Label - Dark Theme */
-  --label-bg: #161b22;
-  --label-text: #8b949e;
-  --label-border: #30363d;
-  
-  /* Copy Button - Dark Theme */
-  --copy-btn-bg: #21262d;
-  --copy-btn-text: #8b949e;
-  --copy-btn-border: #30363d;
-  --copy-btn-hover-bg: #30363d;
-  --copy-btn-hover-text: #e6edf3;
-  --copy-btn-success-bg: #238636;
-  --copy-btn-success-text: #ffffff;
-  --copy-btn-error-bg: #da3633;
-  --copy-btn-error-text: #ffffff;
-  
-  /* Syntax Highlighting Colors - Dark Theme */
-  --syntax-keyword: #ff7b72;
-  --syntax-string: #a5d6ff;
-  --syntax-comment: #8b949e;
-  --syntax-number: #79c0ff;
-  --syntax-function: #d2a8ff;
-  --syntax-variable: #ffa657;
-  --syntax-type: #58a6ff;
-  --syntax-operator: #ff7b72;
-  --syntax-punctuation: #e6edf3;
-  --syntax-constant: #79c0ff;
-  --syntax-attribute: #d2a8ff;
-  --syntax-tag: #7ee787;
-  --syntax-class: #d2a8ff;
-  --syntax-builtin: #79c0ff;
-  --syntax-regex: #a5d6ff;
-  --syntax-escape: #ff7b72;
-  --syntax-link: #58a6ff;
-  --syntax-meta: #8b949e;
-  --syntax-diff-add: #238636;
-  --syntax-diff-remove: #da3633;
-  --syntax-diff-change: #d29922;
-  --syntax-diff-header: #8b949e;
+  --code-bg: #2b2d30;
+  --code-surface: #1e1f22;
+  --code-border: #393b40;
+  --code-text: #bcbec4;
+  --code-muted: #7a7e85;
+  --code-accent: #3574f0;
+  --code-toolbar-bg: #2b2d30;
+  --code-toolbar-border: #393b40;
+  --code-copy-bg: #1e1f22;
+  --code-copy-border: #393b40;
+  --code-copy-text: #bcbec4;
+  --code-copy-hover-bg: #393b40;
+  --code-copy-success-bg: #6aab73;
+  --code-copy-error-bg: #f75464;
+  --code-scrollbar-track: #2b2d30;
+  --code-scrollbar-thumb: #393b40;
+  --code-line-number: #7a7e85;
+  --code-line-number-bg: #2b2d30;
+  --code-line-highlight: rgba(53, 116, 240, 0.18);
+
+  --code-token-keyword: #cf8e6d;
+  --code-token-string: #6a8759;
+  --code-token-comment: #7a7e85;
+  --code-token-number: #2aacb8;
+  --code-token-function: #56a8f5;
+  --code-token-variable: #bcbec4;
+  --code-token-type: #56a8f5;
+  --code-token-operator: #bcbec4;
+  --code-token-attr: #56a8f5;
+  --code-token-regex: #6a8759;
+  --code-token-diff-add: #6aab73;
+  --code-token-diff-remove: #f75464;
+  --code-token-diff-header: #8c8c8c;
+  --code-font: "JetBrains Mono", "Cascadia Code", "Fira Code", Consolas, Monaco, "Courier New", monospace;
 }
 
 /* ==========================================================================
-   Code Block Container
+   Block Layout
    ========================================================================== */
 
-/* Main Code Block Wrapper */
-.code-block-wrapper {
-  position: relative;
+.article-codeblock {
   margin: 1.5rem 0;
-  border-radius: 12px;
-  background: var(--code-bg);
   border: 1px solid var(--code-border);
-  box-shadow: var(--code-shadow);
+  border-radius: 10px;
+  background: var(--code-bg);
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.08);
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
 }
 
-.code-block-wrapper:hover {
-}
-
-.code-block-wrapper:focus-within {
-  box-shadow: var(--code-shadow-focus);
-  border-color: var(--color-primary);
-}
-
-/* Header area to prevent overlap */
-.code-block-header {
+.article-codeblock__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  padding: 0.5rem 0.75rem;
-  background: var(--label-bg);
-  border-bottom: 1px solid var(--label-border);
+  margin: 0;
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid var(--code-toolbar-border);
+  background: var(--code-toolbar-bg);
 }
 
-/* ==========================================================================
-   Language Label
-   ========================================================================== */
-
-.code-language-label {
-  background: var(--label-bg);
-  color: var(--label-text);
-  font-size: 0.75rem;
-  font-weight: 500;
-  padding: 0.375rem 0.75rem;
-  border-radius: 6px;
-  border: 1px solid var(--label-border);
-  letter-spacing: 0.025em;
-  text-transform: uppercase;
-  transition: all 0.2s ease;
-}
-
-.code-block-wrapper:hover .code-language-label {
-}
-
-/* ==========================================================================
-   Copy Button
-   ========================================================================== */
-
-.code-copy-button {
+.article-codeblock__language {
   display: inline-flex;
   align-items: center;
-  gap: 0.375rem;
-  padding: 0.5rem 0.75rem;
-  background: var(--copy-btn-bg);
-  color: var(--copy-btn-text);
-  border: 1px solid var(--copy-btn-border);
-  border-radius: 8px;
-  font-size: 0.75rem;
+  justify-content: center;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--code-border);
+  border-radius: 6px;
+  background: var(--code-surface);
+  color: var(--code-muted);
+  font-size: 0.71rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  font-family: var(--code-font);
+}
+
+.article-codeblock__copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid var(--code-copy-border);
+  border-radius: 6px;
+  padding: 0.3rem 0.55rem;
+  background: var(--code-copy-bg);
+  color: var(--code-copy-text);
+  font-size: 0.72rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 }
 
-.code-copy-button:hover {
+.article-codeblock__copy:hover {
+  background: var(--code-copy-hover-bg);
 }
 
-.code-copy-button:active {
-  transform: translateY(0);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-}
-
-.code-copy-button svg {
-  width: 14px;
-  height: 14px;
-  transition: transform 0.2s ease;
-}
-
-.code-copy-button:hover svg {
-  transform: scale(1.1);
-}
-
-/* Copy Button States */
-.code-copy-button.copied {
-  background: var(--copy-btn-success-bg);
-  color: var(--copy-btn-success-text);
-  border-color: var(--copy-btn-success-bg);
-}
-
-.code-copy-button.error {
-  background: var(--copy-btn-error-bg);
-  color: var(--copy-btn-error-text);
-  border-color: var(--copy-btn-error-bg);
-}
-
-/* ==========================================================================
-   Line Numbers
-   ========================================================================== */
-
-.line-numbers {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3.5rem;
-  background: var(--line-number-bg);
-  border-right: 1px solid var(--line-number-border);
-  padding: 1rem 0.75rem;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  color: var(--line-number-text);
-  user-select: none;
-  z-index: 5;
-  transition: all 0.2s ease;
-}
-
-.code-block-wrapper.with-line-numbers pre {
-  padding-left: 4.5rem;
-}
-
-.line-number {
-  display: block;
-  text-align: right;
-  padding: 0 0.25rem;
-  transition: all 0.2s ease;
-  border-radius: 4px;
-  margin: 0 -0.25rem;
-}
-
-.line-number:hover {
-  background: var(--code-bg-hover);
-  color: var(--line-number-active);
-}
-
-/* Active line highlighting */
-.line-number.active {
-  background: var(--line-number-active);
-  color: white;
-  font-weight: 600;
-}
-
-/* ==========================================================================
-   Code Content
-   ========================================================================== */
-
-/* Pre and Code Elements */
-.code-block-wrapper pre {
-  margin: 0;
-  padding: 1rem 1.25rem;
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  overflow-x: auto;
-  font-size: 0.875rem;
-  line-height: 1.6;
-  color: var(--code-text);
-  position: relative;
-  z-index: 1;
-}
-
-.code-block-wrapper code {
-  background: transparent;
-  padding: 0;
-  border-radius: 0;
-  font-family: inherit;
-  font-size: inherit;
-  color: inherit;
-  white-space: pre;
-  word-wrap: normal;
-  overflow-wrap: normal;
-}
-
-/* ==========================================================================
-   Syntax Highlighting
-   ========================================================================== */
-
-/* Keywords */
-.hljs-keyword,
-.hljs-selector-tag,
-.hljs-built_in,
-.hljs-name,
-.hljs-tag {
-  color: var(--syntax-keyword);
-  font-weight: 600;
-}
-
-/* Strings */
-.hljs-string,
-.hljs-title,
-.hljs-section,
-.hljs-attribute,
-.hljs-literal,
-.hljs-template-tag,
-.hljs-template-variable,
-.hljs-type,
-.hljs-addition {
-  color: var(--syntax-string);
-}
-
-/* Comments */
-.hljs-comment,
-.hljs-quote,
-.hljs-deletion,
-.hljs-meta {
-  color: var(--syntax-comment);
-  font-style: italic;
-}
-
-/* Numbers */
-.hljs-number,
-.hljs-regexp,
-.hljs-symbol,
-.hljs-variable,
-.hljs-template-variable,
-.hljs-link,
-.hljs-selector-attr,
-.hljs-selector-pseudo {
-  color: var(--syntax-number);
-}
-
-/* Functions */
-.hljs-function,
-.hljs-title.function_,
-.hljs-params {
-  color: var(--syntax-function);
-}
-
-/* Variables */
-.hljs-variable,
-.hljs-template-variable,
-.hljs-strong,
-.hljs-emphasis {
-  color: var(--syntax-variable);
-}
-
-/* Types */
-.hljs-type,
-.hljs-class,
-.hljs-title.class_,
-.hljs-title.class_.inherited__ {
-  color: var(--syntax-type);
-}
-
-/* Operators */
-.hljs-operator,
-.hljs-punctuation {
-  color: var(--syntax-operator);
-}
-
-/* Constants */
-.hljs-literal,
-.hljs-constant {
-  color: var(--syntax-constant);
-}
-
-/* Attributes */
-.hljs-attr,
-.hljs-attribute {
-  color: var(--syntax-attribute);
-}
-
-/* Tags */
-.hljs-tag,
-.hljs-name {
-  color: var(--syntax-tag);
-}
-
-/* Classes */
-.hljs-class,
-.hljs-title.class_ {
-  color: var(--syntax-class);
-}
-
-/* Built-in functions */
-.hljs-built_in,
-.hljs-title.function_ {
-  color: var(--syntax-builtin);
-}
-
-/* Regular expressions */
-.hljs-regexp {
-  color: var(--syntax-regex);
-}
-
-/* Escape sequences */
-.hljs-escape {
-  color: var(--syntax-escape);
-}
-
-/* Links */
-.hljs-link {
-  color: var(--syntax-link);
-  text-decoration: underline;
-}
-
-/* Meta information */
-.hljs-meta {
-  color: var(--syntax-meta);
-}
-
-/* ==========================================================================
-   Diff Syntax Highlighting
-   ========================================================================== */
-
-.hljs-diff-addition {
-  background: rgba(26, 127, 55, 0.1);
-  color: var(--syntax-diff-add);
-}
-
-.hljs-diff-deletion {
-  background: rgba(209, 36, 47, 0.1);
-  color: var(--syntax-diff-remove);
-}
-
-.hljs-diff-change {
-  background: rgba(154, 103, 0, 0.1);
-  color: var(--syntax-diff-change);
-}
-
-.hljs-diff-header {
-  color: var(--syntax-diff-header);
-  font-weight: 600;
-}
-
-/* ==========================================================================
-   Inline Code
-   ========================================================================== */
-
-/* Inline code styling */
-p code,
-li code,
-td code,
-th code {
-  background: var(--code-bg);
-  color: var(--code-text);
-  padding: 0.125rem 0.375rem;
-  border-radius: 6px;
-  font-size: 0.875em;
-  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
-  border: 1px solid var(--code-border);
-  transition: all 0.2s ease;
-}
-
-p code:hover,
-li code:hover,
-td code:hover,
-th code:hover {
-  background: var(--code-bg-hover);
-  border-color: var(--code-border-hover);
-}
-
-/* ==========================================================================
-   Responsive Design
-   ========================================================================== */
-
-@media (max-width: 768px) {
-  .code-block-wrapper {
-    margin: 1rem 0;
-    border-radius: 8px;
-  }
-  
-  .code-block-header {
-    padding: 0.5rem 0.5rem;
-    gap: 0.5rem;
-  }
-  
-  .code-block-wrapper pre {
-    padding: 0.75rem 1rem;
-    font-size: 0.8125rem;
-  }
-  
-  .code-language-label {
-    font-size: 0.6875rem;
-    padding: 0.25rem 0.5rem;
-  }
-  
-  .code-copy-button {
-    padding: 0.375rem 0.5rem;
-    font-size: 0.6875rem;
-  }
-  
-  .line-numbers {
-    width: 3rem;
-    padding: 0.75rem 0.5rem;
-    font-size: 0.8125rem;
-  }
-  
-  .code-block-wrapper.with-line-numbers pre {
-    padding-left: 4rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .code-block-wrapper pre {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.75rem;
-  }
-  
-  .line-numbers {
-    width: 2.5rem;
-    padding: 0.5rem 0.375rem;
-    font-size: 0.75rem;
-  }
-  
-  .code-block-wrapper.with-line-numbers pre {
-    padding-left: 3.5rem;
-  }
-}
-
-/* ==========================================================================
-   Print Styles
-   ========================================================================== */
-
-@media print {
-  .code-block-wrapper {
-    box-shadow: none;
-    border: 1px solid #ccc;
-    break-inside: avoid;
-  }
-  
-  .code-copy-button,
-  .code-language-label,
-  .code-block-header {
-    display: none;
-  }
-  
-  .line-numbers {
-    background: #f5f5f5;
-    color: #666;
-  }
-  
-  .code-block-wrapper pre {
-    color: #000;
-  }
-}
-
-/* ==========================================================================
-   Accessibility
-   ========================================================================== */
-
-/* Focus styles for keyboard navigation */
-.code-copy-button:focus-visible {
-  outline: 2px solid var(--color-primary);
+.article-codeblock__copy:focus-visible {
+  outline: 2px solid var(--code-accent);
   outline-offset: 2px;
 }
 
-/* Reduced motion support */
+.article-codeblock__copy-icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+}
+
+.article-codeblock__copy.is-success {
+  background: var(--code-copy-success-bg);
+  border-color: var(--code-copy-success-bg);
+  color: #fff;
+}
+
+.article-codeblock__copy.is-error {
+  background: var(--code-copy-error-bg);
+  border-color: var(--code-copy-error-bg);
+  color: #fff;
+}
+
+.article-codeblock__body {
+  position: relative;
+  background: var(--code-surface);
+}
+
+.article-codeblock__body .highlight {
+  margin: 0;
+}
+
+.article-codeblock__body .chroma {
+  margin: 0;
+  background: transparent;
+  color: var(--code-text);
+}
+
+.article-codeblock__body pre,
+.article-codeblock__body pre.chroma {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 1rem 1rem;
+  background: var(--code-surface);
+  color: inherit;
+  font-family: var(--code-font);
+  font-size: 0.84rem;
+  line-height: 1.55;
+  overflow: auto;
+  max-height: var(--code-max-height, 32rem);
+}
+
+.article-codeblock__body code {
+  display: block;
+  white-space: pre;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: transparent;
+  padding: 0;
+}
+
+.article-codeblock__body .chroma .line,
+.article-codeblock__body .chroma .cl {
+  display: block;
+}
+
+/* --------------------------------------------------------------------------
+   Line numbers
+   -------------------------------------------------------------------------- */
+
+.article-codeblock--lines .article-codeblock__body code {
+  counter-reset: code-line;
+}
+
+.article-codeblock--lines .article-codeblock__body .chroma .line {
+  position: relative;
+}
+
+.article-codeblock--lines .article-codeblock__body .chroma .line::before {
+  counter-increment: code-line;
+  content: counter(code-line);
+  position: absolute;
+  inset-inline-start: 0;
+  width: 2.5rem;
+  padding-right: 0.6rem;
+  text-align: right;
+  color: var(--code-line-number);
+  background: var(--code-line-number-bg);
+  border-right: 1px solid var(--code-border);
+  user-select: none;
+}
+
+.article-codeblock--lines .article-codeblock__body .chroma .line .cl {
+  padding-inline-start: 3.2rem;
+}
+
+.article-codeblock--lines .article-codeblock__body .chroma .line.hl,
+.article-codeblock--lines .article-codeblock__body .chroma .line .hl,
+.article-codeblock__body .chroma .hl {
+  background: var(--code-line-highlight);
+}
+
+/* --------------------------------------------------------------------------
+   Mermaid
+   -------------------------------------------------------------------------- */
+
+.article-codeblock--mermaid {
+  padding: 0.75rem;
+}
+
+.article-codeblock--mermaid pre.mermaid {
+  margin: 0;
+  background: transparent;
+  border: 0;
+  padding: 0.5rem;
+  max-height: none;
+  overflow: auto;
+}
+
+/* ==========================================================================
+   Chroma token colors
+   ========================================================================== */
+
+.article-codeblock .chroma .k,
+.article-codeblock .chroma .kc,
+.article-codeblock .chroma .kd,
+.article-codeblock .chroma .kn,
+.article-codeblock .chroma .kp,
+.article-codeblock .chroma .kr,
+.article-codeblock .chroma .kt { color: var(--code-token-keyword); }
+
+.article-codeblock .chroma .s,
+.article-codeblock .chroma .sa,
+.article-codeblock .chroma .sb,
+.article-codeblock .chroma .sc,
+.article-codeblock .chroma .dl,
+.article-codeblock .chroma .sd,
+.article-codeblock .chroma .s2,
+.article-codeblock .chroma .se,
+.article-codeblock .chroma .sh,
+.article-codeblock .chroma .si,
+.article-codeblock .chroma .sx,
+.article-codeblock .chroma .sr,
+.article-codeblock .chroma .s1,
+.article-codeblock .chroma .ss { color: var(--code-token-string); }
+
+.article-codeblock .chroma .c,
+.article-codeblock .chroma .ch,
+.article-codeblock .chroma .cm,
+.article-codeblock .chroma .c1,
+.article-codeblock .chroma .cs { color: var(--code-token-comment); }
+
+.article-codeblock .chroma .m,
+.article-codeblock .chroma .mb,
+.article-codeblock .chroma .mf,
+.article-codeblock .chroma .mh,
+.article-codeblock .chroma .mi,
+.article-codeblock .chroma .mo { color: var(--code-token-number); }
+
+.article-codeblock .chroma .na { color: var(--code-token-attr); }
+.article-codeblock .chroma .nb,
+.article-codeblock .chroma .no,
+.article-codeblock .chroma .nv { color: var(--code-token-variable); }
+.article-codeblock .chroma .nf { color: var(--code-token-function); }
+.article-codeblock .chroma .nc,
+.article-codeblock .chroma .nt,
+.article-codeblock .chroma .ne { color: var(--code-token-type); }
+
+.article-codeblock .chroma .o,
+.article-codeblock .chroma .ow,
+.article-codeblock .chroma .p { color: var(--code-token-operator); }
+
+.article-codeblock .chroma .sr,
+.article-codeblock .chroma .se { color: var(--code-token-regex); }
+
+.article-codeblock .chroma .gd { color: var(--code-token-diff-remove); background: color-mix(in srgb, var(--code-token-diff-remove) 12%, transparent); }
+.article-codeblock .chroma .gi { color: var(--code-token-diff-add); background: color-mix(in srgb, var(--code-token-diff-add) 12%, transparent); }
+.article-codeblock .chroma .gh,
+.article-codeblock .chroma .gu { color: var(--code-token-diff-header); font-weight: 600; }
+
+/* Compatibility with highlight.js class names */
+.article-codeblock .hljs-keyword,
+.article-codeblock .hljs-selector-tag,
+.article-codeblock .hljs-built_in,
+.article-codeblock .hljs-name,
+.article-codeblock .hljs-tag { color: var(--code-token-keyword); }
+
+.article-codeblock .hljs-string,
+.article-codeblock .hljs-title,
+.article-codeblock .hljs-section,
+.article-codeblock .hljs-attribute,
+.article-codeblock .hljs-literal { color: var(--code-token-string); }
+
+.article-codeblock .hljs-comment,
+.article-codeblock .hljs-quote { color: var(--code-token-comment); }
+
+.article-codeblock .hljs-number,
+.article-codeblock .hljs-symbol,
+.article-codeblock .hljs-variable { color: var(--code-token-number); }
+
+/* ==========================================================================
+   Inline code
+   ========================================================================== */
+
+.content p code,
+.content li code,
+.content td code,
+.content th code,
+.content blockquote code {
+  display: inline;
+  white-space: break-spaces;
+  padding: 0.1rem 0.4rem;
+  border-radius: 6px;
+  border: 1px solid var(--code-border);
+  background: color-mix(in srgb, var(--code-bg) 86%, transparent);
+  color: var(--code-text);
+  font-family: var(--code-font);
+  font-size: 0.86em;
+}
+
+/* ==========================================================================
+   Scrollbars, responsive, accessibility
+   ========================================================================== */
+
+.article-codeblock__body pre::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.article-codeblock__body pre::-webkit-scrollbar-track {
+  background: var(--code-scrollbar-track);
+}
+
+.article-codeblock__body pre::-webkit-scrollbar-thumb {
+  background: var(--code-scrollbar-thumb);
+  border-radius: 999px;
+}
+
+.article-codeblock__body pre {
+  scrollbar-width: thin;
+  scrollbar-color: var(--code-scrollbar-thumb) var(--code-scrollbar-track);
+}
+
+@media (max-width: 768px) {
+  .article-codeblock {
+    border-radius: 10px;
+    margin: 1.1rem 0;
+  }
+
+  .article-codeblock__header {
+    padding: 0.45rem 0.55rem;
+  }
+
+  .article-codeblock__body pre,
+  .article-codeblock__body pre.chroma {
+    padding: 0.75rem 0.75rem;
+    font-size: 0.8125rem;
+    max-height: min(var(--code-max-height, 32rem), 60vh);
+  }
+
+  .article-codeblock--lines .article-codeblock__body .chroma .line::before {
+    width: 2rem;
+    padding-right: 0.45rem;
+  }
+
+  .article-codeblock--lines .article-codeblock__body .chroma .line .cl {
+    padding-inline-start: 2.6rem;
+  }
+
+  .article-codeblock__copy-text {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .code-block-wrapper,
-  .code-copy-button,
-  .line-number,
-  .code-language-label,
-  .code-block-header {
+  .article-codeblock__copy {
     transition: none;
   }
-  
-  .code-block-wrapper:hover {
-    transform: none;
-  }
-  
-  .code-copy-button:hover {
-    transform: none;
-  }
-}
-
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-  .code-block-wrapper {
-    border-width: 2px;
-  }
-  
-  .code-copy-button {
-    border-width: 2px;
-  }
-  
-  .line-numbers {
-    border-right-width: 2px;
-  }
-}
-
-/* ==========================================================================
-   Animation Keyframes
-   ========================================================================== */
-
-@keyframes codeHighlight {
-  0% {
-    background: rgba(37, 99, 235, 0.1);
-  }
-  100% {
-    background: transparent;
-  }
-}
-
-.code-line-highlight {
-  animation: codeHighlight 2s ease-out;
-}
-
-/* ==========================================================================
-   Custom Scrollbar for Code Blocks
-   ========================================================================== */
-
-.code-block-wrapper pre::-webkit-scrollbar {
-  height: 8px;
-}
-
-.code-block-wrapper pre::-webkit-scrollbar-track {
-  background: var(--line-number-bg);
-  border-radius: 4px;
-}
-
-.code-block-wrapper pre::-webkit-scrollbar-thumb {
-  background: var(--line-number-text);
-  border-radius: 4px;
-  transition: background 0.2s ease;
-}
-
-.code-block-wrapper pre::-webkit-scrollbar-thumb:hover {
-  background: var(--line-number-active);
-}
-
-/* Firefox scrollbar */
-.code-block-wrapper pre {
-  scrollbar-width: thin;
-  scrollbar-color: var(--line-number-text) var(--line-number-bg);
 }

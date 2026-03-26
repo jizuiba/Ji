@@ -15,42 +15,7 @@
       {{ if .Pages }}
         <div class="posts-grid-two">
           {{ range .Paginator.Pages }}
-            <article class="home-post-card home-post-medium{{ if not .Params.featured_image }} no-image{{ end }}">
-              <a href="{{ .RelPermalink }}" class="home-post-link">
-                {{ if .Params.featured_image }}
-                  <div class="home-post-image">
-                    <img src="{{ .Params.featured_image | relURL }}" alt="{{ .Title }}" loading="lazy">
-                  </div>
-                {{ end }}
-                
-                <div class="home-post-content">
-                  {{ if .Params.categories }}
-                    <div class="home-post-categories">
-                      {{ range first 1 .Params.categories }}
-                        <span class="category-tag">{{ . }}</span>
-                      {{ end }}
-                    </div>
-                  {{ end }}
-                  
-                  <h3 class="home-post-title">
-                    {{ .Title }}
-                  </h3>
-                  
-                  {{ if .Params.subtitle }}
-                    <p class="home-post-subtitle desktop-only">{{ .Params.subtitle }}</p>
-                  {{ end }}
-                  
-                  <div class="home-post-meta">
-                    <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}" class="post-date">
-                      {{ .Date.Format (.Site.Params.dateFormat | default "2006年1月2日") }}
-                    </time>
-                    {{ if .Params.author }}
-                      <span class="post-author desktop-only">by {{ .Params.author }}</span>
-                    {{ end }}
-                  </div>
-                </div>
-              </a>
-            </article>
+          {{ partial "article-card.html" (dict "page" .) }}
           {{ end }}
         </div>
         
@@ -82,29 +47,7 @@
       {{ if .Pages }}
         <div class="categories-grid">
           {{ range .Paginator.Pages }}
-            <article class="category-card">
-              <a href="{{ .RelPermalink }}" class="category-card-link">
-                <div class="category-card-content">
-                  <h2 class="category-card-title">
-                    {{ .Title }}
-                  </h2>
-                  
-                  <div class="category-card-meta">
-                    <span class="category-post-count">
-                      {{ len .Pages }} 篇文章
-                    </span>
-                  </div>
-                  
-                  <!-- SVG 背景图标 -->
-                  <div class="category-card-icon">
-                    <svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="60" height="60">
-                      <path d="M512.228 572.01a87.402 87.402 0 0 1-35.24-7.405L52.592 377.602C22.89 364.51 4.169 336.921 3.75 305.612c-0.437-31.22 17.472-59.224 46.697-73.08L474.844 31.44c23.428-11.078 51.382-11.099 74.808 0.02l423.922 201.09c29.204 13.868 47.092 41.862 46.676 73.081-0.437 31.289-19.139 58.857-48.82 71.95L547.528 564.605a87.814 87.814 0 0 1-35.3 7.405zM88.568 304.46l421.22 185.732c1.469 0.637 3.434 0.645 4.944-0.01l420.702-185.603-420.643-199.64v-0.01c-1.509-0.715-3.593-0.724-5.122 0L88.568 304.46z m851.075 2.114h0.199-0.2z m-427.215 694.3c-11.774 0-23.666-2.64-34.745-7.962L67.186 815.36C46.577 806.446 37.087 782.51 46 761.903c8.915-20.608 32.839-30.138 53.468-21.174l411.967 178.209 392.829-177.91c20.41-9.291 44.532-0.288 53.844 20.19 9.291 20.44 0.258 44.553-20.172 53.845L545.96 993.25c-10.463 5.062-21.937 7.624-33.531 7.624z" fill="currentColor"></path>
-                      <path d="M921.103 515.924l-409.32 177.864-408.976-177.48v83.716a38.967 38.967 0 0 0 23.62 35.817l343.061 146.99c13.433 6.489 27.874 9.723 42.297 9.723s28.862-3.234 42.296-9.723L897.5 635.488a38.967 38.967 0 0 0 23.603-35.81v-83.753z" fill="currentColor"></path>
-                    </svg>
-                  </div>
-                </div>
-              </a>
-            </article>
+            {{ partial "taxonomy-card.html" (dict "kind" "category" "title" .Title "url" .RelPermalink "count" (len .Pages)) }}
           {{ end }}
         </div>
       {{ else }}

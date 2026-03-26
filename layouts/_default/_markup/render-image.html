@@ -1,0 +1,15 @@
+{{- $src := .Destination | safeURL -}}
+{{- $alt := .PlainText | default "" -}}
+
+<span class="article-image">
+  <img
+    src="{{ $src }}"
+    alt="{{ $alt }}"
+    loading="lazy"
+    decoding="async"
+    {{ with .Title }}title="{{ . }}"{{ end }}
+  >
+  {{ with .Title }}
+    <span class="article-image-caption">{{ . }}</span>
+  {{ end }}
+</span>

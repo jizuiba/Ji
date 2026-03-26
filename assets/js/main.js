@@ -11,9 +11,12 @@
     initThemeOnLoad();
     initMobileMenu();
     initSmoothScrolling();
-    initThemeToggle();
     initThemeSelector();
-    initLazyLoading();
+    invokeOptionalGlobal('__JI_INIT_HOME_CURRENT_TIME__');
+    invokeOptionalGlobal('__JI_INIT_HOME_DAILY_QUOTE__');
+    invokeOptionalGlobal('__JI_INIT_HOME_MUSIC_PLAYER__');
+    invokeOptionalGlobal('__JI_INIT_SHARE_BUTTONS__');
+    initPjaxNavigation();
     initAnimations();
     initAccessibility();
   });
@@ -32,45 +35,76 @@
   function initMobileMenu() {
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
     const mobileNavigation = document.querySelector('.mobile-navigation');
-    
-    if (!mobileMenuToggle || !mobileNavigation) return;
+    if (!mobileMenuToggle || !mobileNavigation || mobileMenuToggle.dataset.bound === 'true') return;
+
+    const desktopMediaQuery = window.matchMedia('(min-width: 769px)');
+
+    const setMenuState = (expanded) => {
+      const activeElement = document.activeElement;
+      if (!expanded && activeElement instanceof HTMLElement && mobileNavigation.contains(activeElement)) {
+        activeElement.blur();
+      }
+
+      mobileMenuToggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+      mobileMenuToggle.setAttribute('aria-label', expanded ? '关闭导航菜单' : '打开导航菜单');
+      mobileMenuToggle.classList.toggle('active', expanded);
+      mobileNavigation.classList.toggle('active', expanded);
+      mobileNavigation.setAttribute('aria-hidden', expanded ? 'false' : 'true');
+      if ('inert' in mobileNavigation) {
+        mobileNavigation.inert = !expanded;
+      }
+      document.body.classList.toggle('menu-open', expanded);
+    };
+
+    const closeMenu = ({ returnFocus = false } = {}) => {
+      if (!mobileNavigation.classList.contains('active')) return;
+      setMenuState(false);
+      if (returnFocus) {
+        mobileMenuToggle.focus();
+      }
+    };
+
+    const toggleMenu = () => {
+      const isExpanded = mobileMenuToggle.getAttribute('aria-expanded') === 'true';
+      setMenuState(!isExpanded);
+    };
 
     mobileMenuToggle.addEventListener('click', function() {
-      const isExpanded = this.getAttribute('aria-expanded') === 'true';
-      
-      this.setAttribute('aria-expanded', !isExpanded);
-      this.classList.toggle('active');
-      mobileNavigation.classList.toggle('active');
-      document.body.classList.toggle('menu-open');
+      toggleMenu();
     });
 
-    // Close menu when clicking outside
     document.addEventListener('click', function(e) {
       if (!mobileMenuToggle.contains(e.target) && !mobileNavigation.contains(e.target)) {
-        mobileMenuToggle.setAttribute('aria-expanded', 'false');
-        mobileMenuToggle.classList.remove('active');
-        mobileNavigation.classList.remove('active');
-        document.body.classList.remove('menu-open');
+        closeMenu();
       }
     });
 
-    // Close menu on escape key
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape' && mobileNavigation.classList.contains('active')) {
-        mobileMenuToggle.click();
+        closeMenu({ returnFocus: true });
       }
     });
 
-    // Close menu when clicking on menu links
-    const mobileMenuLinks = mobileNavigation.querySelectorAll('a');
-    mobileMenuLinks.forEach(link => {
-      link.addEventListener('click', function() {
-        mobileMenuToggle.setAttribute('aria-expanded', 'false');
-        mobileMenuToggle.classList.remove('active');
-        mobileNavigation.classList.remove('active');
-        document.body.classList.remove('menu-open');
-      });
+    mobileNavigation.addEventListener('click', function(e) {
+      if (e.target.closest('a[href]')) {
+        closeMenu();
+      }
     });
+
+    const handleDesktopChange = (event) => {
+      if (event.matches) {
+        closeMenu();
+      }
+    };
+
+    if (typeof desktopMediaQuery.addEventListener === 'function') {
+      desktopMediaQuery.addEventListener('change', handleDesktopChange);
+    } else if (typeof desktopMediaQuery.addListener === 'function') {
+      desktopMediaQuery.addListener(handleDesktopChange);
+    }
+
+    setMenuState(false);
+    mobileMenuToggle.dataset.bound = 'true';
   }
 
   /**
@@ -80,8 +114,10 @@
     document.addEventListener('click', function(e) {
       const link = e.target.closest('a[href^="#"]');
       if (!link) return;
+      if (link.closest('.toc') || link.closest('#TableOfContents')) return;
 
       const targetId = link.getAttribute('href').substring(1);
+      if (!targetId) return;
       const target = document.getElementById(targetId);
       
       if (target) {
@@ -105,50 +141,6 @@
   }
 
   /**
-   * Theme Toggle Functionality
-   */
-  function initThemeToggle() {
-    const themeToggle = document.querySelector('.theme-toggle');
-    if (!themeToggle) return;
-
-    // Update theme icon based on current theme
-    updateThemeIcon();
-
-    // Listen for system theme changes
-    if (window.matchMedia) {
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-        if (!localStorage.getItem('theme')) {
-          updateThemeIcon();
-        }
-      });
-    }
-  }
-
-  function updateThemeIcon() {
-    const isDark = document.documentElement.classList.contains('theme-dark');
-    const themeToggle = document.querySelector('.theme-toggle');
-    
-    if (themeToggle) {
-      const lightIcon = themeToggle.querySelector('.theme-icon-light');
-      const darkIcon = themeToggle.querySelector('.theme-icon-dark');
-      
-      if (lightIcon && darkIcon) {
-        // Force update with !important to override any conflicting styles
-        if (isDark) {
-          lightIcon.style.setProperty('opacity', '0', 'important');
-          darkIcon.style.setProperty('opacity', '1', 'important');
-        } else {
-          lightIcon.style.setProperty('opacity', '1', 'important');
-          darkIcon.style.setProperty('opacity', '0', 'important');
-        }
-      }
-    }
-  }
-  
-  // Make updateThemeIcon available globally for inline scripts
-  window.updateThemeIcon = updateThemeIcon;
-
-  /**
    * Theme Selector Functionality (Footer)
    */
   function initThemeSelector() {
@@ -170,14 +162,20 @@
     // Listen for system theme changes
     if (window.matchMedia) {
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      mediaQuery.addEventListener('change', function(e) {
+      const handleThemePreferenceChange = function() {
         const currentTheme = localStorage.getItem('theme');
         if (!currentTheme || currentTheme === 'auto') {
           // Re-apply auto theme to trigger CSS media query changes
           setTheme('auto');
           updateThemeSelector();
         }
-      });
+      };
+
+      if (typeof mediaQuery.addEventListener === 'function') {
+        mediaQuery.addEventListener('change', handleThemePreferenceChange);
+      } else if (typeof mediaQuery.addListener === 'function') {
+        mediaQuery.addListener(handleThemePreferenceChange);
+      }
     }
   }
 
@@ -217,28 +215,282 @@
     }, 200); // Match --theme-transition duration
   }
 
+  function invokeOptionalGlobal(name, ...args) {
+    const candidate = window[name];
+    if (typeof candidate === 'function') {
+      return candidate(...args);
+    }
+    return undefined;
+  }
 
   /**
-   * Lazy Loading for Images
+   * PJAX navigation (preserve audio playback between pages)
    */
-  function initLazyLoading() {
-    if ('IntersectionObserver' in window) {
-      const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const img = entry.target;
-            img.src = img.dataset.src || img.src;
-            img.classList.remove('lazy');
-            img.classList.add('loaded');
-            observer.unobserve(img);
-          }
-        });
+  function initPjaxNavigation() {
+    if (window.__JI_PJAX_INITIALIZED) return;
+    if (!window.fetch || !window.history || !window.history.pushState || !window.DOMParser) return;
+    window.__JI_PJAX_INITIALIZED = true;
+
+    let navigating = false;
+    let currentPageKey = `${window.location.pathname}${window.location.search}`;
+    const EXCLUDED_EXT_RE = /\.(pdf|zip|rar|7z|jpg|jpeg|png|gif|webp|svg|mp3|mp4|webm|avi|mov|wav|flac)$/i;
+    const normalizePath = (path) => (path || '/').replace(/\/+$/, '') || '/';
+    const reducedMotionQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+    const shouldReduceMotion = () => Boolean(reducedMotionQuery && reducedMotionQuery.matches);
+
+    const waitForTransition = (element, timeout = 260) => new Promise((resolve) => {
+      if (!element || shouldReduceMotion()) {
+        resolve();
+        return;
+      }
+
+      let done = false;
+      const finish = () => {
+        if (done) return;
+        done = true;
+        element.removeEventListener('transitionend', onTransitionEnd);
+        resolve();
+      };
+
+      const onTransitionEnd = (event) => {
+        if (event.target !== element) return;
+        finish();
+      };
+
+      element.addEventListener('transitionend', onTransitionEnd);
+      setTimeout(finish, timeout);
+    });
+
+    const cloneScriptElement = (source) => {
+      const script = document.createElement('script');
+
+      Array.from(source.attributes).forEach((attribute) => {
+        script.setAttribute(attribute.name, attribute.value);
       });
 
-      document.querySelectorAll('img[loading="lazy"]').forEach(img => {
-        imageObserver.observe(img);
+      if (source.textContent) {
+        script.textContent = source.textContent;
+      }
+
+      return script;
+    };
+
+    const syncPageAssets = (nextDocument) => {
+      document.head.querySelectorAll('[data-ji-page-asset]').forEach((node) => node.remove());
+      document.body.querySelectorAll('[data-ji-page-script]').forEach((node) => node.remove());
+
+      nextDocument.querySelectorAll('head [data-ji-page-asset]').forEach((node) => {
+        document.head.appendChild(node.cloneNode(true));
       });
-    }
+
+      nextDocument.querySelectorAll('body [data-ji-page-script]').forEach((node) => {
+        if (node.tagName === 'SCRIPT') {
+          document.body.appendChild(cloneScriptElement(node));
+        } else {
+          document.body.appendChild(node.cloneNode(true));
+        }
+      });
+    };
+
+    const updateMenuState = (pathname) => {
+      const normalizedPath = normalizePath(pathname);
+
+      document.querySelectorAll('.menu-item').forEach((item) => {
+        const anchor = item.querySelector('a[href]');
+        if (!anchor) return;
+
+        const href = anchor.getAttribute('href');
+        if (!href || href.startsWith('#')) return;
+
+        const targetPath = normalizePath(new URL(href, window.location.origin).pathname);
+        const isRoot = targetPath === '/';
+        const isActive = isRoot
+          ? normalizedPath === '/'
+          : normalizedPath === targetPath || normalizedPath.startsWith(`${targetPath}/`);
+
+        item.classList.toggle('current-menu-item', isActive);
+      });
+    };
+
+    const shouldHandleLink = (link, event) => {
+      if (!link || !link.getAttribute) return false;
+      if (event.defaultPrevented) return false;
+      if (event.button !== 0) return false;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return false;
+      if (link.target && link.target !== '_self') return false;
+      if (link.hasAttribute('download')) return false;
+      if (link.dataset.noPjax !== undefined) return false;
+
+      const href = link.getAttribute('href');
+      if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('javascript:')) return false;
+
+      let url;
+      try {
+        url = new URL(href, window.location.href);
+      } catch (error) {
+        return false;
+      }
+
+      if (url.origin !== window.location.origin) return false;
+      if (EXCLUDED_EXT_RE.test(url.pathname)) return false;
+      if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return false;
+      if (url.pathname === window.location.pathname && url.search === window.location.search && !url.hash) return false;
+      return true;
+    };
+
+    const navigate = async (targetUrl, options = {}) => {
+      const { historyMode = 'push', scrollToHash = true } = options;
+      if (navigating) return;
+      navigating = true;
+
+      document.dispatchEvent(new CustomEvent('ji:page-loading', {
+        detail: {
+          url: targetUrl.toString()
+        }
+      }));
+
+      try {
+        const response = await fetch(targetUrl, {
+          credentials: 'same-origin',
+          headers: {
+            'X-Requested-With': 'PJAX'
+          }
+        });
+
+        if (!response.ok) throw new Error(`PJAX fetch failed: ${response.status}`);
+
+        const contentType = (response.headers.get('content-type') || '').toLowerCase();
+        if (!contentType.includes('text/html')) throw new Error('PJAX non-html response');
+
+        const html = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const nextMain = doc.querySelector('#main-content');
+        const currentMain = document.querySelector('#main-content');
+
+        if (!nextMain || !currentMain) throw new Error('PJAX target not found');
+
+        if (!shouldReduceMotion()) {
+          currentMain.classList.remove('is-pjax-entering', 'is-pjax-enter-active');
+          currentMain.classList.add('is-pjax-leaving');
+          await waitForTransition(currentMain, 240);
+        }
+
+        currentMain.innerHTML = nextMain.innerHTML;
+        if (doc.body) {
+          document.body.className = doc.body.className;
+        }
+        if (doc.title) {
+          document.title = doc.title;
+        }
+
+        syncPageAssets(doc);
+
+        if (historyMode === 'push') {
+          window.history.pushState({ pjax: true }, '', targetUrl);
+        } else if (historyMode === 'replace') {
+          window.history.replaceState({ pjax: true }, '', targetUrl);
+        }
+
+        currentPageKey = `${window.location.pathname}${window.location.search}`;
+
+        updateMenuState(window.location.pathname);
+
+        if (typeof window.__JI_INIT_SEARCH_PAGE__ === 'function') {
+          await window.__JI_INIT_SEARCH_PAGE__(targetUrl.toString());
+        }
+
+        if (scrollToHash && targetUrl.hash) {
+          const id = decodeURIComponent(targetUrl.hash.slice(1));
+          const target = document.getElementById(id);
+          if (target) {
+            target.scrollIntoView({ behavior: 'auto', block: 'start' });
+          } else {
+            window.scrollTo(0, 0);
+          }
+        } else {
+          window.scrollTo(0, 0);
+        }
+
+        invokeOptionalGlobal('__JI_INIT_HOME_CURRENT_TIME__');
+        invokeOptionalGlobal('__JI_INIT_HOME_DAILY_QUOTE__');
+        invokeOptionalGlobal('__JI_INIT_HOME_MUSIC_PLAYER__');
+        initAnimations();
+
+        if (!shouldReduceMotion()) {
+          currentMain.classList.remove('is-pjax-leaving');
+          currentMain.classList.add('is-pjax-entering');
+          currentMain.getBoundingClientRect();
+          currentMain.classList.add('is-pjax-enter-active');
+          await waitForTransition(currentMain, 300);
+          currentMain.classList.remove('is-pjax-entering', 'is-pjax-enter-active');
+        } else {
+          currentMain.classList.remove('is-pjax-leaving', 'is-pjax-entering', 'is-pjax-enter-active');
+        }
+
+        document.dispatchEvent(new CustomEvent('ji:page-ready', {
+          detail: {
+            url: targetUrl.toString()
+          }
+        }));
+      } catch (error) {
+        window.location.href = targetUrl.toString();
+      } finally {
+        const mainContent = document.querySelector('#main-content');
+        if (mainContent) {
+          mainContent.classList.remove('is-pjax-leaving', 'is-pjax-entering', 'is-pjax-enter-active');
+        }
+        navigating = false;
+      }
+    };
+
+    window.__JI_NAVIGATE__ = (target, options = {}) => {
+      try {
+        const nextUrl = target instanceof URL ? target : new URL(target, window.location.href);
+        return navigate(nextUrl, options);
+      } catch (error) {
+        window.location.href = String(target);
+        return null;
+      }
+    };
+
+    updateMenuState(window.location.pathname);
+
+    document.addEventListener('click', (event) => {
+      const link = event.target.closest('a[href]');
+      if (!shouldHandleLink(link, event)) return;
+      event.preventDefault();
+      navigate(new URL(link.getAttribute('href'), window.location.href));
+    });
+
+    document.addEventListener('ji:navigate', (event) => {
+      const target = event.detail?.url;
+      if (!target) return;
+
+      try {
+        navigate(new URL(target, window.location.href));
+      } catch (error) {
+        window.location.href = target;
+      }
+    });
+
+    window.addEventListener('popstate', () => {
+      const nextPageKey = `${window.location.pathname}${window.location.search}`;
+      if (nextPageKey === currentPageKey) {
+        if (window.location.hash) {
+          const id = decodeURIComponent(window.location.hash.slice(1));
+          const target = document.getElementById(id);
+          if (target) {
+            target.scrollIntoView({ behavior: 'auto', block: 'start' });
+            return;
+          }
+        }
+        window.scrollTo(0, 0);
+        return;
+      }
+
+      navigate(new URL(window.location.href), { historyMode: 'none', scrollToHash: true });
+    });
   }
 
   /**
@@ -246,6 +498,10 @@
    */
   function initAnimations() {
     if ('IntersectionObserver' in window) {
+      if (window.__JI_ANIMATION_OBSERVER && typeof window.__JI_ANIMATION_OBSERVER.disconnect === 'function') {
+        window.__JI_ANIMATION_OBSERVER.disconnect();
+      }
+
       const animationObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
@@ -258,9 +514,11 @@
       });
 
       // Animate elements on scroll
-      document.querySelectorAll('.post-card, .featured-post-card, .recent-post-card').forEach(el => {
+      document.querySelectorAll('.home-post-card, .taxonomy-card, .home-mosaic-tile').forEach(el => {
         animationObserver.observe(el);
       });
+
+      window.__JI_ANIMATION_OBSERVER = animationObserver;
     }
   }
 
@@ -280,78 +538,7 @@
         }
       });
     }
-
-    // Keyboard navigation for custom elements
-    document.addEventListener('keydown', function(e) {
-      // Handle Enter key on buttons
-      if (e.key === 'Enter' && e.target.matches('button, [role="button"]')) {
-        e.target.click();
-      }
-    });
-
-    // Focus management for modals and dropdowns
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        // Close any open modals or dropdowns
-        const activeElements = document.querySelectorAll('[aria-expanded="true"]');
-        activeElements.forEach(el => {
-          if (el.classList.contains('menu-toggle')) {
-            el.click();
-          }
-        });
-      }
-    });
   }
-
-  /**
-   * Utility Functions
-   */
-  
-  // Debounce function
-  function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-      const later = () => {
-        clearTimeout(timeout);
-        func(...args);
-      };
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-    };
-  }
-
-  // Throttle function
-  function throttle(func, limit) {
-    let inThrottle;
-    return function() {
-      const args = arguments;
-      const context = this;
-      if (!inThrottle) {
-        func.apply(context, args);
-        inThrottle = true;
-        setTimeout(() => inThrottle = false, limit);
-      }
-    };
-  }
-
-
-  // Global theme toggle function for inline scripts
-  window.toggleTheme = function() {
-    const isDark = document.documentElement.classList.contains('theme-dark');
-    const newTheme = isDark ? 'light' : 'dark';
-    setTheme(newTheme);
-    updateThemeIcon();
-    updateThemeSelector();
-  };
-
-  // Make functions available globally
-  window.JI = {
-    debounce,
-    throttle,
-    updateThemeIcon,
-    setTheme,
-    updateThemeSelector,
-    toggleTheme
-  };
 
 })();
+

@@ -1,6 +1,10 @@
 {{- $pages := where .Site.RegularPages "Type" "in" (slice "posts" "page") -}}
 {{- $searchIndex := slice -}}
 {{- range $pages -}}
+  {{- $coverImage := "" -}}
+  {{- with .Params.cover_image -}}
+    {{- $coverImage = . | relURL -}}
+  {{- end -}}
   {{- $searchIndex = $searchIndex | append (dict
     "title" .Title
     "content" (.Content | plainify | truncate 200)
@@ -10,7 +14,8 @@
     "categories" .Params.categories
     "summary" (.Summary | plainify | truncate 100)
     "subtitle" .Params.subtitle
-    "featured_image" .Params.featured_image
+    "cover_image" $coverImage
+    "author" (.Params.author | default .Site.Params.author)
     "type" .Type
   ) -}}
 {{- end -}}

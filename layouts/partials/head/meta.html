@@ -34,8 +34,8 @@
 <meta property="og:description" content="{{ if .Description }}{{ .Description }}{{ else if .Summary }}{{ .Summary | truncate 160 }}{{ else if .Site.Params.description }}{{ .Site.Params.description }}{{ end }}">
 <meta property="og:site_name" content="{{ .Site.Title }}">
 
-{{ if .Params.featured_image }}
-  <meta property="og:image" content="{{ .Params.featured_image | absURL }}">
+{{ if .Params.cover_image }}
+  <meta property="og:image" content="{{ .Params.cover_image | absURL }}">
 {{ else if .Site.Params.ogImage }}
   <meta property="og:image" content="{{ .Site.Params.ogImage | absURL }}">
 {{ end }}
@@ -64,8 +64,8 @@
 <meta property="twitter:title" content="{{ $title }}">
 <meta property="twitter:description" content="{{ if .Description }}{{ .Description }}{{ else if .Summary }}{{ .Summary | truncate 160 }}{{ else if .Site.Params.description }}{{ .Site.Params.description }}{{ end }}">
 
-{{ if .Params.featured_image }}
-  <meta property="twitter:image" content="{{ .Params.featured_image | absURL }}">
+{{ if .Params.cover_image }}
+  <meta property="twitter:image" content="{{ .Params.cover_image | absURL }}">
 {{ else if .Site.Params.ogImage }}
   <meta property="twitter:image" content="{{ .Site.Params.ogImage | absURL }}">
 {{ end }}

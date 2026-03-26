@@ -149,7 +149,16 @@
 <link rel="stylesheet" href="{{ $styles.RelPermalink }}" integrity="{{ $styles.Data.Integrity }}">
 
 <!-- Syntax Highlighting -->
-{{ if .Site.Params.syntaxHighlighting }}
+{{ $codeBlockEnabled := true }}
+{{ if ne .Site.Params.syntaxHighlighting nil }}
+  {{ $codeBlockEnabled = .Site.Params.syntaxHighlighting }}
+{{ end }}
+{{ with .Site.Params.codeBlock }}
+  {{ if ne .enabled nil }}
+    {{ $codeBlockEnabled = .enabled }}
+  {{ end }}
+{{ end }}
+{{ if $codeBlockEnabled }}
   {{ $syntaxCSS := resources.Get "css/syntax.css" | resources.Minify | resources.Fingerprint }}
   <link rel="stylesheet" href="{{ $syntaxCSS.RelPermalink }}" integrity="{{ $syntaxCSS.Data.Integrity }}">
 {{ end }}
@@ -170,6 +179,6 @@
 <!-- Page-specific CSS -->
 {{ if .Params.customCSS }}
   {{ range .Params.customCSS }}
-    <link rel="stylesheet" href="{{ . | relURL }}">
+    <link rel="stylesheet" href="{{ . | relURL }}" data-ji-page-asset="true">
   {{ end }}
 {{ end }}
