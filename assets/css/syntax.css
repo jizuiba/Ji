@@ -341,11 +341,11 @@
    Inline code
    ========================================================================== */
 
-.content p code,
-.content li code,
-.content td code,
-.content th code,
-.content blockquote code {
+.content p > code,
+.content li > code,
+.content td > code,
+.content th > code,
+.content blockquote > code {
   display: inline;
   white-space: break-spaces;
   padding: 0.1rem 0.4rem;
@@ -355,6 +355,11 @@
   color: var(--code-text);
   font-family: var(--code-font);
   font-size: 0.86em;
+}
+
+.article-codeblock__body code {
+  border: 0;
+  border-radius: 0;
 }
 
 /* ==========================================================================

@@ -143,14 +143,14 @@ blockquote ol {
 }
 
 /* 块引用内的代码样式 */
-blockquote code {
+blockquote > code {
   background-color: rgba(0, 0, 0, 0.1);
   padding: 2px 4px;
   border-radius: var(--radius-sm);
   font-size: 0.9em;
 }
 
-.theme-dark blockquote code {
+.theme-dark blockquote > code {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -2992,11 +2992,11 @@ body.menu-open {
 
 /* 代码块滚动条样式已由通用样式覆盖 */
 
-.content p code,
-.content li code,
-.content td code,
-.content th code,
-.content blockquote code {
+.content p > code,
+.content li > code,
+.content td > code,
+.content th > code,
+.content blockquote > code {
   background-color: var(--color-bg-secondary);
   padding: 2px 6px;
   border-radius: var(--radius-sm);
