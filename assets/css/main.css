@@ -746,16 +746,16 @@ body.menu-open {
   text-decoration: none;
 }
 
-/* 首页卡片中的分类标签样式 */
-.home-post-card .category-tag {
+/* 文章卡片中的分类标签样式 */
+.post-card .category-tag {
   background-color: var(--color-bg-secondary);
   color: var(--color-text-secondary);
   border: 1px solid var(--color-border);
   cursor: default;
 }
 
-.home-post-card:hover .category-tag,
-.home-post-card:focus-within .category-tag {
+.post-card:hover .category-tag,
+.post-card:focus-within .category-tag {
   background-color: var(--color-primary);
   border-color: var(--color-primary);
   color: white;
@@ -800,7 +800,7 @@ body.menu-open {
 
 /* 文章内容中的代码样式由 syntax.css 统一处理 */
 
-/* Home Post Cards */
+/* Post Cards */
 :root {
   --card-radius: var(--radius-xl);
   --action-surface-transition: 0.28s cubic-bezier(0.22, 1, 0.36, 1);
@@ -830,7 +830,7 @@ body.menu-open {
     0 12px 30px rgba(15, 23, 42, 0.1),
     0 3px 10px rgba(15, 23, 42, 0.06);
   --card-surface-lift: translateY(-4px);
-  --card-image-width: 168px;
+  --card-image-width: 176px;
   --card-height: 176px;
   --card-content-padding: var(--spacing-lg);
   --card-title-size: var(--font-size-lg);
@@ -847,7 +847,7 @@ body.menu-open {
       rgba(15, 23, 42, 0.58) 100%);
 }
 
-.home-post-card,
+.post-card,
 .taxonomy-card,
 .home-mosaic-tile {
   position: relative;
@@ -862,8 +862,8 @@ body.menu-open {
     background-color var(--theme-transition);
 }
 
-.home-post-card:hover,
-.home-post-card:focus-within,
+.post-card:hover,
+.post-card:focus-within,
 .taxonomy-card:hover,
 .taxonomy-card:focus-within,
 .home-mosaic-tile:hover,
@@ -873,12 +873,12 @@ body.menu-open {
   border-color: var(--color-border-hover);
 }
 
-.home-post-card {
+.post-card {
   overflow: hidden;
   cursor: pointer;
 }
 
-.home-post-link {
+.post-card-link {
   display: flex;
   width: 100%;
   height: 100%;
@@ -888,12 +888,12 @@ body.menu-open {
   overflow: hidden;
 }
 
-.home-post-link:hover {
+.post-card-link:hover {
   text-decoration: none;
   color: inherit;
 }
 
-.home-post-card::before,
+.post-card::before,
 .taxonomy-card::before {
   content: '';
   position: absolute;
@@ -904,15 +904,15 @@ body.menu-open {
   pointer-events: none;
 }
 
-.home-post-card:hover::before,
-.home-post-card:focus-within::before,
+.post-card:hover::before,
+.post-card:focus-within::before,
 .taxonomy-card:hover::before,
 .taxonomy-card:focus-within::before {
   opacity: 1;
 }
 
 /* 统一文章卡片系统 */
-.home-post-unified {
+.post-card-unified {
   display: flex;
   flex-direction: row;
   align-items: stretch;
@@ -922,7 +922,7 @@ body.menu-open {
   position: relative;
 }
 
-.home-post-unified .home-post-image {
+.post-card-unified .post-card-image {
   width: var(--card-image-width);
   min-width: var(--card-image-width);
   height: 100%;
@@ -936,7 +936,7 @@ body.menu-open {
   overflow: hidden;
 }
 
-.home-post-unified .home-post-image::after {
+.post-card-unified .post-card-image::after {
   content: '';
   position: absolute;
   top: 0;
@@ -949,13 +949,17 @@ body.menu-open {
   pointer-events: none;
 }
 
-.home-post-unified .home-post-image img {
+.post-card-unified .post-card-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center center;
+  transform: scale(1.001);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
-.home-post-unified .home-post-content {
+.post-card-unified .post-card-content {
   flex: 1;
   padding: var(--card-content-padding);
   display: flex;
@@ -969,7 +973,7 @@ body.menu-open {
   border-bottom-right-radius: inherit;
 }
 
-.home-post-unified .home-post-title {
+.post-card-unified .post-card-title {
   font-size: var(--card-title-size);
   margin-bottom: var(--spacing-sm);
   line-height: var(--line-height-tight);
@@ -980,7 +984,7 @@ body.menu-open {
   -webkit-box-orient: vertical;
 }
 
-.home-post-unified .home-post-subtitle {
+.post-card-unified .post-card-subtitle {
   font-size: var(--card-subtitle-size);
   color: var(--color-text-secondary);
   margin-bottom: var(--spacing-sm);
@@ -992,36 +996,36 @@ body.menu-open {
   -webkit-box-orient: vertical;
 }
 
-.home-post-unified .home-post-meta {
+.post-card-unified .post-card-meta {
   margin-top: auto;
   font-size: var(--font-size-xs);
 }
 /* 通用样式 */
-.home-post-image {
+.post-card-image {
   overflow: hidden;
   position: relative;
   background: linear-gradient(135deg, rgba(148, 163, 184, 0.12) 0%, rgba(148, 163, 184, 0.04) 100%);
 }
 
 /* 图片融合效果 */
-.home-post-image img {
+.post-card-image img {
   border-radius: 0;
   display: block;
 }
 
-.home-post-content {
+.post-card-content {
   display: flex;
   flex-direction: column;
 }
 
-.home-post-categories {
+.post-card-categories {
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-xs);
   margin-bottom: var(--spacing-sm);
 }
 
-.home-post-title {
+.post-card-title {
   margin-top: 0;
   margin-bottom: var(--spacing-sm);
   overflow: hidden;
@@ -1031,17 +1035,22 @@ body.menu-open {
   -webkit-box-orient: vertical;
 }
 
-.home-post-title {
+.post-card-title {
   color: var(--color-text);
   transition: color var(--transition-fast);
 }
 
-.home-post-card:hover .home-post-title,
-.home-post-card:focus-within .home-post-title {
+.post-card:hover .post-card-title,
+.post-card:focus-within .post-card-title {
   color: var(--color-primary);
 }
 
-.home-post-meta {
+.post-card:hover .post-card-image img,
+.post-card:focus-within .post-card-image img {
+  transform: scale(1.05);
+}
+
+.post-card-meta {
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
@@ -1059,17 +1068,17 @@ body.menu-open {
 }
 
 /* 无图片时的样式 */
-.home-post-card.no-image .home-post-link {
+.post-card.no-image .post-card-link {
   height: 100%;
 }
 
-.home-post-card.no-image .home-post-content {
+.post-card.no-image .post-card-content {
   width: 100%;
   padding: var(--card-content-padding);
   border-radius: inherit;
 }
 /* 深色主题的融合效果 */
-.theme-dark .home-post-card,
+.theme-dark .post-card,
 .theme-dark .taxonomy-card,
 .theme-dark .home-mosaic-tile {
   border-color: var(--color-border-dark);
@@ -1077,8 +1086,8 @@ body.menu-open {
     0 2px 10px rgba(2, 6, 23, 0.22);
 }
 
-.theme-dark .home-post-card:hover,
-.theme-dark .home-post-card:focus-within,
+.theme-dark .post-card:hover,
+.theme-dark .post-card:focus-within,
 .theme-dark .taxonomy-card:hover,
 .theme-dark .taxonomy-card:focus-within,
 .theme-dark .home-mosaic-tile:hover,
@@ -1086,34 +1095,41 @@ body.menu-open {
   border-color: var(--color-border-hover-dark);
 }
 
-.theme-dark .home-post-card,
+.theme-dark .post-card,
 .theme-dark .taxonomy-card {
   background: var(--card-surface-gradient-dark);
 }
 
-.theme-dark .home-post-card::before,
+.theme-dark .post-card::before,
 .theme-dark .taxonomy-card::before {
   background: var(--card-surface-overlay-dark);
 }
 
-.theme-dark .home-post-image {
+.theme-dark .post-card-image {
   background: linear-gradient(135deg,
     rgba(100, 116, 139, 0.22) 0%,
     rgba(15, 23, 42, 0.14) 100%);
 }
 
-.theme-dark .home-post-unified .home-post-image::after {
+.theme-dark .post-card-unified .post-card-image::after {
   background: var(--card-media-fade-dark);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .home-post-card:hover,
-  .home-post-card:focus-within,
+  .post-card:hover,
+  .post-card:focus-within,
   .taxonomy-card:hover,
   .taxonomy-card:focus-within,
   .home-mosaic-tile:hover,
   .home-mosaic-tile:focus-within {
     transform: none;
+  }
+
+  .post-card-unified .post-card-image img,
+  .post-card:hover .post-card-image img,
+  .post-card:focus-within .post-card-image img {
+    transform: none;
+    transition: none;
   }
 }
 
@@ -1443,36 +1459,36 @@ body.menu-open {
 
   /* 小屏幕进一步优化 - 重新定义CSS变量实现更紧凑的布局 */
   :root {
-    --card-image-width: 108px;
-    --card-height: 132px;
+    --card-image-width: 112px;
+    --card-height: 112px;
     --card-content-padding: var(--spacing-sm);
     --card-title-size: var(--font-size-base);
     --card-subtitle-size: var(--font-size-xs);
   }
 
-  .home-post-unified .home-post-image {
+  .post-card-unified .post-card-image {
     width: var(--card-image-width);
     min-width: var(--card-image-width);
   }
 
-  .home-post-unified .home-post-image::after {
+  .post-card-unified .post-card-image::after {
     display: none;
   }
 
-  .home-post-unified .home-post-content {
+  .post-card-unified .post-card-content {
     padding: var(--card-content-padding);
   }
 
-  .home-post-unified .home-post-title {
+  .post-card-unified .post-card-title {
     font-size: var(--card-title-size);
     margin-bottom: var(--spacing-xs);
   }
 
-  .home-post-unified .home-post-subtitle {
+  .post-card-unified .post-card-subtitle {
     font-size: var(--card-subtitle-size);
   }
 
-  .home-post-unified .home-post-meta {
+  .post-card-unified .post-card-meta {
     font-size: var(--font-size-xs);
   }
   /* Posts页面优化 */
@@ -2417,8 +2433,8 @@ body.menu-open {
 
 @media (max-width: 1024px) {
   :root {
-    --card-image-width: 152px;
-    --card-height: 168px;
+    --card-image-width: 160px;
+    --card-height: 160px;
     --card-content-padding: var(--spacing-md);
     --card-title-size: var(--font-size-base);
   }
@@ -2466,7 +2482,7 @@ body.menu-open {
     --font-size-4xl: 2rem;
     --font-size-5xl: 2.5rem;
     --card-image-width: 136px;
-    --card-height: 156px;
+    --card-height: 136px;
     --card-content-padding: var(--spacing-md);
     --card-title-size: var(--font-size-base);
     --card-subtitle-size: var(--font-size-xs);
@@ -2574,28 +2590,28 @@ body.menu-open {
     justify-content: center;
   }
 
-  .home-post-unified .home-post-image {
+  .post-card-unified .post-card-image {
     width: var(--card-image-width);
     min-width: var(--card-image-width);
   }
 
-  .home-post-unified .home-post-image::after {
+  .post-card-unified .post-card-image::after {
     display: none;
   }
 
-  .home-post-unified .home-post-content {
+  .post-card-unified .post-card-content {
     padding: var(--card-content-padding);
   }
 
-  .home-post-unified .home-post-title {
+  .post-card-unified .post-card-title {
     font-size: var(--card-title-size);
   }
 
-  .home-post-unified .home-post-subtitle {
+  .post-card-unified .post-card-subtitle {
     font-size: var(--card-subtitle-size);
   }
 
-  .home-post-unified .home-post-meta {
+  .post-card-unified .post-card-meta {
     font-size: var(--font-size-xs);
   }
   .share-buttons-list {
@@ -3671,5 +3687,13 @@ body.image-lightbox-open {
   fill: #ffffff !important;
   stroke: #0a3069 !important;
 }
+
+/* KaTeX */
+.post-content .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0;
+}
+
 
 

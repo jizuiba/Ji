@@ -514,7 +514,7 @@
       });
 
       // Animate elements on scroll
-      document.querySelectorAll('.home-post-card, .taxonomy-card, .home-mosaic-tile').forEach(el => {
+      document.querySelectorAll('.post-card, .taxonomy-card, .home-mosaic-tile').forEach(el => {
         animationObserver.observe(el);
       });
 
@@ -541,4 +541,5 @@
   }
 
 })();
+
 

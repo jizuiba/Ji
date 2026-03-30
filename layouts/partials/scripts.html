@@ -50,6 +50,10 @@
 {{ $mermaidJS := resources.Get "js/mermaid.js" | resources.Minify | resources.Fingerprint }}
 <script type="module" src="{{ $mermaidJS.RelPermalink }}" integrity="{{ $mermaidJS.Data.Integrity }}"></script>
 
+<!-- Math manager -->
+{{ $mathJS := resources.Get "js/math.js" | resources.Minify | resources.Fingerprint }}
+<script defer src="{{ $mathJS.RelPermalink }}" integrity="{{ $mathJS.Data.Integrity }}"></script>
+
 <!-- Custom JavaScript -->
 {{ if .Site.Params.customJS }}
   {{ range .Site.Params.customJS }}

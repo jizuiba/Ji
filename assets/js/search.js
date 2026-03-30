@@ -172,26 +172,26 @@
       const subtitle = item.subtitle || '';
 
       return `
-        <article class="home-post-card home-post-unified${!item.cover_image ? ' no-image' : ''}">
-          <a href="${item.url}" class="home-post-link">
+        <article class="post-card post-card-unified${!item.cover_image ? ' no-image' : ''}">
+          <a href="${item.url}" class="post-card-link">
             ${item.cover_image ? `
-              <div class="home-post-image">
+              <div class="post-card-image">
                 <img src="${item.cover_image}" alt="${title}" loading="lazy" decoding="async">
               </div>
             ` : ''}
-            <div class="home-post-content">
+            <div class="post-card-content">
               ${categories.length > 0 ? `
-                <div class="home-post-categories">
+                <div class="post-card-categories">
                   ${categories.slice(0, 3).map((category) => `
                     <span class="category-tag">${escapeHtml(category)}</span>
                   `).join('')}
                 </div>
               ` : ''}
-              <h3 class="home-post-title">${title}</h3>
+              <h3 class="post-card-title">${title}</h3>
               ${subtitle ? `
-                <p class="home-post-subtitle desktop-only">${escapeHtml(subtitle)}</p>
+                <p class="post-card-subtitle desktop-only">${escapeHtml(subtitle)}</p>
               ` : ''}
-              <div class="home-post-meta">
+              <div class="post-card-meta">
                 <time datetime="${item.date}" class="post-date">${date}</time>
                 ${item.author ? `
                   <span class="post-author desktop-only">by ${escapeHtml(item.author)}</span>
@@ -431,3 +431,4 @@
     initSearch();
   }
 })();
+
