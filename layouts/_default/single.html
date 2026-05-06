@@ -35,6 +35,10 @@
 
           <div class="msg">
             <span>{{ .Date.Format (.Site.Params.dateFormat | default "2006年1月2日") }}</span>
+            {{ if ne (.Date.Format "2006-01-02") (.Lastmod.Format "2006-01-02") }}
+              <span class="drop">·</span>
+              <span>更新于 {{ .Lastmod.Format (.Site.Params.dateFormat | default "2006年1月2日") }}</span>
+            {{ end }}
             <span class="drop">·</span>
             <span>{{ .WordCount }} 字</span>
           </div>
